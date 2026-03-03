@@ -38,7 +38,7 @@ const faqs = [
 ];
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndices, setOpenIndices] = useState<Set<number>>(new Set());
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
@@ -52,30 +52,38 @@ export default function FAQ() {
               <dt>
                 <button
                   onClick={() => {
-                    const isOpening = openIndex !== idx;
-                    setOpenIndex(isOpening ? idx : null);
+                    const isOpening = !openIndices.has(idx);
+                    setOpenIndices(prev => {
+                      const next = new Set(prev);
+                      if (isOpening) {
+                        next.add(idx);
+                      } else {
+                        next.delete(idx);
+                      }
+                      return next;
+                    });
                     trackFAQClick({ questionIndex: idx, questionText: faq.question, isOpen: isOpening });
                   }}
-                  aria-expanded={openIndex === idx}
+                  aria-expanded={openIndices.has(idx)}
                   aria-controls={`faq-answer-${idx}`}
-                  className="w-full text-left px-4 py-3 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                  className="w-full text-left px-4 py-3 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset transition-colors"
                 >
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                     {faq.question}
                   </span>
                   <span className="text-gray-400 text-lg leading-none">
-                    {openIndex === idx ? '−' : '+'}
+                    {openIndices.has(idx) ? '−' : '+'}
                   </span>
                 </button>
               </dt>
-              {openIndex === idx && (
+              {openIndices.has(idx) ? (
                 <dd
                   id={`faq-answer-${idx}`}
                   className="px-4 pb-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed"
                 >
                   {faq.answer}
                 </dd>
-              )}
+              ) : null}
             </div>
             {idx === 2 && (
               <div className="my-2">
