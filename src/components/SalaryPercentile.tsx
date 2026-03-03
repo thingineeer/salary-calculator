@@ -18,7 +18,7 @@ export default function SalaryPercentile({ annualSalary }: Props) {
         나의 연봉 위치
       </h3>
       <div className="text-center mb-3">
-        <span className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+        <span className="text-2xl font-bold text-blue-700 dark:text-blue-300 tabular-nums">
           상위 {percentile}%
         </span>
         <p className="text-xs text-gray-400 mt-1">

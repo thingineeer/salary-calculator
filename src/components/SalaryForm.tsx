@@ -83,15 +83,15 @@ export default function SalaryForm({
           inputMode="numeric"
           value={annualSalary > 0 ? formatNumber(annualSalary) : ''}
           onChange={handleSalaryInput}
-          placeholder="예: 50,000,000"
+          placeholder="예: 50,000,000…"
           aria-describedby="salary-hint salary-warning"
           className="w-full px-4 py-3 text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none transition"
         />
-        {salaryWarning && (
+        {salaryWarning ? (
           <p id="salary-warning" className="text-xs text-amber-500" role="alert">
             {salaryWarning}
           </p>
-        )}
+        ) : null}
         <label htmlFor="salary-slider" className="sr-only">
           연봉 슬라이더
         </label>

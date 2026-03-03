@@ -24,7 +24,7 @@ export default function SalaryResult({ result }: Props) {
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
           월 실수령액
         </p>
-        <p className="text-3xl sm:text-4xl font-extrabold text-blue-700 dark:text-blue-300">
+        <p className="text-3xl sm:text-4xl font-extrabold text-blue-700 dark:text-blue-300 tabular-nums">
           {formatNumber(result.netSalary)}
           <span className="text-lg font-normal ml-1">원</span>
         </p>
@@ -45,7 +45,7 @@ export default function SalaryResult({ result }: Props) {
               <span className="text-sm text-gray-600 dark:text-gray-400">
                 {item.label}
               </span>
-              <span className={`text-sm font-semibold ${item.color}`}>
+              <span className={`text-sm font-semibold tabular-nums ${item.color}`}>
                 -{formatNumber(item.value)}원
               </span>
             </li>
@@ -55,7 +55,7 @@ export default function SalaryResult({ result }: Props) {
           <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
             공제 합계
           </span>
-          <span className="text-base font-bold text-red-600 dark:text-red-400">
+          <span className="text-base font-bold text-red-600 dark:text-red-400 tabular-nums">
             -{formatNumber(result.totalDeduction)}원
           </span>
         </div>
