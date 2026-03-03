@@ -5,11 +5,19 @@
 :root {
   --background: #f8fafc;
   --foreground: #1e293b;
+  color-scheme: light;
 }
 
 .dark {
   --background: #0f172a;
   --foreground: #e2e8f0;
+  color-scheme: dark;
+}
+
+/* 포커스 가시성 - Web Interface Guidelines */
+:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }
 
 @theme inline {
@@ -47,4 +55,8 @@ input[type='range']::-webkit-slider-thumb {
 
 .dark input[type='range'] {
   background: #475569;
+}
+
+[id] {
+  scroll-margin-top: 2rem;
 }

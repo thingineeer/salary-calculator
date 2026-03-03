@@ -34,6 +34,12 @@ export default function Header() {
 
   return (
     <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:text-sm"
+      >
+        본문으로 건너뛰기
+      </a>
       <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <span className="text-2xl" aria-hidden="true">🧮</span>
@@ -48,7 +54,7 @@ export default function Header() {
           <button
             onClick={toggleTheme}
             aria-label={dark ? '라이트 모드로 전환' : '다크 모드로 전환'}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg"
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors text-lg"
           >
             {dark ? '☀️' : '🌙'}
           </button>
