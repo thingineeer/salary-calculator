@@ -48,3 +48,12 @@ input[type='range']::-webkit-slider-thumb {
 .dark input[type='range'] {
   background: #475569;
 }
+
+/* 숫자 정렬을 위한 tabular-nums */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+h1, h2, h3 {
+  text-wrap: balance;
+}
