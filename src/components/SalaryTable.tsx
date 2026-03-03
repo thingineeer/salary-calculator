@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { SALARY_COMPARISON_LIST, DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
@@ -63,7 +64,9 @@ export default function SalaryTable() {
                 className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
               >
                 <td className="py-2.5 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
-                  {formatNumber(row.salary)}만원
+                  <Link href={`/salary/${row.salary}`} className="text-blue-600 dark:text-blue-400 hover:underline">
+                    {formatNumber(row.salary)}만원
+                  </Link>
                 </td>
                 <td className="py-2.5 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap">
                   {formatNumber(row.monthlySalary)}
@@ -89,6 +92,15 @@ export default function SalaryTable() {
           ))}
         </tbody>
       </table>
+
+      <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 text-center">
+        <Link
+          href="/salary"
+          className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors"
+        >
+          2,400만~1억5천만원 전체 비교표 보기
+        </Link>
+      </div>
     </div>
   );
 }

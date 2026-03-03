@@ -48,9 +48,12 @@ export default function Header() {
           </h1>
         </Link>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-400 hidden sm:block">
-            4대보험 + 소득세 자동 계산
-          </span>
+          <Link
+            href="/salary"
+            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          >
+            연봉 비교표
+          </Link>
           <button
             onClick={toggleTheme}
             aria-label={dark ? '라이트 모드로 전환' : '다크 모드로 전환'}
