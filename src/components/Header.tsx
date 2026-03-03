@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore, useCallback } from 'react';
 import Link from 'next/link';
+import { trackThemeToggle } from '@/lib/analytics';
 
 function getThemeSnapshot() {
   if (typeof window === 'undefined') return false;
@@ -28,6 +29,7 @@ export default function Header() {
     const next = !document.documentElement.classList.contains('dark');
     document.documentElement.classList.toggle('dark', next);
     localStorage.setItem('theme', next ? 'dark' : 'light');
+    trackThemeToggle(next ? 'dark' : 'light');
   }, []);
 
   return (

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AdBanner from '@/components/AdBanner';
+import { trackFAQClick } from '@/lib/analytics';
 
 const faqs = [
   {
@@ -50,7 +51,11 @@ export default function FAQ() {
             <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
               <dt>
                 <button
-                  onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+                  onClick={() => {
+                    const isOpening = openIndex !== idx;
+                    setOpenIndex(isOpening ? idx : null);
+                    trackFAQClick({ questionIndex: idx, questionText: faq.question, isOpen: isOpening });
+                  }}
                   aria-expanded={openIndex === idx}
                   aria-controls={`faq-answer-${idx}`}
                   className="w-full text-left px-4 py-3 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"

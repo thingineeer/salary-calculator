@@ -2,6 +2,7 @@
 
 import { formatNumber, parseFormattedNumber } from '@/lib/format';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
+import { trackFormInteraction } from '@/lib/analytics';
 
 interface SalaryFormProps {
   annualSalary: number;
@@ -36,11 +37,15 @@ export default function SalaryForm({
       onChange('annualSalary', 0);
       return;
     }
-    onChange('annualSalary', Math.min(raw, MAX_SALARY));
+    const value = Math.min(raw, MAX_SALARY);
+    onChange('annualSalary', value);
+    trackFormInteraction({ field: 'annualSalary', inputMethod: 'direct_input', value });
   };
 
   const handleSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange('annualSalary', Number(e.target.value));
+    const value = Number(e.target.value);
+    onChange('annualSalary', value);
+    trackFormInteraction({ field: 'annualSalary', inputMethod: 'slider', value });
   };
 
   const handleNonTaxable = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +54,9 @@ export default function SalaryForm({
       onChange('nonTaxableAllowance', 0);
       return;
     }
-    onChange('nonTaxableAllowance', Math.min(raw, 1_000_000));
+    const value = Math.min(raw, 1_000_000);
+    onChange('nonTaxableAllowance', value);
+    trackFormInteraction({ field: 'nonTaxableAllowance', inputMethod: 'direct_input', value });
   };
 
   return (

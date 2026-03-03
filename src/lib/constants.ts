@@ -1,3 +1,10 @@
+/**
+ * 연도별 세율/보험료 상수
+ * 매년 1월에 새 연도 값으로 업데이트
+ * 향후 연도 선택 기능 추가 시 여기에 연도별 객체 추가
+ */
+export const TAX_YEAR = 2026;
+
 // 2026년 기준 4대보험 요율 (근로자 부담분)
 export const INSURANCE_RATES = {
   nationalPension: 0.045, // 국민연금 4.5%

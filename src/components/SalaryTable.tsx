@@ -1,11 +1,29 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { SALARY_COMPARISON_LIST, DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
+import { trackTableView } from '@/lib/analytics';
 import AdBanner from '@/components/AdBanner';
 
 export default function SalaryTable() {
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          trackTableView();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (tableRef.current) observer.observe(tableRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const rows = SALARY_COMPARISON_LIST.map((salaryMan) => {
     const annual = salaryMan * 10_000;
     const result = calculateSalary({
@@ -20,7 +38,7 @@ export default function SalaryTable() {
   const midIndex = Math.floor(rows.length / 2);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 overflow-x-auto">
+    <div ref={tableRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 overflow-x-auto">
       <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
         연봉별 실수령액 비교표
       </h2>

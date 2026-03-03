@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { calculateSalary, SalaryResult as SalaryResultType } from '@/lib/salary-calculator';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
+import { trackSalaryCalculation, trackScrollDepth } from '@/lib/analytics';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SalaryForm from '@/components/SalaryForm';
@@ -35,6 +36,41 @@ export default function Home() {
   };
 
   const result: SalaryResultType = calculateSalary(formData);
+
+  // GA4: 계산 결과 변경 시 트래킹 (디바운스 500ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      trackSalaryCalculation({
+        annualSalary: formData.annualSalary,
+        dependents: formData.dependents,
+        childrenUnder20: formData.childrenUnder20,
+        nonTaxableAllowance: formData.nonTaxableAllowance,
+        netSalary: result.netSalary,
+      });
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [formData, result.netSalary]);
+
+  // GA4: 스크롤 깊이 추적
+  useEffect(() => {
+    const thresholds = [25, 50, 75, 100];
+    const tracked = new Set<number>();
+
+    const handleScroll = () => {
+      const scrollPercent = Math.round(
+        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+      );
+      thresholds.forEach((t) => {
+        if (scrollPercent >= t && !tracked.has(t)) {
+          tracked.add(t);
+          trackScrollDepth(t);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
