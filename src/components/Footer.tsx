@@ -21,7 +21,7 @@ export default function Footer() {
           <Link
             href="/about"
             onClick={() => trackNavigation('about')}
-            className="hover:underline hover:text-gray-600 dark:hover:text-gray-300"
+            className="hover:underline hover:text-gray-600 dark:hover:text-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded"
           >
             소개
           </Link>
@@ -29,7 +29,7 @@ export default function Footer() {
           <Link
             href="/privacy"
             onClick={() => trackNavigation('privacy')}
-            className="hover:underline hover:text-gray-600 dark:hover:text-gray-300"
+            className="hover:underline hover:text-gray-600 dark:hover:text-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded"
           >
             개인정보처리방침
           </Link>
@@ -37,7 +37,7 @@ export default function Footer() {
           <Link
             href="/terms"
             onClick={() => trackNavigation('terms')}
-            className="hover:underline hover:text-gray-600 dark:hover:text-gray-300"
+            className="hover:underline hover:text-gray-600 dark:hover:text-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded"
           >
             이용약관
           </Link>

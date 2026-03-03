@@ -181,29 +181,30 @@ export default async function SalaryDetailPage({ params }: PageProps) {
             <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
               자주 묻는 질문
             </h2>
-            <dl className="space-y-4">
+            <div className="space-y-3">
               {data.faq.map((f, idx) => (
-                <div key={idx}>
-                  <dt className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                    Q. {f.question}
-                  </dt>
-                  <dd className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <details key={idx} className="group border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+                    <span>Q. {f.question}</span>
+                    <span className="ml-2 text-gray-400 group-open:rotate-180 transition-transform" aria-hidden="true">▼</span>
+                  </summary>
+                  <div className="px-4 pb-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                     {f.answer}
-                  </dd>
-                </div>
+                  </div>
+                </details>
               ))}
-            </dl>
+            </div>
           </section>
 
           {/* 인접 구간 네비게이션 */}
           <nav className="flex justify-between items-center gap-4" aria-label="다른 연봉 구간">
             {prevAmount ? (
-              <Link href={`/salary/${prevAmount}`} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+              <Link href={`/salary/${prevAmount}`} className="text-sm text-blue-600 dark:text-blue-400 hover:underline py-2 px-3 -mx-3 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
                 ← 연봉 {formatNumber(prevAmount)}만원
               </Link>
             ) : <span />}
             {nextAmount ? (
-              <Link href={`/salary/${nextAmount}`} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+              <Link href={`/salary/${nextAmount}`} className="text-sm text-blue-600 dark:text-blue-400 hover:underline py-2 px-3 -mx-3 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
                 연봉 {formatNumber(nextAmount)}만원 →
               </Link>
             ) : <span />}

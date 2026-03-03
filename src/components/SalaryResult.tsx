@@ -20,16 +20,16 @@ export default function SalaryResult({ result }: Props) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5" aria-label="급여 계산 결과" role="region">
       {/* 실수령액 */}
-      <div className="text-center py-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
+      <div className="text-center py-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl" aria-live="polite">
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
           월 실수령액
         </p>
         <p className="text-3xl sm:text-4xl font-extrabold text-blue-700 dark:text-blue-300 tabular-nums">
           {formatNumber(result.netSalary)}
-          <span className="text-lg font-normal ml-1">원</span>
+          <span className="text-lg font-normal ml-1">{'\u00A0'}원</span>
         </p>
         <p className="text-xs text-gray-400 mt-2">
-          세전 월급 {formatNumber(result.monthlySalary)}원 · 실효세율{' '}
+          세전 월급 {formatNumber(result.monthlySalary)}{'\u00A0'}원 · 실효세율{' '}
           {result.effectiveTaxRate}%
         </p>
       </div>
@@ -46,7 +46,7 @@ export default function SalaryResult({ result }: Props) {
                 {item.label}
               </span>
               <span className={`text-sm font-semibold tabular-nums ${item.color}`}>
-                -{formatNumber(item.value)}원
+                -{formatNumber(item.value)}{'\u00A0'}원
               </span>
             </li>
           ))}
@@ -56,7 +56,7 @@ export default function SalaryResult({ result }: Props) {
             공제 합계
           </span>
           <span className="text-base font-bold text-red-600 dark:text-red-400 tabular-nums">
-            -{formatNumber(result.totalDeduction)}원
+            -{formatNumber(result.totalDeduction)}{'\u00A0'}원
           </span>
         </div>
       </div>
