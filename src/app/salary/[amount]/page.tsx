@@ -6,6 +6,7 @@ import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
 import { getSalaryPercentile } from '@/lib/percentile';
 import { getSalaryPageData, SALARY_AMOUNTS } from '@/lib/salary-seo-data';
+import AdBanner from '@/components/AdBanner';
 
 interface PageProps {
   params: Promise<{ amount: string }>;
@@ -146,6 +147,9 @@ export default async function SalaryDetailPage({ params }: PageProps) {
             </div>
           </div>
 
+          {/* 광고 - 결과 카드 아래 */}
+          <AdBanner format="auto" className="w-full min-h-[90px] mb-6" />
+
           {/* 대표 직종 */}
           <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
             <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-3">
@@ -168,6 +172,9 @@ export default async function SalaryDetailPage({ params }: PageProps) {
               {data.taxTip}
             </p>
           </section>
+
+          {/* 광고 - 절세 팁 아래 */}
+          <AdBanner format="auto" className="w-full min-h-[90px] mb-6" />
 
           {/* FAQ */}
           <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">

@@ -53,7 +53,8 @@ export default function SalaryTable() {
             <th className="text-right py-2 px-2 font-medium">월 급여</th>
             <th className="text-right py-2 px-2 font-medium">공제 합계</th>
             <th className="text-right py-2 px-2 font-medium">실수령액</th>
-            <th className="text-right py-2 pl-2 font-medium">실효세율</th>
+            <th className="text-right py-2 px-2 font-medium">실효세율</th>
+            <th className="py-2 pl-2"></th>
           </tr>
         </thead>
         <tbody>
@@ -64,9 +65,7 @@ export default function SalaryTable() {
                 className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
               >
                 <td className="py-2.5 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
-                  <Link href={`/salary/${row.salary}`} className="text-blue-600 dark:text-blue-400 hover:underline">
-                    {formatNumber(row.salary)}만원
-                  </Link>
+                  {formatNumber(row.salary)}만원
                 </td>
                 <td className="py-2.5 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap">
                   {formatNumber(row.monthlySalary)}
@@ -77,13 +76,21 @@ export default function SalaryTable() {
                 <td className="py-2.5 px-2 text-right font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
                   {formatNumber(row.netSalary)}
                 </td>
-                <td className="py-2.5 pl-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                <td className="py-2.5 px-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
                   {row.effectiveTaxRate}%
+                </td>
+                <td className="py-2.5 pl-2 whitespace-nowrap">
+                  <Link
+                    href={`/salary/${row.salary}`}
+                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    자세히
+                  </Link>
                 </td>
               </tr>
               {idx === midIndex - 1 && (
                 <tr key="table-ad">
-                  <td colSpan={5} className="py-2">
+                  <td colSpan={6} className="py-2">
                     <AdBanner format="auto" className="w-full min-h-[90px]" />
                   </td>
                 </tr>
@@ -92,15 +99,6 @@ export default function SalaryTable() {
           ))}
         </tbody>
       </table>
-
-      <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 text-center">
-        <Link
-          href="/salary"
-          className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors"
-        >
-          2,400만~1억5천만원 전체 비교표 보기
-        </Link>
-      </div>
     </div>
   );
 }
