@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import AdBanner from '@/components/AdBanner';
 
 const faqs = [
   {
@@ -41,33 +42,40 @@ export default function FAQ() {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
-        ❓ 자주 묻는 질문
+        자주 묻는 질문
       </h2>
       <dl className="space-y-2">
         {faqs.map((faq, idx) => (
-          <div
-            key={idx}
-            className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden"
-          >
-            <dt>
-              <button
-                onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                aria-expanded={openIndex === idx}
-                aria-controls={`faq-answer-${idx}`}
-                className="w-full text-left px-4 py-3 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
-              >
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
-                  {faq.question}
-                </span>
-                <span className="text-gray-400 text-lg leading-none">
-                  {openIndex === idx ? '−' : '+'}
-                </span>
-              </button>
-            </dt>
-            {openIndex === idx && (
-              <dd id={`faq-answer-${idx}`} className="px-4 pb-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                {faq.answer}
-              </dd>
+          <div key={idx}>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+              <dt>
+                <button
+                  onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+                  aria-expanded={openIndex === idx}
+                  aria-controls={`faq-answer-${idx}`}
+                  className="w-full text-left px-4 py-3 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                >
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                    {faq.question}
+                  </span>
+                  <span className="text-gray-400 text-lg leading-none">
+                    {openIndex === idx ? '−' : '+'}
+                  </span>
+                </button>
+              </dt>
+              {openIndex === idx && (
+                <dd
+                  id={`faq-answer-${idx}`}
+                  className="px-4 pb-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed"
+                >
+                  {faq.answer}
+                </dd>
+              )}
+            </div>
+            {idx === 2 && (
+              <div className="my-2">
+                <AdBanner format="fluid" layout="in-article" className="w-full" />
+              </div>
             )}
           </div>
         ))}
@@ -76,5 +84,4 @@ export default function FAQ() {
   );
 }
 
-// FAQ 데이터 export (JSON-LD용)
 export { faqs };

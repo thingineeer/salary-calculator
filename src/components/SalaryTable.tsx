@@ -3,6 +3,7 @@
 import { calculateSalary } from '@/lib/salary-calculator';
 import { SALARY_COMPARISON_LIST, DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
+import AdBanner from '@/components/AdBanner';
 
 export default function SalaryTable() {
   const rows = SALARY_COMPARISON_LIST.map((salaryMan) => {
@@ -16,10 +17,12 @@ export default function SalaryTable() {
     return { salary: salaryMan, ...result };
   });
 
+  const midIndex = Math.floor(rows.length / 2);
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 overflow-x-auto">
       <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
-        📊 연봉별 실수령액 비교표
+        연봉별 실수령액 비교표
       </h2>
       <p className="text-xs text-gray-400 mb-4">
         부양가족 1명(본인), 비과세 월 20만원 기준
@@ -35,27 +38,36 @@ export default function SalaryTable() {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr
-              key={row.salary}
-              className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
-            >
-              <td className="py-2.5 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
-                {formatNumber(row.salary)}만원
-              </td>
-              <td className="py-2.5 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                {formatNumber(row.monthlySalary)}
-              </td>
-              <td className="py-2.5 px-2 text-right text-red-500 dark:text-red-400 whitespace-nowrap">
-                -{formatNumber(row.totalDeduction)}
-              </td>
-              <td className="py-2.5 px-2 text-right font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
-                {formatNumber(row.netSalary)}
-              </td>
-              <td className="py-2.5 pl-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                {row.effectiveTaxRate}%
-              </td>
-            </tr>
+          {rows.map((row, idx) => (
+            <>
+              <tr
+                key={row.salary}
+                className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
+              >
+                <td className="py-2.5 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
+                  {formatNumber(row.salary)}만원
+                </td>
+                <td className="py-2.5 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                  {formatNumber(row.monthlySalary)}
+                </td>
+                <td className="py-2.5 px-2 text-right text-red-500 dark:text-red-400 whitespace-nowrap">
+                  -{formatNumber(row.totalDeduction)}
+                </td>
+                <td className="py-2.5 px-2 text-right font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
+                  {formatNumber(row.netSalary)}
+                </td>
+                <td className="py-2.5 pl-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                  {row.effectiveTaxRate}%
+                </td>
+              </tr>
+              {idx === midIndex - 1 && (
+                <tr key="table-ad">
+                  <td colSpan={5} className="py-2">
+                    <AdBanner format="auto" className="w-full min-h-[90px]" />
+                  </td>
+                </tr>
+              )}
+            </>
           ))}
         </tbody>
       </table>

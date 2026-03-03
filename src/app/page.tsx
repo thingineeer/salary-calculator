@@ -9,8 +9,12 @@ import Footer from '@/components/Footer';
 import SalaryForm from '@/components/SalaryForm';
 import SalaryResultCard from '@/components/SalaryResult';
 import DeductionChart from '@/components/DeductionChart';
+import SalaryPercentile from '@/components/SalaryPercentile';
 import AdBanner from '@/components/AdBanner';
 
+const JobChangeSimulator = dynamic(() => import('@/components/JobChangeSimulator'), {
+  loading: () => <div className="h-48 bg-white dark:bg-gray-800 rounded-2xl shadow-lg animate-pulse" />,
+});
 const SalaryTable = dynamic(() => import('@/components/SalaryTable'), {
   loading: () => <div className="h-64 bg-white dark:bg-gray-800 rounded-2xl shadow-lg animate-pulse" />,
 });
@@ -48,33 +52,42 @@ export default function Home() {
               onChange={handleChange}
             />
           </div>
-          <div className="hidden lg:block">
-            <AdBanner format="rectangle" className="h-[250px] sticky top-8" />
+          <div className="hidden lg:flex lg:flex-col lg:items-center">
+            <AdBanner format="rectangle" className="w-[300px] min-h-[250px] sticky top-8" />
           </div>
         </div>
 
-        {/* 결과 + 차트 */}
+        {/* 결과 + 차트 + 백분위 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <SalaryResultCard result={result} />
+          <div className="space-y-6">
+            <SalaryResultCard result={result} />
+            <SalaryPercentile annualSalary={formData.annualSalary} />
+          </div>
           <DeductionChart result={result} />
         </div>
 
-        {/* 모바일 광고 */}
-        <div className="lg:hidden">
-          <AdBanner format="rectangle" className="h-[100px]" />
-        </div>
+        {/* 결과 아래 광고 - 모든 디바이스 반응형 (CTR 황금 구간) */}
+        <AdBanner format="auto" className="w-full min-h-[90px]" />
 
-        {/* 중간 광고 배너 */}
-        <AdBanner format="horizontal" className="h-[90px] hidden sm:flex" />
+        {/* 이직 시뮬레이터 */}
+        <JobChangeSimulator
+          currentSalary={formData.annualSalary}
+          dependents={formData.dependents}
+          childrenUnder20={formData.childrenUnder20}
+          nonTaxableAllowance={formData.nonTaxableAllowance}
+        />
 
         {/* 비교 테이블 */}
         <SalaryTable />
+
+        {/* 비교표 아래 광고 */}
+        <AdBanner format="auto" className="w-full min-h-[90px]" />
 
         {/* FAQ */}
         <FAQ />
 
         {/* 하단 광고 배너 */}
-        <AdBanner format="horizontal" className="h-[90px]" />
+        <AdBanner format="auto" className="w-full min-h-[90px]" />
       </main>
 
       <Footer />
