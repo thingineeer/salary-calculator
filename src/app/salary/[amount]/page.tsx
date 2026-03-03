@@ -7,6 +7,7 @@ import { formatNumber } from '@/lib/format';
 import { getSalaryPercentile } from '@/lib/percentile';
 import { getSalaryPageData, SALARY_AMOUNTS } from '@/lib/salary-seo-data';
 import AdBanner from '@/components/AdBanner';
+import { CalculatorIcon, ChevronDownIcon, ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
 
 interface PageProps {
   params: Promise<{ amount: string }>;
@@ -80,7 +81,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl" aria-hidden="true">🧮</span>
+            <CalculatorIcon size={28} />
             <span className="text-lg font-bold text-blue-800 dark:text-blue-300">
               2026 연봉 실수령액 계산기
             </span>
@@ -186,7 +187,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
                 <details key={idx} className="group border border-gray-200 dark:border-gray-700 rounded-lg">
                   <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
                     <span>Q. {f.question}</span>
-                    <span className="ml-2 text-gray-400 group-open:rotate-180 transition-transform" aria-hidden="true">▼</span>
+                    <ChevronDownIcon size={16} className="ml-2 text-gray-400 group-open:rotate-180 transition-transform" />
                   </summary>
                   <div className="px-4 pb-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                     {f.answer}
@@ -200,12 +201,12 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           <nav className="flex justify-between items-center gap-4" aria-label="다른 연봉 구간">
             {prevAmount ? (
               <Link href={`/salary/${prevAmount}`} className="text-sm text-blue-600 dark:text-blue-400 hover:underline py-2 px-3 -mx-3 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
-                ← 연봉 {formatNumber(prevAmount)}만원
+                <ArrowLeftIcon size={14} className="inline mr-1" />연봉 {formatNumber(prevAmount)}만원
               </Link>
             ) : <span />}
             {nextAmount ? (
               <Link href={`/salary/${nextAmount}`} className="text-sm text-blue-600 dark:text-blue-400 hover:underline py-2 px-3 -mx-3 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
-                연봉 {formatNumber(nextAmount)}만원 →
+                연봉 {formatNumber(nextAmount)}만원 <ArrowRightIcon size={14} className="inline ml-1" />
               </Link>
             ) : <span />}
           </nav>
