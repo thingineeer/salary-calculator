@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
-import { SALARY_AMOUNTS } from '@/lib/salary-seo-data';
 
 const TABS = [
   { label: '2,400~4,000만', min: 2400, max: 4000 },
@@ -91,29 +90,18 @@ export default function SalaryTablePage() {
                 <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">건강보험</th>
                 <th className="text-right py-2 px-2 font-medium">공제합계</th>
                 <th className="text-right py-2 px-2 font-medium">실수령액</th>
-                <th className="text-right py-2 pl-2 font-medium">실효세율</th>
+                <th className="text-right py-2 px-2 font-medium">실효세율</th>
+                <th className="py-2 pl-2"></th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => {
-                const hasDetailPage = SALARY_AMOUNTS.includes(row.salary);
-                const salaryLabel = `${formatNumber(row.salary)}만원`;
-
-                return (
+              {rows.map((row) => (
                   <tr
                     key={row.salary}
-                    className={`border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors ${
-                      hasDetailPage ? 'bg-blue-50/30 dark:bg-blue-900/5' : ''
-                    }`}
+                    className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
                   >
                     <td className="py-2 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
-                      {hasDetailPage ? (
-                        <Link href={`/salary/${row.salary}`} className="text-blue-600 dark:text-blue-400 hover:underline">
-                          {salaryLabel}
-                        </Link>
-                      ) : (
-                        salaryLabel
-                      )}
+                      {formatNumber(row.salary)}만원
                     </td>
                     <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap">
                       {formatNumber(row.monthlySalary)}
@@ -130,12 +118,19 @@ export default function SalaryTablePage() {
                     <td className="py-2 px-2 text-right font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
                       {formatNumber(row.netSalary)}
                     </td>
-                    <td className="py-2 pl-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                    <td className="py-2 px-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
                       {row.effectiveTaxRate}%
                     </td>
+                    <td className="py-2 pl-2 whitespace-nowrap">
+                      <Link
+                        href={`/salary/${row.salary}`}
+                        className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        자세히
+                      </Link>
+                    </td>
                   </tr>
-                );
-              })}
+              ))}
             </tbody>
           </table>
         </div>
