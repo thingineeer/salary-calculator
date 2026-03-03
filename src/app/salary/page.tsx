@@ -9,10 +9,15 @@ import { SALARY_AMOUNTS } from '@/lib/salary-seo-data';
 
 const TABS = [
   { label: '2,400~4,000만', min: 2400, max: 4000 },
-  { label: '4,100~6,000만', min: 4100, max: 6000 },
-  { label: '6,100~8,000만', min: 6100, max: 8000 },
-  { label: '8,100~1억', min: 8100, max: 10000 },
+  { label: '4,100~5,000만', min: 4100, max: 5000 },
+  { label: '5,100~7,000만', min: 5100, max: 7000 },
+  { label: '7,100~9,000만', min: 7100, max: 9000 },
+  { label: '9,100~1억1천', min: 9100, max: 11000 },
+  { label: '1억1천~1억3천', min: 11100, max: 13000 },
+  { label: '1억3천~1억5천', min: 13100, max: 15000 },
 ];
+
+const REPRESENTATIVE_AMOUNTS = [2400, 3000, 3500, 4000, 4500, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000];
 
 function generateRows(min: number, max: number) {
   const rows = [];
@@ -144,7 +149,7 @@ export default function SalaryTablePage() {
             대표 직종, 절세 방법, 생활비 분석이 포함된 상세 페이지입니다.
           </p>
           <div className="flex flex-wrap gap-2">
-            {SALARY_AMOUNTS.map((a) => (
+            {REPRESENTATIVE_AMOUNTS.map((a) => (
               <Link
                 key={a}
                 href={`/salary/${a}`}
