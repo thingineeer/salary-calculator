@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { formatNumber } from '@/lib/format';
+import { trackJobSimulation, trackSimulatorView } from '@/lib/analytics';
 
 interface Props {
   currentSalary: number;
@@ -20,6 +21,8 @@ export default function JobChangeSimulator({
   const [targetSalary, setTargetSalary] = useState(
     Math.floor(currentSalary * 1.15 / 1_000_000) * 1_000_000
   );
+  const containerRef = useRef<HTMLDivElement>(null);
+  const viewTracked = useRef(false);
 
   const currentResult = calculateSalary({
     annualSalary: currentSalary,
@@ -41,8 +44,39 @@ export default function JobChangeSimulator({
     ? Math.round((salaryDiff / currentSalary) * 100)
     : 0;
 
+  // GA4: 시뮬레이터 뷰포트 진입 시 1회 트래킹
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !viewTracked.current) {
+          trackSimulatorView();
+          viewTracked.current = true;
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // GA4: 목표 연봉 변경 시 디바운스 트래킹
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (currentSalary > 0 && targetSalary > currentSalary) {
+        trackJobSimulation({
+          currentSalary,
+          targetSalary,
+          increaseRate,
+          netDiff: Math.max(0, netDiff),
+        });
+      }
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [targetSalary, currentSalary, increaseRate, netDiff]);
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+    <div ref={containerRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
       <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
         이직 연봉 시뮬레이터
       </h2>

@@ -1,19 +1,41 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { getSalaryPercentile } from '@/lib/percentile';
+import { trackPercentileView } from '@/lib/analytics';
 
 interface Props {
   annualSalary: number;
 }
 
 export default function SalaryPercentile({ annualSalary }: Props) {
-  if (annualSalary < 10_000_000) return null;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const viewTracked = useRef(false);
 
-  const percentile = getSalaryPercentile(annualSalary);
+  const percentile = annualSalary >= 10_000_000 ? getSalaryPercentile(annualSalary) : 0;
+
+  // GA4: 백분위 뷰포트 진입 시 1회 트래킹
+  useEffect(() => {
+    if (annualSalary < 10_000_000) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !viewTracked.current) {
+          trackPercentileView({ annualSalary, percentile });
+          viewTracked.current = true;
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [annualSalary, percentile]);
+
+  if (annualSalary < 10_000_000) return null;
   const barWidth = Math.max(2, Math.min(98, 100 - percentile));
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5">
+    <div ref={containerRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5">
       <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">
         나의 연봉 위치
       </h3>

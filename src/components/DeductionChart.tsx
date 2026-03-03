@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { SalaryResult } from '@/lib/salary-calculator';
 import { formatNumber } from '@/lib/format';
+import { trackChartView } from '@/lib/analytics';
 
 interface Props {
   result: SalaryResult;
@@ -20,6 +22,24 @@ const LABELS = [
 ];
 
 export default function DeductionChart({ result }: Props) {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const viewTracked = useRef(false);
+
+  // GA4: 차트 뷰포트 진입 시 1회 트래킹
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !viewTracked.current) {
+          trackChartView();
+          viewTracked.current = true;
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (chartRef.current) observer.observe(chartRef.current);
+    return () => observer.disconnect();
+  }, []);
   const data = [
     { name: '국민연금', value: result.nationalPension },
     { name: '건강보험', value: result.healthInsurance },
@@ -32,7 +52,7 @@ export default function DeductionChart({ result }: Props) {
   if (data.length === 0) return null;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6" role="figure" aria-label="공제 항목 비율 도넛 차트">
+    <div ref={chartRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 [&_svg]:outline-none [&_svg]:focus:outline-none" role="figure" aria-label="공제 항목 비율 도넛 차트">
       <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-4 text-center">
         공제 항목 비율
       </h3>

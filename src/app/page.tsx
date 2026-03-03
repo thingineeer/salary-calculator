@@ -92,7 +92,7 @@ export default function Home() {
             />
           </div>
           <div className="hidden lg:flex lg:flex-col lg:items-center">
-            <AdBanner format="rectangle" className="w-[300px] min-h-[250px] sticky top-8" />
+            <AdBanner format="rectangle" adPosition="sidebar_top" className="w-[300px] min-h-[250px] sticky top-8" />
           </div>
         </div>
 
@@ -106,7 +106,7 @@ export default function Home() {
         </div>
 
         {/* 결과 아래 광고 - 모든 디바이스 반응형 (CTR 황금 구간) */}
-        <AdBanner format="auto" className="w-full min-h-[90px]" />
+        <AdBanner format="auto" adPosition="after_result" className="w-full min-h-[90px]" />
 
         {/* 이직 시뮬레이터 */}
         <div className="content-auto">
@@ -124,7 +124,7 @@ export default function Home() {
         </div>
 
         {/* 비교표 아래 광고 */}
-        <AdBanner format="auto" className="w-full min-h-[90px]" />
+        <AdBanner format="auto" adPosition="after_table" className="w-full min-h-[90px]" />
 
         {/* FAQ */}
         <div className="content-auto">
@@ -132,7 +132,7 @@ export default function Home() {
         </div>
 
         {/* 하단 광고 배너 */}
-        <AdBanner format="auto" className="w-full min-h-[90px]" />
+        <AdBanner format="auto" adPosition="footer_above" className="w-full min-h-[90px]" />
       </main>
 
       <Footer />

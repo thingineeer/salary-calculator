@@ -133,6 +133,76 @@ export const trackShare = (method: string) => {
   });
 };
 
+/**
+ * 이직 시뮬레이터 사용 이벤트
+ * - 사용자가 목표 연봉을 얼마로 설정하는지
+ * - 이직 의향 분석 데이터
+ */
+export const trackJobSimulation = (params: {
+  currentSalary: number;
+  targetSalary: number;
+  increaseRate: number;
+  netDiff: number;
+}) => {
+  sendGAEvent('job_simulation', {
+    current_salary_range: getSalaryRange(params.currentSalary),
+    target_salary_range: getSalaryRange(params.targetSalary),
+    increase_rate: params.increaseRate,
+    net_diff: params.netDiff,
+  });
+};
+
+/**
+ * 네비게이션 클릭 이벤트
+ * - 사용자가 어떤 페이지로 이동하는지
+ */
+export const trackNavigation = (destination: string) => {
+  sendGAEvent('navigation_click', {
+    destination,
+  });
+};
+
+/**
+ * 연봉 백분위 조회 이벤트
+ * - 사용자가 자신의 위치에 관심 있는지
+ */
+export const trackPercentileView = (params: {
+  annualSalary: number;
+  percentile: number;
+}) => {
+  sendGAEvent('percentile_viewed', {
+    salary_range: getSalaryRange(params.annualSalary),
+    percentile: params.percentile,
+  });
+};
+
+/**
+ * 연봉 상세 페이지 클릭 이벤트
+ * - 어떤 연봉의 상세 페이지를 가장 많이 보는지
+ */
+export const trackSalaryDetailClick = (salary: number) => {
+  sendGAEvent('salary_detail_click', {
+    salary_amount: salary,
+    salary_range: getSalaryRange(salary * 10_000),
+  });
+};
+
+/**
+ * 차트 조회 이벤트
+ * - 공제 비율 차트까지 보는 사용자 비율
+ */
+export const trackChartView = () => {
+  sendGAEvent('chart_viewed');
+};
+
+/**
+ * 시뮬레이터 조회 이벤트
+ * - 이직 시뮬레이터까지 스크롤하는 비율
+ */
+export const trackSimulatorView = () => {
+  sendGAEvent('simulator_viewed');
+};
+
 // ============================================
 // 유틸리티 함수
 // ============================================

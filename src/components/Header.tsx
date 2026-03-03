@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore, useCallback } from 'react';
 import Link from 'next/link';
-import { trackThemeToggle } from '@/lib/analytics';
+import { trackThemeToggle, trackNavigation } from '@/lib/analytics';
 
 function getThemeSnapshot() {
   if (typeof window === 'undefined') return false;
@@ -50,6 +50,7 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <Link
             href="/salary"
+            onClick={() => trackNavigation('salary_comparison')}
             className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
             연봉 비교표

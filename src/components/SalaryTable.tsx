@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { SALARY_COMPARISON_LIST, DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
-import { trackTableView } from '@/lib/analytics';
+import { trackTableView, trackSalaryDetailClick } from '@/lib/analytics';
 import AdBanner from '@/components/AdBanner';
 
 export default function SalaryTable() {
@@ -62,7 +62,7 @@ export default function SalaryTable() {
             <>
               <tr
                 key={row.salary}
-                className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
+                className="border-b border-gray-100 dark:border-gray-700/50"
               >
                 <td className="py-2.5 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
                   {formatNumber(row.salary)}만원
@@ -82,6 +82,7 @@ export default function SalaryTable() {
                 <td className="py-2.5 pl-2 whitespace-nowrap">
                   <Link
                     href={`/salary/${row.salary}`}
+                    onClick={() => trackSalaryDetailClick(row.salary)}
                     className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     자세히
@@ -91,7 +92,7 @@ export default function SalaryTable() {
               {idx === midIndex - 1 && (
                 <tr key="table-ad">
                   <td colSpan={6} className="py-2">
-                    <AdBanner format="auto" className="w-full min-h-[90px]" />
+                    <AdBanner format="auto" adPosition="table_mid" className="w-full min-h-[90px]" />
                   </td>
                 </tr>
               )}

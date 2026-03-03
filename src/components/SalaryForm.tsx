@@ -128,7 +128,11 @@ export default function SalaryForm({
         <select
           id="dependents-select"
           value={dependents}
-          onChange={(e) => onChange('dependents', Number(e.target.value))}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            onChange('dependents', value);
+            trackFormInteraction({ field: 'dependents', inputMethod: 'stepper', value });
+          }}
           className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
         >
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
@@ -150,7 +154,11 @@ export default function SalaryForm({
         <select
           id="children-select"
           value={childrenUnder20}
-          onChange={(e) => onChange('childrenUnder20', Number(e.target.value))}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            onChange('childrenUnder20', value);
+            trackFormInteraction({ field: 'childrenUnder20', inputMethod: 'stepper', value });
+          }}
           className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
         >
           {[0, 1, 2, 3, 4, 5].map((n) => (
