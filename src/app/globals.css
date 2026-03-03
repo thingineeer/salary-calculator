@@ -41,6 +41,7 @@ input[type='range'] {
   height: 6px;
   border-radius: 3px;
   background: #cbd5e1;
+  touch-action: manipulation;
 }
 
 input[type='range']::-webkit-slider-thumb {
@@ -68,4 +69,10 @@ h1, h2, h3 {
 
 [id] {
   scroll-margin-top: 2rem;
+}
+
+/* 오프스크린 섹션 렌더링 최적화 */
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
 }

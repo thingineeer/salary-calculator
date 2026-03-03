@@ -9,10 +9,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SalaryForm from '@/components/SalaryForm';
 import SalaryResultCard from '@/components/SalaryResult';
-import DeductionChart from '@/components/DeductionChart';
 import SalaryPercentile from '@/components/SalaryPercentile';
 import AdBanner from '@/components/AdBanner';
 
+const DeductionChart = dynamic(() => import('@/components/DeductionChart'), {
+  loading: () => <div className="h-[300px] bg-white dark:bg-gray-800 rounded-2xl shadow-lg animate-pulse" />,
+  ssr: false,
+});
 const JobChangeSimulator = dynamic(() => import('@/components/JobChangeSimulator'), {
   loading: () => <div className="h-48 bg-white dark:bg-gray-800 rounded-2xl shadow-lg animate-pulse" />,
 });
@@ -76,7 +79,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-8 space-y-8">
+      <main id="main-content" className="flex-1 max-w-5xl mx-auto w-full px-4 py-8 space-y-8">
         {/* 입력 + 사이드 광고 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
@@ -106,21 +109,27 @@ export default function Home() {
         <AdBanner format="auto" className="w-full min-h-[90px]" />
 
         {/* 이직 시뮬레이터 */}
-        <JobChangeSimulator
-          currentSalary={formData.annualSalary}
-          dependents={formData.dependents}
-          childrenUnder20={formData.childrenUnder20}
-          nonTaxableAllowance={formData.nonTaxableAllowance}
-        />
+        <div className="content-auto">
+          <JobChangeSimulator
+            currentSalary={formData.annualSalary}
+            dependents={formData.dependents}
+            childrenUnder20={formData.childrenUnder20}
+            nonTaxableAllowance={formData.nonTaxableAllowance}
+          />
+        </div>
 
         {/* 비교 테이블 */}
-        <SalaryTable />
+        <div className="content-auto">
+          <SalaryTable />
+        </div>
 
         {/* 비교표 아래 광고 */}
         <AdBanner format="auto" className="w-full min-h-[90px]" />
 
         {/* FAQ */}
-        <FAQ />
+        <div className="content-auto">
+          <FAQ />
+        </div>
 
         {/* 하단 광고 배너 */}
         <AdBanner format="auto" className="w-full min-h-[90px]" />
