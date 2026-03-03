@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
+import { CalculatorIcon } from '@/components/icons';
 
 const TABS = [
   { label: '2,400~4,000만', min: 2400, max: 4000 },
@@ -77,7 +78,7 @@ function SalaryTableContent() {
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl" aria-hidden="true">🧮</span>
+            <CalculatorIcon size={28} />
             <span className="text-lg font-bold text-blue-800 dark:text-blue-300">
               2026 연봉 실수령액 계산기
             </span>

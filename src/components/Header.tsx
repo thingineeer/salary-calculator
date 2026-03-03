@@ -3,6 +3,7 @@
 import { useSyncExternalStore, useCallback } from 'react';
 import Link from 'next/link';
 import { trackThemeToggle, trackNavigation } from '@/lib/analytics';
+import { CalculatorIcon, SunIcon, MoonIcon } from '@/components/icons';
 
 function getThemeSnapshot() {
   if (typeof window === 'undefined') return false;
@@ -42,7 +43,7 @@ export default function Header() {
       </a>
       <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl" aria-hidden="true">🧮</span>
+          <CalculatorIcon size={28} />
           <h1 className="text-lg sm:text-xl font-bold text-blue-800 dark:text-blue-300">
             2026 연봉 실수령액 계산기
           </h1>
@@ -60,7 +61,7 @@ export default function Header() {
             aria-label={dark ? '라이트 모드로 전환' : '다크 모드로 전환'}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors text-lg"
           >
-            {dark ? '☀️' : '🌙'}
+            {dark ? <SunIcon size={20} /> : <MoonIcon size={20} />}
           </button>
         </div>
       </div>
