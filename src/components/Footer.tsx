@@ -27,7 +27,7 @@ export default function Footer() {
             이용약관
           </Link>
           <span>·</span>
-          <span>salary.calc.kr@gmail.com</span>
+          <span>dlaudwls1203@gmail.com</span>
         </div>
       </div>
     </footer>

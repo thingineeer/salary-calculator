@@ -92,7 +92,7 @@ export default function PrivacyPage() {
             <p>
               개인정보 관련 문의사항이 있으시면 아래로 연락해 주세요.
             </p>
-            <p className="mt-1">이메일: salary.calc.kr@gmail.com</p>
+            <p className="mt-1">이메일: dlaudwls1203@gmail.com</p>
           </section>
 
           <p className="text-xs text-gray-400 pt-4 border-t border-gray-200 dark:border-gray-700">

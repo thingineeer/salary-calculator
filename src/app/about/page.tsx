@@ -87,7 +87,7 @@ export default function AboutPage() {
             <p>
               서비스 이용 중 문의사항이 있으시면 아래 이메일로 연락해 주세요.
             </p>
-            <p className="mt-1 font-medium">salary.calc.kr@gmail.com</p>
+            <p className="mt-1 font-medium">dlaudwls1203@gmail.com</p>
           </section>
         </div>
 
