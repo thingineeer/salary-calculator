@@ -39,7 +39,7 @@ export default function SalaryTable() {
   const midIndex = Math.floor(rows.length / 2);
 
   return (
-    <div ref={tableRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 overflow-x-auto">
+    <div ref={tableRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 overflow-x-auto touch-action-manipulation">
       <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
         연봉별 실수령액 비교표
       </h2>
@@ -82,7 +82,7 @@ export default function SalaryTable() {
                 <td className="py-2.5 pl-2 whitespace-nowrap">
                   <Link
                     href={`/salary/${row.salary}`}
-                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline inline-block py-1 px-2 -my-1 -mx-2 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                   >
                     자세히
                   </Link>
