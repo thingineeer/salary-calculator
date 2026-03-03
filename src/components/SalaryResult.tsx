@@ -18,7 +18,7 @@ export default function SalaryResult({ result }: Props) {
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5" aria-label="급여 계산 결과" role="region">
       {/* 실수령액 */}
       <div className="text-center py-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">

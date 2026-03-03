@@ -52,6 +52,8 @@ export default function FAQ() {
             <dt>
               <button
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+                aria-expanded={openIndex === idx}
+                aria-controls={`faq-answer-${idx}`}
                 className="w-full text-left px-4 py-3 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
               >
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
@@ -63,7 +65,7 @@ export default function FAQ() {
               </button>
             </dt>
             {openIndex === idx && (
-              <dd className="px-4 pb-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              <dd id={`faq-answer-${idx}`} className="px-4 pb-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                 {faq.answer}
               </dd>
             )}

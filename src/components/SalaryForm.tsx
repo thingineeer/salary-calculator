@@ -11,6 +11,11 @@ interface SalaryFormProps {
   onChange: (field: string, value: number) => void;
 }
 
+const MAX_SALARY = 1_000_000_000; // 10억
+const MIN_SALARY = 0;
+const SLIDER_MIN = 20_000_000;
+const SLIDER_MAX = 300_000_000;
+
 export default function SalaryForm({
   annualSalary,
   dependents,
@@ -18,57 +23,103 @@ export default function SalaryForm({
   nonTaxableAllowance,
   onChange,
 }: SalaryFormProps) {
+  const salaryWarning =
+    annualSalary > MAX_SALARY
+      ? '최대 10억원까지 입력 가능합니다.'
+      : annualSalary > 0 && annualSalary < 1_000_000
+        ? '연봉을 정확히 입력해 주세요. (예: 50,000,000)'
+        : null;
+
   const handleSalaryInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = parseFormattedNumber(e.target.value);
-    if (raw >= 0 && raw <= 10_000_000_000) {
-      onChange('annualSalary', raw);
+    if (isNaN(raw) || raw < MIN_SALARY) {
+      onChange('annualSalary', 0);
+      return;
     }
+    onChange('annualSalary', Math.min(raw, MAX_SALARY));
   };
 
   const handleSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange('annualSalary', Number(e.target.value));
   };
 
+  const handleNonTaxable = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = parseFormattedNumber(e.target.value);
+    if (isNaN(raw) || raw < 0) {
+      onChange('nonTaxableAllowance', 0);
+      return;
+    }
+    onChange('nonTaxableAllowance', Math.min(raw, 1_000_000));
+  };
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5">
+    <div
+      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5"
+      role="form"
+      aria-label="급여 정보 입력 폼"
+    >
       <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">
         급여 정보 입력
       </h2>
 
       {/* 연봉 입력 */}
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label
+          htmlFor="salary-input"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           연봉 (원)
         </label>
         <input
+          id="salary-input"
           type="text"
           inputMode="numeric"
           value={annualSalary > 0 ? formatNumber(annualSalary) : ''}
           onChange={handleSalaryInput}
           placeholder="예: 50,000,000"
+          aria-describedby="salary-hint salary-warning"
           className="w-full px-4 py-3 text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none transition"
         />
-        <input
-          type="range"
-          min={20_000_000}
-          max={300_000_000}
-          step={1_000_000}
-          value={annualSalary || 50_000_000}
-          onChange={handleSlider}
-          className="w-full accent-blue-600"
-        />
-        <div className="flex justify-between text-xs text-gray-400">
-          <span>2,000만</span>
-          <span>3억</span>
+        {salaryWarning && (
+          <p id="salary-warning" className="text-xs text-amber-500" role="alert">
+            {salaryWarning}
+          </p>
+        )}
+        <label htmlFor="salary-slider" className="sr-only">
+          연봉 슬라이더
+        </label>
+        <div className="space-y-1">
+          <div className="text-center text-xs font-medium text-blue-600 dark:text-blue-400">
+            {formatNumber(Math.max(SLIDER_MIN, Math.min(annualSalary || SLIDER_MIN, SLIDER_MAX)))}원
+          </div>
+          <input
+            id="salary-slider"
+            type="range"
+            min={SLIDER_MIN}
+            max={SLIDER_MAX}
+            step={1_000_000}
+            value={Math.max(SLIDER_MIN, Math.min(annualSalary || SLIDER_MIN, SLIDER_MAX))}
+            onChange={handleSlider}
+            aria-label="연봉 범위 슬라이더"
+            className="w-full accent-blue-600"
+          />
+          <div id="salary-hint" className="flex justify-between text-xs text-gray-400">
+            <span>2,000만</span>
+            <span>3억</span>
+          </div>
         </div>
       </div>
 
       {/* 부양가족 */}
       <div className="space-y-1">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label
+          htmlFor="dependents-select"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           부양가족 수 (본인 포함)
         </label>
         <select
+          id="dependents-select"
           value={dependents}
           onChange={(e) => onChange('dependents', Number(e.target.value))}
           className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
@@ -83,10 +134,14 @@ export default function SalaryForm({
 
       {/* 20세 이하 자녀 */}
       <div className="space-y-1">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label
+          htmlFor="children-select"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           20세 이하 자녀 수
         </label>
         <select
+          id="children-select"
           value={childrenUnder20}
           onChange={(e) => onChange('childrenUnder20', Number(e.target.value))}
           className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
@@ -101,19 +156,22 @@ export default function SalaryForm({
 
       {/* 비과세 */}
       <div className="space-y-1">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label
+          htmlFor="nontaxable-input"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+        >
           비과세액 (월, 식대 등)
         </label>
         <input
+          id="nontaxable-input"
           type="text"
           inputMode="numeric"
           value={formatNumber(nonTaxableAllowance)}
-          onChange={(e) =>
-            onChange('nonTaxableAllowance', parseFormattedNumber(e.target.value))
-          }
+          onChange={handleNonTaxable}
+          aria-describedby="nontaxable-hint"
           className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <p className="text-xs text-gray-400">
+        <p id="nontaxable-hint" className="text-xs text-gray-400">
           기본값: {formatNumber(DEFAULT_NON_TAXABLE_ALLOWANCE)}원 (식대)
         </p>
       </div>

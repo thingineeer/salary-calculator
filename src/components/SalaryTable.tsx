@@ -24,7 +24,7 @@ export default function SalaryTable() {
       <p className="text-xs text-gray-400 mb-4">
         부양가족 1명(본인), 비과세 월 20만원 기준
       </p>
-      <table className="w-full text-sm">
+      <table className="w-full text-sm" aria-label="연봉별 실수령액 비교표">
         <thead>
           <tr className="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
             <th className="text-left py-2 pr-2 font-medium">연봉</th>

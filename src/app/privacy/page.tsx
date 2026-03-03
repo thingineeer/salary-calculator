@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: '개인정보처리방침 - 연봉 실수령액 계산기',
@@ -100,12 +101,12 @@ export default function PrivacyPage() {
         </div>
 
         <div className="mt-6 text-center">
-          <a
+          <Link
             href="/"
             className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
           >
             ← 계산기로 돌아가기
-          </a>
+          </Link>
         </div>
       </div>
     </div>

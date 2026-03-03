@@ -32,10 +32,13 @@ export default function DeductionChart({ result }: Props) {
   if (data.length === 0) return null;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6" role="figure" aria-label="공제 항목 비율 도넛 차트">
       <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-4 text-center">
         공제 항목 비율
       </h3>
+      <p className="sr-only">
+        {data.map((d) => `${d.name}: ${formatNumber(d.value)}원`).join(', ')}
+      </p>
       <div className="w-full h-[250px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -68,7 +71,7 @@ export default function DeductionChart({ result }: Props) {
         </ResponsiveContainer>
       </div>
       <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-2">
-        {data.map((d, idx) => (
+        {data.map((d) => (
           <div key={d.name} className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
             <span
               className="inline-block w-2.5 h-2.5 rounded-full"

@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Footer() {
   return (
     <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 mt-12">
@@ -13,9 +15,9 @@ export default function Footer() {
         <div className="flex items-center justify-center gap-3 text-xs text-gray-400 dark:text-gray-500">
           <span>© {new Date().getFullYear()} 연봉 실수령액 계산기</span>
           <span>·</span>
-          <a href="/privacy" className="hover:underline hover:text-gray-600 dark:hover:text-gray-300">
+          <Link href="/privacy" className="hover:underline hover:text-gray-600 dark:hover:text-gray-300">
             개인정보처리방침
-          </a>
+          </Link>
           <span>·</span>
           <span>salary.calc.kr@gmail.com</span>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { calculateSalary, SalaryResult as SalaryResultType } from '@/lib/salary-calculator';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import Header from '@/components/Header';
@@ -8,9 +9,14 @@ import Footer from '@/components/Footer';
 import SalaryForm from '@/components/SalaryForm';
 import SalaryResultCard from '@/components/SalaryResult';
 import DeductionChart from '@/components/DeductionChart';
-import SalaryTable from '@/components/SalaryTable';
-import FAQ from '@/components/FAQ';
 import AdBanner from '@/components/AdBanner';
+
+const SalaryTable = dynamic(() => import('@/components/SalaryTable'), {
+  loading: () => <div className="h-64 bg-white dark:bg-gray-800 rounded-2xl shadow-lg animate-pulse" />,
+});
+const FAQ = dynamic(() => import('@/components/FAQ'), {
+  loading: () => <div className="h-48 bg-white dark:bg-gray-800 rounded-2xl shadow-lg animate-pulse" />,
+});
 
 export default function Home() {
   const [formData, setFormData] = useState({
