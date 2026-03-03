@@ -10,10 +10,15 @@ export default function Footer() {
           실제 수령액은 회사 급여 체계, 비과세 항목, 연말정산 결과 등에 따라 달라질
           수 있습니다.
         </p>
-        <p className="text-xs text-gray-400 dark:text-gray-500">
-          © {new Date().getFullYear()} 연봉 실수령액 계산기. 문의:{' '}
-          salary.calc.kr@gmail.com
-        </p>
+        <div className="flex items-center justify-center gap-3 text-xs text-gray-400 dark:text-gray-500">
+          <span>© {new Date().getFullYear()} 연봉 실수령액 계산기</span>
+          <span>·</span>
+          <a href="/privacy" className="hover:underline hover:text-gray-600 dark:hover:text-gray-300">
+            개인정보처리방침
+          </a>
+          <span>·</span>
+          <span>salary.calc.kr@gmail.com</span>
+        </div>
       </div>
     </footer>
   );

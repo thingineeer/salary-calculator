@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://salary-calculator.vercel.app/sitemap.xml',
+    sitemap: 'https://salary-calc.kr/sitemap.xml',
   };
 }
