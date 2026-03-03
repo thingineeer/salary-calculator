@@ -213,13 +213,13 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           </div>
         </article>
 
-        {/* 전체 구간 목록 */}
+        {/* 주요 연봉 구간 바로가기 */}
         <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
           <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
             연봉별 실수령액 바로가기
           </h2>
           <div className="flex flex-wrap gap-2">
-            {SALARY_AMOUNTS.map((a) => (
+            {[2400, 3000, 3500, 4000, 4500, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000].map((a) => (
               <Link
                 key={a}
                 href={`/salary/${a}`}
@@ -232,6 +232,11 @@ export default async function SalaryDetailPage({ params }: PageProps) {
                 {formatNumber(a)}만원
               </Link>
             ))}
+          </div>
+          <div className="mt-3">
+            <Link href="/salary" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+              전체 연봉 비교표 보기 →
+            </Link>
           </div>
         </section>
       </main>
