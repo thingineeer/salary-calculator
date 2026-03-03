@@ -36,6 +36,12 @@ yarn-error.log*
 # google verification files
 public/google*.html
 
+# agent skills & worktrees
+.agents/
+.claude/
+skills-lock.json
+TODO_GA_REFACTOR.md
+
 # vercel
 .vercel
 
