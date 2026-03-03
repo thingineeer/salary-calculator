@@ -26,9 +26,12 @@ export const metadata: Metadata = {
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+    other: {
+      'naver-site-verification': 'e8eed75e358a289a73fa5d6e55394e4701f31f32',
+    },
   },
   other: {
-    'google-adsense-account': 'ca-pub-XXXXXXXXXXXXXXXX', // AdSense 승인 후 교체
+    'google-adsense-account': 'ca-pub-5283496525222246',
   },
 };
 
@@ -114,6 +117,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
           }}
+        />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5283496525222246"
+          crossOrigin="anonymous"
         />
         <link
           rel="stylesheet"
