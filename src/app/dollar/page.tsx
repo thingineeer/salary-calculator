@@ -35,10 +35,24 @@ export default function DollarPage() {
   });
 
   const [exchangeData, setExchangeData] = useState({
-    currentRate: 1380,
+    currentRate: 1500,
     pastRate: 1200,
     selectedPreset: 'custom',
   });
+
+  // 실시간 환율 가져오기
+  useEffect(() => {
+    fetch('/api/exchange-rate')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.rate && typeof data.rate === 'number') {
+          setExchangeData((prev) => ({ ...prev, currentRate: data.rate }));
+        }
+      })
+      .catch(() => {
+        // 실패 시 기본값 유지
+      });
+  }, []);
 
   const handleSalaryChange = (field: string, value: number) => {
     setSalaryFormData((prev) => ({ ...prev, [field]: value }));
