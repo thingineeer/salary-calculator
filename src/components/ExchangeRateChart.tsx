@@ -1,22 +1,30 @@
 'use client';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { HISTORICAL_RATES } from '@/lib/exchange-rates';
 
-// 샘플 환율 데이터 (최근 12개월)
-const exchangeData = [
-  { month: '2024.03', rate: 1200 },
-  { month: '2024.06', rate: 1210 },
-  { month: '2024.09', rate: 1240 },
-  { month: '2024.12', rate: 1310 },
-  { month: '2025.01', rate: 1330 },
-  { month: '2025.02', rate: 1350 },
-  { month: '2025.03', rate: 1380 },
-  { month: '2025.06', rate: 1365 },
-  { month: '2025.09', rate: 1390 },
-  { month: '2025.12', rate: 1410 },
-  { month: '2026.01', rate: 1395 },
-  { month: '2026.03', rate: 1380 },
-];
+// HISTORICAL_RATES에서 최근 12개 포인트 추출
+function buildChartData() {
+  const points: { month: string; rate: number }[] = [];
+  const years = Object.keys(HISTORICAL_RATES).map(Number).sort();
+
+  for (const year of years) {
+    const months = Object.keys(HISTORICAL_RATES[year.toString()])
+      .map(Number)
+      .sort((a, b) => a - b);
+    for (const month of months) {
+      points.push({
+        month: `${year}.${String(month).padStart(2, '0')}`,
+        rate: HISTORICAL_RATES[year.toString()][month.toString()],
+      });
+    }
+  }
+
+  // 최근 12개만 반환
+  return points.slice(-12);
+}
+
+const exchangeData = buildChartData();
 
 export default function ExchangeRateChart() {
   return (

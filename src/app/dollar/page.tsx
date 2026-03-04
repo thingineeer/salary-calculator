@@ -110,6 +110,15 @@ export default function DollarPage() {
       <Header />
 
       <main id="main-content" className="flex-1 max-w-5xl mx-auto w-full px-4 py-8 space-y-8">
+        <div className="text-center">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50">
+            연봉 달러 환산 계산기
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            세후 실수령액 기준 · 현재/과거 환율 비교
+          </p>
+        </div>
+
         {/* 입력 폼 */}
         <div>
           <ExchangeRateForm
