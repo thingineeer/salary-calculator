@@ -5,327 +5,175 @@ import { trackFormInteraction, trackExchangeRatePreset } from '@/lib/analytics';
 
 interface ExchangeRateFormProps {
   annualSalary: number;
-  dependents: number;
-  childrenUnder20: number;
-  nonTaxableAllowance: number;
+  pastAnnualSalary: number;
   currentRate: number;
   pastRate: number;
-  pastAnnualSalary: number;
   selectedPreset: string;
-  onSalaryChange: (field: string, value: number) => void;
+  onSalaryChange: (salary: number) => void;
+  onPastSalaryChange: (salary: number) => void;
   onCurrentRateChange: (rate: number) => void;
   onPastRateChange: (rate: number) => void;
-  onPastSalaryChange: (salary: number) => void;
   onPresetChange: (preset: string) => void;
 }
 
 const MAX_SALARY = 1_000_000_000;
-const MIN_SALARY = 0;
-
-const RATE_PRESETS = {
-  oneYearAgo: { label: '1년 전 (2025.03)', months: 12 },
-  threeYearsAgo: { label: '3년 전 (2023.03)', months: 36 },
-  fiveYearsAgo: { label: '5년 전 (2021.03)', months: 60 },
-  custom: { label: '직접 입력', months: 0 },
-};
 
 export default function ExchangeRateForm({
   annualSalary,
-  dependents,
-  childrenUnder20,
-  nonTaxableAllowance,
+  pastAnnualSalary,
   currentRate,
   pastRate,
-  pastAnnualSalary,
   selectedPreset,
   onSalaryChange,
+  onPastSalaryChange,
   onCurrentRateChange,
   onPastRateChange,
-  onPastSalaryChange,
   onPresetChange,
 }: ExchangeRateFormProps) {
-  const handleSalaryInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = parseFormattedNumber(e.target.value);
-    if (isNaN(raw) || raw < MIN_SALARY) {
-      onSalaryChange('annualSalary', 0);
-      return;
-    }
-    const value = Math.min(raw, MAX_SALARY);
-    onSalaryChange('annualSalary', value);
-    trackFormInteraction({ field: 'annualSalary', inputMethod: 'direct_input', value });
+  const parseSalary = (value: string): number => {
+    const raw = parseFormattedNumber(value);
+    if (isNaN(raw) || raw < 0) return 0;
+    return Math.min(raw, MAX_SALARY);
   };
 
-  const handlePastSalaryInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = parseFormattedNumber(e.target.value);
-    if (isNaN(raw) || raw < MIN_SALARY) {
-      onPastSalaryChange(0);
-      return;
-    }
-    const value = Math.min(raw, MAX_SALARY);
-    onPastSalaryChange(value);
-    trackFormInteraction({ field: 'pastAnnualSalary', inputMethod: 'direct_input', value });
-  };
-
-  const handleNonTaxable = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = parseFormattedNumber(e.target.value);
-    if (isNaN(raw) || raw < 0) {
-      onSalaryChange('nonTaxableAllowance', 0);
-      return;
-    }
-    const value = Math.min(raw, 1_000_000);
-    onSalaryChange('nonTaxableAllowance', value);
-    trackFormInteraction({ field: 'nonTaxableAllowance', inputMethod: 'direct_input', value });
-  };
-
-  const handlePresetRadioChange = (preset: string) => {
-    onPresetChange(preset);
-    trackExchangeRatePreset(preset);
-  };
-
-  const handleCurrentRateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = parseFormattedNumber(e.target.value);
-    if (isNaN(raw) || raw < 0) {
-      onCurrentRateChange(0);
-      return;
-    }
-    const value = Math.min(raw, 10_000);
-    onCurrentRateChange(value);
-    trackFormInteraction({ field: 'currentRate', inputMethod: 'direct_input', value });
-  };
-
-  const handlePastRateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = parseFormattedNumber(e.target.value);
-    if (isNaN(raw) || raw < 0) {
-      onPastRateChange(0);
-      return;
-    }
-    const value = Math.min(raw, 10_000);
-    onPastRateChange(value);
-    trackFormInteraction({ field: 'pastRate', inputMethod: 'direct_input', value });
+  const parseRate = (value: string): number => {
+    const raw = parseFormattedNumber(value);
+    if (isNaN(raw) || raw < 0) return 0;
+    return Math.min(raw, 10_000);
   };
 
   return (
     <div
-      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-6"
+      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 sm:p-6 space-y-4"
       role="form"
-      aria-label="환율 비교 폼"
+      aria-label="환율 비교 입력"
     >
-      <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">
-        환율 비교 계산기
-      </h2>
-
-      {/* 이전/현재 2컬럼 레이아웃 */}
+      {/* 이전 vs 현재 2컬럼 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* 이전 상황 */}
+        {/* 이전 */}
         <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-          <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400">이전 상황</h3>
+          <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400">이전</h3>
 
           <div className="space-y-1">
-            <label
-              htmlFor="past-salary-input"
-              className="block text-xs font-medium text-gray-600 dark:text-gray-300"
-            >
-              연봉 (원)
+            <label htmlFor="past-salary" className="block text-xs font-medium text-gray-600 dark:text-gray-300">
+              연봉
             </label>
-            <input
-              id="past-salary-input"
-              type="text"
-              inputMode="numeric"
-              value={pastAnnualSalary > 0 ? formatNumber(pastAnnualSalary) : ''}
-              onChange={handlePastSalaryInput}
-              placeholder="예: 40,000,000"
-              aria-label="이전 연봉"
-              className="w-full px-3 py-2.5 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none transition"
-            />
+            <div className="relative">
+              <input
+                id="past-salary"
+                type="text"
+                inputMode="numeric"
+                value={pastAnnualSalary > 0 ? formatNumber(pastAnnualSalary) : ''}
+                onChange={(e) => {
+                  const v = parseSalary(e.target.value);
+                  onPastSalaryChange(v);
+                  trackFormInteraction({ field: 'pastAnnualSalary', inputMethod: 'direct_input', value: v });
+                }}
+                placeholder="41,000,000"
+                className="w-full px-3 py-2.5 pr-8 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">원</span>
+            </div>
           </div>
 
-          <div className="space-y-1">
-            <label
-              htmlFor="past-rate-label"
-              className="block text-xs font-medium text-gray-600 dark:text-gray-300"
-            >
-              환율 (원/USD)
+          <div className="space-y-1.5">
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300">
+              당시 환율
             </label>
-
-            {/* 프리셋 라디오 */}
-            <div className="space-y-2">
-              {(Object.entries(RATE_PRESETS) as [string, { label: string; months: number }][]).map(
-                ([key, preset]) => (
-                  <label
-                    key={key}
-                    className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer transition text-sm ${
-                      selectedPreset === key
-                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                        : 'border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="exchange-rate-preset"
-                      value={key}
-                      checked={selectedPreset === key}
-                      onChange={(e) => handlePresetRadioChange(e.target.value)}
-                      className="w-3.5 h-3.5 accent-blue-600"
-                    />
-                    <span className="text-gray-700 dark:text-gray-300 flex-1">{preset.label}</span>
-                    {key !== 'custom' && selectedPreset === key && pastRate > 0 && (
-                      <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 tabular-nums">
-                        {formatNumber(pastRate)}원
-                      </span>
-                    )}
-                    {key === 'custom' && (
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        value={selectedPreset === 'custom' && pastRate > 0 ? formatNumber(pastRate) : ''}
-                        onChange={handlePastRateInput}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (selectedPreset !== 'custom') {
-                            handlePresetRadioChange('custom');
-                          }
-                        }}
-                        placeholder="1,300"
-                        disabled={selectedPreset !== 'custom'}
-                        aria-label="이전 환율 직접 입력"
-                        className="w-20 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-600 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed tabular-nums"
-                      />
-                    )}
-                  </label>
-                )
-              )}
+            {/* 프리셋 버튼 */}
+            <div className="flex flex-wrap gap-1.5">
+              {[
+                { key: 'oneYearAgo', label: '1년 전' },
+                { key: 'threeYearsAgo', label: '3년 전' },
+                { key: 'fiveYearsAgo', label: '5년 전' },
+              ].map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => {
+                    onPresetChange(key);
+                    trackExchangeRatePreset(key);
+                  }}
+                  className={`text-xs px-2.5 py-1.5 rounded-lg border transition ${
+                    selectedPreset === key
+                      ? 'border-blue-500 bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-400 font-semibold'
+                      : 'border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <div className="relative">
+              <input
+                id="past-rate"
+                type="text"
+                inputMode="numeric"
+                value={pastRate > 0 ? formatNumber(pastRate) : ''}
+                onChange={(e) => {
+                  const v = parseRate(e.target.value);
+                  onPastRateChange(v);
+                  onPresetChange('custom');
+                  trackFormInteraction({ field: 'pastRate', inputMethod: 'direct_input', value: v });
+                }}
+                placeholder="1,380"
+                className="w-full px-3 py-2.5 pr-16 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">원/USD</span>
             </div>
           </div>
         </div>
 
-        {/* 현재 상황 */}
-        <div className="space-y-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-          <h3 className="text-sm font-semibold text-blue-600 dark:text-blue-400">현재 상황</h3>
+        {/* 현재 */}
+        <div className="space-y-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+          <h3 className="text-sm font-semibold text-blue-600 dark:text-blue-400">현재</h3>
 
           <div className="space-y-1">
-            <label
-              htmlFor="salary-input"
-              className="block text-xs font-medium text-gray-600 dark:text-gray-300"
-            >
-              연봉 (원)
+            <label htmlFor="current-salary" className="block text-xs font-medium text-gray-600 dark:text-gray-300">
+              연봉
             </label>
-            <input
-              id="salary-input"
-              type="text"
-              inputMode="numeric"
-              value={annualSalary > 0 ? formatNumber(annualSalary) : ''}
-              onChange={handleSalaryInput}
-              placeholder="예: 50,000,000"
-              aria-label="현재 연봉"
-              className="w-full px-3 py-2.5 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none transition"
-            />
+            <div className="relative">
+              <input
+                id="current-salary"
+                type="text"
+                inputMode="numeric"
+                value={annualSalary > 0 ? formatNumber(annualSalary) : ''}
+                onChange={(e) => {
+                  const v = parseSalary(e.target.value);
+                  onSalaryChange(v);
+                  trackFormInteraction({ field: 'annualSalary', inputMethod: 'direct_input', value: v });
+                }}
+                placeholder="45,000,000"
+                className="w-full px-3 py-2.5 pr-8 text-base font-semibold border border-blue-300 dark:border-blue-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">원</span>
+            </div>
           </div>
 
           <div className="space-y-1">
-            <label
-              htmlFor="current-rate"
-              className="block text-xs font-medium text-gray-600 dark:text-gray-300"
-            >
-              환율 (원/USD)
+            <label htmlFor="current-rate" className="block text-xs font-medium text-gray-600 dark:text-gray-300">
+              현재 환율
             </label>
-            <input
-              id="current-rate"
-              type="text"
-              inputMode="numeric"
-              value={currentRate > 0 ? formatNumber(currentRate) : ''}
-              onChange={handleCurrentRateInput}
-              placeholder="1,500"
-              aria-label="현재 환율"
-              className="w-full px-3 py-2.5 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none transition"
-            />
-            <p className="text-xs text-gray-400">
-              실시간 자동 반영
-            </p>
+            <div className="relative">
+              <input
+                id="current-rate"
+                type="text"
+                inputMode="numeric"
+                value={currentRate > 0 ? formatNumber(currentRate) : ''}
+                onChange={(e) => {
+                  const v = parseRate(e.target.value);
+                  onCurrentRateChange(v);
+                  trackFormInteraction({ field: 'currentRate', inputMethod: 'direct_input', value: v });
+                }}
+                placeholder="1,500"
+                className="w-full px-3 py-2.5 pr-16 text-base font-semibold border border-blue-300 dark:border-blue-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">원/USD</span>
+            </div>
+            <p className="text-xs text-blue-500 dark:text-blue-400">실시간 자동 반영</p>
           </div>
         </div>
       </div>
-
-      {/* 상세 설정 (접기) */}
-      <details className="border-t border-gray-200 dark:border-gray-700 pt-4">
-        <summary className="cursor-pointer text-sm font-semibold text-gray-700 dark:text-gray-300 select-none hover:text-blue-600 dark:hover:text-blue-400 transition">
-          상세 설정 (부양가족, 비과세 등)
-        </summary>
-        <div className="mt-4 space-y-4">
-          {/* 부양가족 */}
-          <div className="space-y-1">
-            <label
-              htmlFor="dependents-select"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              부양가족 수 (본인 포함)
-            </label>
-            <select
-              id="dependents-select"
-              value={dependents}
-              onChange={(e) => {
-                const value = Number(e.target.value);
-                onSalaryChange('dependents', value);
-                trackFormInteraction({ field: 'dependents', inputMethod: 'stepper', value });
-              }}
-              className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white dark:[color-scheme:dark] outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            >
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                <option key={n} value={n}>
-                  {n}명
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* 20세 이하 자녀 */}
-          <div className="space-y-1">
-            <label
-              htmlFor="children-select"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              20세 이하 자녀 수
-            </label>
-            <select
-              id="children-select"
-              value={childrenUnder20}
-              onChange={(e) => {
-                const value = Number(e.target.value);
-                onSalaryChange('childrenUnder20', value);
-                trackFormInteraction({ field: 'childrenUnder20', inputMethod: 'stepper', value });
-              }}
-              className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white dark:[color-scheme:dark] outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            >
-              {[0, 1, 2, 3, 4, 5].map((n) => (
-                <option key={n} value={n}>
-                  {n}명
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* 비과세액 */}
-          <div className="space-y-1">
-            <label
-              htmlFor="nontaxable-input"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              비과세액 (월, 식대 등)
-            </label>
-            <input
-              id="nontaxable-input"
-              type="text"
-              inputMode="numeric"
-              value={formatNumber(nonTaxableAllowance)}
-              onChange={handleNonTaxable}
-              aria-describedby="nontaxable-hint"
-              className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            />
-            <p id="nontaxable-hint" className="text-xs text-gray-400">
-              예: 100,000원 (월 100,000원 x 12개월 = 연 1,200,000원)
-            </p>
-          </div>
-        </div>
-      </details>
     </div>
   );
 }

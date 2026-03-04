@@ -27,100 +27,66 @@ const DollarFAQ = dynamic(() => import('@/components/DollarFAQ'), {
 });
 
 export default function DollarPage() {
-  const [salaryFormData, setSalaryFormData] = useState({
-    annualSalary: 50_000_000,
-    dependents: 1,
-    childrenUnder20: 0,
-    nonTaxableAllowance: DEFAULT_NON_TAXABLE_ALLOWANCE,
-  });
+  const [currentSalary, setCurrentSalary] = useState(45_000_000);
+  const [pastSalary, setPastSalary] = useState(41_000_000);
+  const [currentRate, setCurrentRate] = useState(1500);
+  const [pastRate, setPastRate] = useState(1380);
+  const [selectedPreset, setSelectedPreset] = useState('custom');
 
-  const [exchangeData, setExchangeData] = useState({
-    currentRate: 1500,
-    pastRate: 1380,
-    selectedPreset: 'custom',
-  });
-
-  const [pastSalary, setPastSalary] = useState(40_000_000);
-
-  // 실시간 환율 가져오기
+  // 실시간 환율
   useEffect(() => {
     fetch('/api/exchange-rate')
       .then((res) => res.json())
       .then((data) => {
         if (data.rate && typeof data.rate === 'number') {
-          setExchangeData((prev) => ({ ...prev, currentRate: data.rate }));
+          setCurrentRate(data.rate);
         }
       })
-      .catch(() => {
-        // 실패 시 기본값 유지
-      });
+      .catch(() => {});
   }, []);
 
-  const handleSalaryChange = (field: string, value: number) => {
-    setSalaryFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleCurrentRateChange = (rate: number) => {
-    setExchangeData((prev) => ({ ...prev, currentRate: rate }));
-  };
-
-  const handlePastRateChange = (rate: number) => {
-    setExchangeData((prev) => ({ ...prev, pastRate: rate }));
-  };
-
   const handlePresetChange = (preset: string) => {
-    let pastRate = exchangeData.pastRate;
+    setSelectedPreset(preset);
     const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1;
+    const y = now.getFullYear();
+    const m = now.getMonth() + 1;
 
     if (preset === 'oneYearAgo') {
-      pastRate = getHistoricalRate(currentYear - 1, currentMonth) ?? 1375;
+      setPastRate(getHistoricalRate(y - 1, m) ?? 1375);
     } else if (preset === 'threeYearsAgo') {
-      pastRate = getHistoricalRate(currentYear - 3, currentMonth) ?? 1307;
+      setPastRate(getHistoricalRate(y - 3, m) ?? 1307);
     } else if (preset === 'fiveYearsAgo') {
-      pastRate = getHistoricalRate(currentYear - 5, currentMonth) ?? 1116;
+      setPastRate(getHistoricalRate(y - 5, m) ?? 1116);
     }
-    setExchangeData((prev) => ({ ...prev, selectedPreset: preset, pastRate }));
   };
 
-  const salaryResult: SalaryResultType = calculateSalary(salaryFormData);
-  const pastSalaryResult: SalaryResultType = calculateSalary({
-    ...salaryFormData,
-    annualSalary: pastSalary,
-  });
+  // 세후 계산 (기본 부양가족 1명, 비과세 20만원)
+  const salaryBase = { dependents: 1, childrenUnder20: 0, nonTaxableAllowance: DEFAULT_NON_TAXABLE_ALLOWANCE };
+  const currentResult: SalaryResultType = calculateSalary({ ...salaryBase, annualSalary: currentSalary });
+  const pastResult: SalaryResultType = calculateSalary({ ...salaryBase, annualSalary: pastSalary });
 
-  // GA4: 달러 계산 이벤트 (연봉 변경 시)
+  // GA4
   useEffect(() => {
-    if (salaryFormData.annualSalary > 0 && exchangeData.currentRate > 0) {
-      const currentMonthlyNetUSD = Math.floor(salaryResult.netSalary / exchangeData.currentRate);
+    if (currentSalary > 0 && currentRate > 0) {
       trackDollarCalculation({
-        annualSalary: salaryFormData.annualSalary,
-        currentRate: exchangeData.currentRate,
-        pastRate: exchangeData.pastRate,
-        annualUSD: salaryFormData.annualSalary / exchangeData.currentRate,
-        monthlyNetUSD: currentMonthlyNetUSD,
+        annualSalary: currentSalary,
+        currentRate,
+        pastRate,
+        annualUSD: currentSalary / currentRate,
+        monthlyNetUSD: Math.floor(currentResult.netSalary / currentRate),
       });
     }
-  }, [salaryFormData.annualSalary, exchangeData.currentRate, exchangeData.pastRate, salaryResult.netSalary]);
+  }, [currentSalary, currentRate, pastRate, currentResult.netSalary]);
 
-  // GA4: 스크롤 깊이 추적
   useEffect(() => {
     const thresholds = [25, 50, 75, 100];
     const tracked = new Set<number>();
-
     const handleScroll = () => {
-      const scrollPercent = Math.round(
-        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
-      );
+      const pct = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
       thresholds.forEach((t) => {
-        if (scrollPercent >= t && !tracked.has(t)) {
-          tracked.add(t);
-          trackScrollDepth(t);
-        }
+        if (pct >= t && !tracked.has(t)) { tracked.add(t); trackScrollDepth(t); }
       });
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -128,76 +94,56 @@ export default function DollarPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-
       <main id="main-content" className="flex-1 max-w-5xl mx-auto w-full px-4 py-8 space-y-8">
         <div className="text-center">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50">
             연봉 달러 환산 계산기
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            연봉·환율 변동에 따른 달러 가치 비교
+            연봉이 올랐는데, 달러로는 얼마나 오른 걸까?
           </p>
         </div>
 
-        {/* 입력 폼 */}
-        <div>
-          <ExchangeRateForm
-            annualSalary={salaryFormData.annualSalary}
-            dependents={salaryFormData.dependents}
-            childrenUnder20={salaryFormData.childrenUnder20}
-            nonTaxableAllowance={salaryFormData.nonTaxableAllowance}
-            currentRate={exchangeData.currentRate}
-            pastRate={exchangeData.pastRate}
-            pastAnnualSalary={pastSalary}
-            selectedPreset={exchangeData.selectedPreset}
-            onSalaryChange={handleSalaryChange}
-            onCurrentRateChange={handleCurrentRateChange}
-            onPastRateChange={handlePastRateChange}
-            onPastSalaryChange={setPastSalary}
-            onPresetChange={handlePresetChange}
-          />
-        </div>
+        <ExchangeRateForm
+          annualSalary={currentSalary}
+          pastAnnualSalary={pastSalary}
+          currentRate={currentRate}
+          pastRate={pastRate}
+          selectedPreset={selectedPreset}
+          onSalaryChange={setCurrentSalary}
+          onPastSalaryChange={setPastSalary}
+          onCurrentRateChange={setCurrentRate}
+          onPastRateChange={setPastRate}
+          onPresetChange={handlePresetChange}
+        />
 
-        {/* 환산 결과 카드 */}
-        <div>
-          <DollarResult
-            currentSalaryResult={salaryResult}
-            pastSalaryResult={pastSalaryResult}
-            currentRate={exchangeData.currentRate}
-            pastRate={exchangeData.pastRate}
-            currentAnnualSalary={salaryFormData.annualSalary}
-            pastAnnualSalary={pastSalary}
-          />
-        </div>
+        <DollarResult
+          currentSalaryResult={currentResult}
+          pastSalaryResult={pastResult}
+          currentRate={currentRate}
+          pastRate={pastRate}
+          currentAnnualSalary={currentSalary}
+          pastAnnualSalary={pastSalary}
+        />
 
-        {/* 결과 아래 광고 */}
         <AdBanner format="auto" adPosition="after_result" className="w-full min-h-[90px]" />
 
-        {/* 환율 추이 차트 */}
         <div className="content-auto">
           <ExchangeRateChart />
         </div>
 
-        {/* 다중 통화 비교 테이블 */}
         <div className="content-auto">
-          <MultiCurrencyTable
-            netSalary={salaryResult.netSalary}
-            currentRate={exchangeData.currentRate }
-          />
+          <MultiCurrencyTable netSalary={currentResult.netSalary} currentRate={currentRate} />
         </div>
 
-        {/* 테이블 아래 광고 */}
         <AdBanner format="auto" adPosition="after_table" className="w-full min-h-[90px]" />
 
-        {/* FAQ */}
         <div className="content-auto">
           <DollarFAQ />
         </div>
 
-        {/* 하단 광고 배너 */}
         <AdBanner format="auto" adPosition="footer_above" className="w-full min-h-[90px]" />
       </main>
-
       <Footer />
     </div>
   );
