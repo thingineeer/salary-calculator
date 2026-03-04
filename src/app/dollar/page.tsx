@@ -36,9 +36,11 @@ export default function DollarPage() {
 
   const [exchangeData, setExchangeData] = useState({
     currentRate: 1500,
-    pastRate: 1200,
+    pastRate: 1380,
     selectedPreset: 'custom',
   });
+
+  const [pastSalary, setPastSalary] = useState(40_000_000);
 
   // 실시간 환율 가져오기
   useEffect(() => {
@@ -83,6 +85,10 @@ export default function DollarPage() {
   };
 
   const salaryResult: SalaryResultType = calculateSalary(salaryFormData);
+  const pastSalaryResult: SalaryResultType = calculateSalary({
+    ...salaryFormData,
+    annualSalary: pastSalary,
+  });
 
   // GA4: 달러 계산 이벤트 (연봉 변경 시)
   useEffect(() => {
@@ -129,7 +135,7 @@ export default function DollarPage() {
             연봉 달러 환산 계산기
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            세후 실수령액 기준 · 현재/과거 환율 비교
+            연봉·환율 변동에 따른 달러 가치 비교
           </p>
         </div>
 
@@ -140,12 +146,14 @@ export default function DollarPage() {
             dependents={salaryFormData.dependents}
             childrenUnder20={salaryFormData.childrenUnder20}
             nonTaxableAllowance={salaryFormData.nonTaxableAllowance}
-            currentRate={exchangeData.currentRate }
-            pastRate={exchangeData.pastRate }
-            selectedPreset={exchangeData.selectedPreset }
+            currentRate={exchangeData.currentRate}
+            pastRate={exchangeData.pastRate}
+            pastAnnualSalary={pastSalary}
+            selectedPreset={exchangeData.selectedPreset}
             onSalaryChange={handleSalaryChange}
             onCurrentRateChange={handleCurrentRateChange}
             onPastRateChange={handlePastRateChange}
+            onPastSalaryChange={setPastSalary}
             onPresetChange={handlePresetChange}
           />
         </div>
@@ -153,9 +161,12 @@ export default function DollarPage() {
         {/* 환산 결과 카드 */}
         <div>
           <DollarResult
-            salaryResult={salaryResult}
-            currentRate={exchangeData.currentRate }
-            pastRate={exchangeData.pastRate }
+            currentSalaryResult={salaryResult}
+            pastSalaryResult={pastSalaryResult}
+            currentRate={exchangeData.currentRate}
+            pastRate={exchangeData.pastRate}
+            currentAnnualSalary={salaryFormData.annualSalary}
+            pastAnnualSalary={pastSalary}
           />
         </div>
 

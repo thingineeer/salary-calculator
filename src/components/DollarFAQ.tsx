@@ -50,15 +50,23 @@ const faqItems: FAQItem[] = [
 ];
 
 export default function DollarFAQ() {
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openIds, setOpenIds] = useState<Set<string>>(new Set());
 
   const toggleQuestion = (id: string) => {
-    const isOpen = openId === id;
-    setOpenId(isOpen ? null : id);
-    trackDollarFAQClick({
-      questionIndex: faqItems.findIndex((item) => item.id === id),
-      questionText: faqItems.find((item) => item.id === id)?.question || '',
-      isOpen: !isOpen,
+    setOpenIds((prev) => {
+      const next = new Set(prev);
+      const isOpen = next.has(id);
+      if (isOpen) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      trackDollarFAQClick({
+        questionIndex: faqItems.findIndex((item) => item.id === id),
+        questionText: faqItems.find((item) => item.id === id)?.question || '',
+        isOpen: !isOpen,
+      });
+      return next;
     });
   };
 
@@ -73,15 +81,15 @@ export default function DollarFAQ() {
             <button
               onClick={() => toggleQuestion(item.id)}
               className="w-full px-4 py-3 text-left font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition flex items-center justify-between"
-              aria-expanded={openId === item.id}
+              aria-expanded={openIds.has(item.id)}
               aria-controls={`${item.id}-content`}
             >
               <span className="font-semibold">{item.question}</span>
-              <span className={`transition-transform ${openId === item.id ? 'rotate-180' : ''}`}>
+              <span className={`transition-transform ${openIds.has(item.id) ? 'rotate-180' : ''}`}>
                 <ChevronDownIcon size={20} />
               </span>
             </button>
-            {openId === item.id && (
+            {openIds.has(item.id) && (
               <div
                 id={`${item.id}-content`}
                 className="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 leading-relaxed"

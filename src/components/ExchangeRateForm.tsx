@@ -10,17 +10,17 @@ interface ExchangeRateFormProps {
   nonTaxableAllowance: number;
   currentRate: number;
   pastRate: number;
+  pastAnnualSalary: number;
   selectedPreset: string;
   onSalaryChange: (field: string, value: number) => void;
   onCurrentRateChange: (rate: number) => void;
   onPastRateChange: (rate: number) => void;
+  onPastSalaryChange: (salary: number) => void;
   onPresetChange: (preset: string) => void;
 }
 
 const MAX_SALARY = 1_000_000_000;
 const MIN_SALARY = 0;
-const SLIDER_MIN = 20_000_000;
-const SLIDER_MAX = 300_000_000;
 
 const RATE_PRESETS = {
   oneYearAgo: { label: '1년 전 (2025.03)', months: 12 },
@@ -36,19 +36,14 @@ export default function ExchangeRateForm({
   nonTaxableAllowance,
   currentRate,
   pastRate,
+  pastAnnualSalary,
   selectedPreset,
   onSalaryChange,
   onCurrentRateChange,
   onPastRateChange,
+  onPastSalaryChange,
   onPresetChange,
 }: ExchangeRateFormProps) {
-  const salaryWarning =
-    annualSalary > MAX_SALARY
-      ? '최대 10억원까지 입력 가능합니다.'
-      : annualSalary > 0 && annualSalary < 1_000_000
-        ? '연봉을 정확히 입력해 주세요. (예: 50,000,000)'
-        : null;
-
   const handleSalaryInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = parseFormattedNumber(e.target.value);
     if (isNaN(raw) || raw < MIN_SALARY) {
@@ -60,10 +55,15 @@ export default function ExchangeRateForm({
     trackFormInteraction({ field: 'annualSalary', inputMethod: 'direct_input', value });
   };
 
-  const handleSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    onSalaryChange('annualSalary', value);
-    trackFormInteraction({ field: 'annualSalary', inputMethod: 'slider', value });
+  const handlePastSalaryInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = parseFormattedNumber(e.target.value);
+    if (isNaN(raw) || raw < MIN_SALARY) {
+      onPastSalaryChange(0);
+      return;
+    }
+    const value = Math.min(raw, MAX_SALARY);
+    onPastSalaryChange(value);
+    trackFormInteraction({ field: 'pastAnnualSalary', inputMethod: 'direct_input', value });
   };
 
   const handleNonTaxable = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,254 +111,221 @@ export default function ExchangeRateForm({
       aria-label="환율 비교 폼"
     >
       <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">
-        급여 정보 입력
+        환율 비교 계산기
       </h2>
 
-      {/* 급여 정보 섹션 */}
-      <div className="space-y-5">
+      {/* 이전/현재 2컬럼 레이아웃 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* 이전 상황 */}
+        <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+          <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400">이전 상황</h3>
 
-        {/* 연봉 입력 */}
-        <div className="space-y-2">
-          <label
-            htmlFor="salary-input"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            연봉 (원)
-          </label>
-          <input
-            id="salary-input"
-            type="text"
-            inputMode="numeric"
-            value={annualSalary > 0 ? formatNumber(annualSalary) : ''}
-            onChange={handleSalaryInput}
-            placeholder="예: 50,000,000…"
-            aria-describedby="salary-hint salary-warning"
-            className="w-full px-4 py-3 text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition"
-          />
-          {salaryWarning ? (
-            <p id="salary-warning" className="text-xs text-amber-500" role="alert">
-              {salaryWarning}
-            </p>
-          ) : null}
-          <label htmlFor="salary-slider" className="sr-only">
-            연봉 슬라이더
-          </label>
           <div className="space-y-1">
-            <div className="text-center text-xs font-medium text-blue-600 dark:text-blue-400">
-              {formatNumber(Math.max(SLIDER_MIN, Math.min(annualSalary || SLIDER_MIN, SLIDER_MAX)))}원
-            </div>
+            <label
+              htmlFor="past-salary-input"
+              className="block text-xs font-medium text-gray-600 dark:text-gray-300"
+            >
+              연봉 (원)
+            </label>
             <input
-              id="salary-slider"
-              type="range"
-              min={SLIDER_MIN}
-              max={SLIDER_MAX}
-              step={1_000_000}
-              value={Math.max(SLIDER_MIN, Math.min(annualSalary || SLIDER_MIN, SLIDER_MAX))}
-              onChange={handleSlider}
-              aria-label="연봉 범위 슬라이더"
-              className="w-full accent-blue-600 touch-action-manipulation"
+              id="past-salary-input"
+              type="text"
+              inputMode="numeric"
+              value={pastAnnualSalary > 0 ? formatNumber(pastAnnualSalary) : ''}
+              onChange={handlePastSalaryInput}
+              placeholder="예: 40,000,000"
+              aria-label="이전 연봉"
+              className="w-full px-3 py-2.5 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none transition"
             />
-            <div id="salary-hint" className="flex justify-between text-xs text-gray-400">
-              <span>2,000만</span>
-              <span>3억</span>
+          </div>
+
+          <div className="space-y-1">
+            <label
+              htmlFor="past-rate-label"
+              className="block text-xs font-medium text-gray-600 dark:text-gray-300"
+            >
+              환율 (원/USD)
+            </label>
+
+            {/* 프리셋 라디오 */}
+            <div className="space-y-2">
+              {(Object.entries(RATE_PRESETS) as [string, { label: string; months: number }][]).map(
+                ([key, preset]) => (
+                  <label
+                    key={key}
+                    className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer transition text-sm ${
+                      selectedPreset === key
+                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                        : 'border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="exchange-rate-preset"
+                      value={key}
+                      checked={selectedPreset === key}
+                      onChange={(e) => handlePresetRadioChange(e.target.value)}
+                      className="w-3.5 h-3.5 accent-blue-600"
+                    />
+                    <span className="text-gray-700 dark:text-gray-300 flex-1">{preset.label}</span>
+                    {key !== 'custom' && selectedPreset === key && pastRate > 0 && (
+                      <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 tabular-nums">
+                        {formatNumber(pastRate)}원
+                      </span>
+                    )}
+                    {key === 'custom' && (
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={selectedPreset === 'custom' && pastRate > 0 ? formatNumber(pastRate) : ''}
+                        onChange={handlePastRateInput}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (selectedPreset !== 'custom') {
+                            handlePresetRadioChange('custom');
+                          }
+                        }}
+                        placeholder="1,300"
+                        disabled={selectedPreset !== 'custom'}
+                        aria-label="이전 환율 직접 입력"
+                        className="w-20 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-600 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed tabular-nums"
+                      />
+                    )}
+                  </label>
+                )
+              )}
             </div>
           </div>
         </div>
 
-        {/* 부양가족 */}
-        <div className="space-y-1 mb-5">
-          <label
-            htmlFor="dependents-select"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            부양가족 수 (본인 포함)
-          </label>
-          <select
-            id="dependents-select"
-            value={dependents}
-            onChange={(e) => {
-              const value = Number(e.target.value);
-              onSalaryChange('dependents', value);
-              trackFormInteraction({ field: 'dependents', inputMethod: 'stepper', value });
-            }}
-            className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white dark:[color-scheme:dark] outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-              <option key={n} value={n}>
-                {n}명
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* 현재 상황 */}
+        <div className="space-y-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+          <h3 className="text-sm font-semibold text-blue-600 dark:text-blue-400">현재 상황</h3>
 
-        {/* 20세 이하 자녀 */}
-        <div className="space-y-1 mb-5">
-          <label
-            htmlFor="children-select"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            20세 이하 자녀 수
-          </label>
-          <select
-            id="children-select"
-            value={childrenUnder20}
-            onChange={(e) => {
-              const value = Number(e.target.value);
-              onSalaryChange('childrenUnder20', value);
-              trackFormInteraction({ field: 'childrenUnder20', inputMethod: 'stepper', value });
-            }}
-            className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white dark:[color-scheme:dark] outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          >
-            {[0, 1, 2, 3, 4, 5].map((n) => (
-              <option key={n} value={n}>
-                {n}명
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* 비과세액 */}
-        <div className="space-y-1">
-          <label
-            htmlFor="nontaxable-input"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            비과세액 (월, 식대 등)
-          </label>
-          <input
-            id="nontaxable-input"
-            type="text"
-            inputMode="numeric"
-            value={formatNumber(nonTaxableAllowance)}
-            onChange={handleNonTaxable}
-            aria-describedby="nontaxable-hint"
-            className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          />
-          <p id="nontaxable-hint" className="text-xs text-gray-400">
-            예: 100,000원 (월 100,000원 × 12개월 = 연 1,200,000원)
-          </p>
-        </div>
-      </div>
-
-      {/* 환율 정보 섹션 */}
-      <div className="border-t border-gray-200 dark:border-gray-700 pt-6 space-y-4">
-        <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">
-          기준 환율
-        </h2>
-
-        {/* 현재 환율 */}
-        <div className="space-y-2 mb-6">
-          <label
-            htmlFor="current-rate"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
-            현재 환율
-          </label>
-          <input
-            id="current-rate"
-            type="text"
-            inputMode="numeric"
-            value={currentRate > 0 ? formatNumber(currentRate) : ''}
-            onChange={handleCurrentRateInput}
-            placeholder="1,380"
-            className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          />
-          <p className="text-xs text-gray-400">
-            현재 환율: {currentRate > 0 ? formatNumber(currentRate) : '미설정'} 원/USD (2026.03.03 기준)
-          </p>
-        </div>
-
-        {/* 과거 환율 비교 */}
-        <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4">
-          과거 환율 비교
-        </h3>
-
-        {/* 과거 환율 라디오 선택 */}
-        <div className="space-y-3">
-          {/* 1년 전 */}
-          <label className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition ${selectedPreset === 'oneYearAgo' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}`}>
+          <div className="space-y-1">
+            <label
+              htmlFor="salary-input"
+              className="block text-xs font-medium text-gray-600 dark:text-gray-300"
+            >
+              연봉 (원)
+            </label>
             <input
-              type="radio"
-              name="exchange-rate-preset"
-              value="oneYearAgo"
-              checked={selectedPreset === 'oneYearAgo'}
-              onChange={(e) => handlePresetRadioChange(e.target.value)}
-              className="w-4 h-4 accent-blue-600"
-            />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex-1">
-              {RATE_PRESETS.oneYearAgo.label}
-            </span>
-            {selectedPreset === 'oneYearAgo' && pastRate > 0 && (
-              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">{formatNumber(pastRate)}원</span>
-            )}
-          </label>
-
-          {/* 3년 전 */}
-          <label className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition ${selectedPreset === 'threeYearsAgo' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}`}>
-            <input
-              type="radio"
-              name="exchange-rate-preset"
-              value="threeYearsAgo"
-              checked={selectedPreset === 'threeYearsAgo'}
-              onChange={(e) => handlePresetRadioChange(e.target.value)}
-              className="w-4 h-4 accent-blue-600"
-            />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex-1">
-              {RATE_PRESETS.threeYearsAgo.label}
-            </span>
-            {selectedPreset === 'threeYearsAgo' && pastRate > 0 && (
-              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">{formatNumber(pastRate)}원</span>
-            )}
-          </label>
-
-          {/* 5년 전 */}
-          <label className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition ${selectedPreset === 'fiveYearsAgo' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}`}>
-            <input
-              type="radio"
-              name="exchange-rate-preset"
-              value="fiveYearsAgo"
-              checked={selectedPreset === 'fiveYearsAgo'}
-              onChange={(e) => handlePresetRadioChange(e.target.value)}
-              className="w-4 h-4 accent-blue-600"
-            />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex-1">
-              {RATE_PRESETS.fiveYearsAgo.label}
-            </span>
-            {selectedPreset === 'fiveYearsAgo' && pastRate > 0 && (
-              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">{formatNumber(pastRate)}원</span>
-            )}
-          </label>
-
-          {/* 직접 입력 */}
-          <label className={`flex items-center gap-3 p-3 border rounded-xl cursor-pointer transition ${selectedPreset === 'custom' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'}`}>
-            <input
-              type="radio"
-              name="exchange-rate-preset"
-              value="custom"
-              checked={selectedPreset === 'custom'}
-              onChange={(e) => handlePresetRadioChange(e.target.value)}
-              className="w-4 h-4 accent-blue-600"
-            />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">직접 입력</span>
-            <input
+              id="salary-input"
               type="text"
               inputMode="numeric"
-              value={selectedPreset === 'custom' && pastRate > 0 ? formatNumber(pastRate) : ''}
-              onChange={handlePastRateInput}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (selectedPreset !== 'custom') {
-                  handlePresetRadioChange('custom');
-                }
-              }}
-              placeholder="1,300"
-              disabled={selectedPreset !== 'custom'}
-              className="flex-1 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-600 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              value={annualSalary > 0 ? formatNumber(annualSalary) : ''}
+              onChange={handleSalaryInput}
+              placeholder="예: 50,000,000"
+              aria-label="현재 연봉"
+              className="w-full px-3 py-2.5 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none transition"
             />
-            <span className="text-xs font-medium text-gray-600 dark:text-gray-400 whitespace-nowrap">원/USD</span>
-          </label>
+          </div>
+
+          <div className="space-y-1">
+            <label
+              htmlFor="current-rate"
+              className="block text-xs font-medium text-gray-600 dark:text-gray-300"
+            >
+              환율 (원/USD)
+            </label>
+            <input
+              id="current-rate"
+              type="text"
+              inputMode="numeric"
+              value={currentRate > 0 ? formatNumber(currentRate) : ''}
+              onChange={handleCurrentRateInput}
+              placeholder="1,500"
+              aria-label="현재 환율"
+              className="w-full px-3 py-2.5 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none transition"
+            />
+            <p className="text-xs text-gray-400">
+              실시간 자동 반영
+            </p>
+          </div>
         </div>
       </div>
+
+      {/* 상세 설정 (접기) */}
+      <details className="border-t border-gray-200 dark:border-gray-700 pt-4">
+        <summary className="cursor-pointer text-sm font-semibold text-gray-700 dark:text-gray-300 select-none hover:text-blue-600 dark:hover:text-blue-400 transition">
+          상세 설정 (부양가족, 비과세 등)
+        </summary>
+        <div className="mt-4 space-y-4">
+          {/* 부양가족 */}
+          <div className="space-y-1">
+            <label
+              htmlFor="dependents-select"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              부양가족 수 (본인 포함)
+            </label>
+            <select
+              id="dependents-select"
+              value={dependents}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                onSalaryChange('dependents', value);
+                trackFormInteraction({ field: 'dependents', inputMethod: 'stepper', value });
+              }}
+              className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white dark:[color-scheme:dark] outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                <option key={n} value={n}>
+                  {n}명
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 20세 이하 자녀 */}
+          <div className="space-y-1">
+            <label
+              htmlFor="children-select"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              20세 이하 자녀 수
+            </label>
+            <select
+              id="children-select"
+              value={childrenUnder20}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                onSalaryChange('childrenUnder20', value);
+                trackFormInteraction({ field: 'childrenUnder20', inputMethod: 'stepper', value });
+              }}
+              className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white dark:[color-scheme:dark] outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              {[0, 1, 2, 3, 4, 5].map((n) => (
+                <option key={n} value={n}>
+                  {n}명
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 비과세액 */}
+          <div className="space-y-1">
+            <label
+              htmlFor="nontaxable-input"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              비과세액 (월, 식대 등)
+            </label>
+            <input
+              id="nontaxable-input"
+              type="text"
+              inputMode="numeric"
+              value={formatNumber(nonTaxableAllowance)}
+              onChange={handleNonTaxable}
+              aria-describedby="nontaxable-hint"
+              className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            />
+            <p id="nontaxable-hint" className="text-xs text-gray-400">
+              예: 100,000원 (월 100,000원 x 12개월 = 연 1,200,000원)
+            </p>
+          </div>
+        </div>
+      </details>
     </div>
   );
 }
