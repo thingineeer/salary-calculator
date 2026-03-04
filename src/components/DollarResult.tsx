@@ -66,15 +66,15 @@ export default function DollarResult({
               </p>
             </div>
 
-            <div className={`text-center py-3 rounded-xl ${dollarDiff >= 0 ? 'bg-red-50 dark:bg-red-900/30' : 'bg-green-50 dark:bg-green-900/30'}`}>
+            <div className={`text-center py-3 rounded-xl ${dollarDiff >= 0 ? 'bg-green-50 dark:bg-green-900/30' : 'bg-red-50 dark:bg-red-900/30'}`}>
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
                 차이
               </p>
-              <p className={`text-2xl sm:text-3xl font-bold tabular-nums ${dollarDiff >= 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+              <p className={`text-2xl sm:text-3xl font-bold tabular-nums ${dollarDiff >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                 {dollarDiff >= 0 ? '+' : '-'}${formatNumber(Math.abs(dollarDiff))}
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                {dollarDiff >= 0 ? '환율 상승' : '환율 하강'}
+                {dollarDiff >= 0 ? '달러 가치 증가' : '달러 가치 감소'}
               </p>
             </div>
           </div>
