@@ -203,6 +203,72 @@ export const trackSimulatorView = () => {
   sendGAEvent('simulator_viewed');
 };
 
+/**
+ * 달러 환산 계산 이벤트
+ * - 사용자가 어떤 연봉을 달러로 환산하는지
+ * - 환율 변화에 따른 사용 패턴
+ */
+export const trackDollarCalculation = (params: {
+  annualSalary: number;
+  currentRate: number;
+  pastRate: number;
+  annualUSD: number;
+  monthlyNetUSD: number;
+}) => {
+  sendGAEvent('dollar_calculated', {
+    salary_range: getSalaryRange(params.annualSalary),
+    current_rate: params.currentRate,
+    past_rate: params.pastRate,
+    annual_usd: Math.round(params.annualUSD),
+    monthly_net_usd: Math.round(params.monthlyNetUSD),
+  });
+};
+
+/**
+ * 환율 프리셋 선택 이벤트
+ * - 사용자가 미리 설정된 환율을 사용하는지
+ * - 직접입력 vs 프리셋 선호도
+ */
+export const trackExchangeRatePreset = (preset: string) => {
+  sendGAEvent('exchange_preset_selected', {
+    preset_type: preset,
+  });
+};
+
+/**
+ * 다중 통화 조회 이벤트
+ * - 사용자가 여러 통화로 비교하는지
+ */
+export const trackCurrencyView = () => {
+  sendGAEvent('multi_currency_viewed');
+};
+
+/**
+ * 환율 차트 조회 이벤트
+ * - 사용자가 시간대별 환율 변화를 보는지
+ */
+export const trackExchangeChartView = (period: string) => {
+  sendGAEvent('exchange_chart_viewed', {
+    chart_period: period,
+  });
+};
+
+/**
+ * 달러 FAQ 클릭 이벤트
+ * - 어떤 달러 관련 FAQ가 가장 많이 열리는지
+ */
+export const trackDollarFAQClick = (params: {
+  questionIndex: number;
+  questionText: string;
+  isOpen: boolean;
+}) => {
+  sendGAEvent('dollar_faq_interaction', {
+    question_index: params.questionIndex,
+    question_text: params.questionText.substring(0, 100),
+    action: params.isOpen ? 'open' : 'close',
+  });
+};
+
 // ============================================
 // 유틸리티 함수
 // ============================================
