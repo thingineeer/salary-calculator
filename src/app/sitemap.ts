@@ -24,6 +24,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...salaryPages,
     {
+      url: 'https://salary-calc.kr/dollar',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: 'https://salary-calc.kr/about',
       lastModified: new Date(),
       changeFrequency: 'yearly',

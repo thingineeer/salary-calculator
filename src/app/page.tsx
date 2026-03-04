@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { calculateSalary, SalaryResult as SalaryResultType } from '@/lib/salary-calculator';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
-import { trackSalaryCalculation, trackScrollDepth } from '@/lib/analytics';
+import { trackSalaryCalculation, trackScrollDepth, trackNavigation } from '@/lib/analytics';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SalaryForm from '@/components/SalaryForm';
@@ -116,6 +117,17 @@ export default function Home() {
             childrenUnder20={formData.childrenUnder20}
             nonTaxableAllowance={formData.nonTaxableAllowance}
           />
+        </div>
+
+        {/* 달러 환산 유도 배너 */}
+        <div className="bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 rounded-2xl p-4 text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            💵 내 연봉, 달러로는 얼마일까?
+          </p>
+          <Link href="/dollar" className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+            onClick={() => trackNavigation('dollar_calculator_banner')}>
+            연봉 달러 환산 →
+          </Link>
         </div>
 
         {/* 비교 테이블 */}
