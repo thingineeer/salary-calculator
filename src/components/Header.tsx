@@ -56,6 +56,13 @@ export default function Header() {
           >
             연봉 비교표
           </Link>
+          <Link
+            href="/dollar"
+            onClick={() => trackNavigation('dollar_calculator')}
+            className="text-sm font-medium px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-800/40 focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors"
+          >
+            달러 환산
+          </Link>
           <button
             onClick={toggleTheme}
             aria-label={dark ? '라이트 모드로 전환' : '다크 모드로 전환'}
