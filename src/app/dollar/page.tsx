@@ -62,8 +62,14 @@ export default function DollarPage() {
 
   // 세후 계산 (기본 부양가족 1명, 비과세 20만원)
   const salaryBase = { dependents: 1, childrenUnder20: 0, nonTaxableAllowance: DEFAULT_NON_TAXABLE_ALLOWANCE };
-  const currentResult: SalaryResultType = calculateSalary({ ...salaryBase, annualSalary: currentSalary });
-  const pastResult: SalaryResultType = calculateSalary({ ...salaryBase, annualSalary: pastSalary });
+  const currentEffective = currentSalary > 0
+    ? { ...salaryBase, annualSalary: currentSalary }
+    : { ...salaryBase, annualSalary: 0, nonTaxableAllowance: 0 };
+  const pastEffective = pastSalary > 0
+    ? { ...salaryBase, annualSalary: pastSalary }
+    : { ...salaryBase, annualSalary: 0, nonTaxableAllowance: 0 };
+  const currentResult: SalaryResultType = calculateSalary(currentEffective);
+  const pastResult: SalaryResultType = calculateSalary(pastEffective);
 
   // GA4
   useEffect(() => {

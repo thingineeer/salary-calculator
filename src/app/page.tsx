@@ -39,7 +39,10 @@ export default function Home() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const result: SalaryResultType = calculateSalary(formData);
+  const effectiveFormData = formData.annualSalary > 0
+    ? formData
+    : { ...formData, nonTaxableAllowance: 0 };
+  const result: SalaryResultType = calculateSalary(effectiveFormData);
 
   // GA4: 계산 결과 변경 시 트래킹 (디바운스 500ms)
   useEffect(() => {
