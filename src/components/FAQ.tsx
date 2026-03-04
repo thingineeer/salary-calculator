@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import AdBanner from '@/components/AdBanner';
 import { trackFAQClick } from '@/lib/analytics';
+import { ChevronDownIcon } from '@/components/icons';
 
 const faqs = [
   {
@@ -71,8 +72,8 @@ export default function FAQ() {
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                     {faq.question}
                   </span>
-                  <span className="text-gray-400 text-lg leading-none">
-                    {openIndices.has(idx) ? '−' : '+'}
+                  <span className={`transition-transform ${openIndices.has(idx) ? 'rotate-180' : ''}`}>
+                    <ChevronDownIcon size={20} />
                   </span>
                 </button>
               </dt>

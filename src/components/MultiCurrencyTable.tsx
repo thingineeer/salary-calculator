@@ -2,9 +2,34 @@
 
 import { formatNumber } from '@/lib/format';
 
+interface CurrencyInfo {
+  code: string;
+  name: string;
+  symbol: string;
+  rate: number;
+  displayUnit?: number; // JPY의 경우 100 (100엔 기준 표시)
+}
+
 interface MultiCurrencyTableProps {
   netSalary: number;
   currentRate: number;
+}
+
+/**
+ * 통화 금액을 심볼과 함께 포맷팅합니다.
+ * 예: $2,156.48, ¥253,795, CN¥15,403.46
+ */
+function formatCurrencyAmount(amount: number, currency: CurrencyInfo): string {
+  const isWholeNumber = currency.code === 'JPY';
+  const integerPart = Math.floor(amount);
+  const formattedInteger = integerPart.toLocaleString('ko-KR');
+
+  if (isWholeNumber) {
+    return `${currency.symbol}${formattedInteger}`;
+  }
+
+  const decimalPart = Math.abs(amount - integerPart).toFixed(2).slice(2);
+  return `${currency.symbol}${formattedInteger}.${decimalPart}`;
 }
 
 export default function MultiCurrencyTable({
@@ -12,15 +37,16 @@ export default function MultiCurrencyTable({
   currentRate,
 }: MultiCurrencyTableProps) {
   // 주요 통화 환율 (KRW 기준, 표본 데이터)
-  const currencies = [
-    { code: 'USD', name: '미국 달러', rate: currentRate },
-    { code: 'EUR', name: '유로', rate: Math.round(currentRate * 1.08) },
-    { code: 'JPY', name: '일본 엔', rate: Math.round(currentRate * 0.0085 * 100) / 100 },
-    { code: 'GBP', name: '영국 파운드', rate: Math.round(currentRate * 1.25) },
-    { code: 'CNY', name: '중국 위안', rate: Math.round(currentRate * 0.14 * 100) / 100 },
-    { code: 'HKD', name: '홍콩 달러', rate: Math.round(currentRate * 0.13 * 100) / 100 },
-    { code: 'SGD', name: '싱가포르 달러', rate: Math.round(currentRate * 0.75) },
-    { code: 'AUD', name: '호주 달러', rate: Math.round(currentRate * 0.65) },
+  // rate = 1 외화 단위당 원화 (JPY는 1엔당 원화)
+  const currencies: CurrencyInfo[] = [
+    { code: 'USD', name: '미국 달러', symbol: '$', rate: currentRate },
+    { code: 'EUR', name: '유로', symbol: '\u20AC', rate: Math.round(currentRate * 1.08) },
+    { code: 'JPY', name: '일본 엔', symbol: '\u00A5', rate: Math.round(currentRate * 0.0085 * 100) / 100, displayUnit: 100 },
+    { code: 'GBP', name: '영국 파운드', symbol: '\u00A3', rate: Math.round(currentRate * 1.25) },
+    { code: 'CNY', name: '중국 위안', symbol: 'CN\u00A5', rate: Math.round(currentRate * 0.14 * 100) / 100 },
+    { code: 'HKD', name: '홍콩 달러', symbol: 'HK$', rate: Math.round(currentRate * 0.13 * 100) / 100 },
+    { code: 'SGD', name: '싱가포르 달러', symbol: 'S$', rate: Math.round(currentRate * 0.75) },
+    { code: 'AUD', name: '호주 달러', symbol: 'A$', rate: Math.round(currentRate * 0.65) },
   ];
 
   return (
@@ -39,7 +65,7 @@ export default function MultiCurrencyTable({
                 통화
               </th>
               <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
-                환율 (1 = KRW)
+                원화 환율
               </th>
               <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
                 월 실수령액
@@ -49,6 +75,11 @@ export default function MultiCurrencyTable({
           <tbody>
             {currencies.map((currency) => {
               const converted = Math.floor(netSalary / currency.rate * 100) / 100;
+              // 환율 표시: JPY는 100엔 기준, 나머지는 1단위 기준
+              const displayRate = currency.displayUnit
+                ? currency.rate * currency.displayUnit
+                : currency.rate;
+
               return (
                 <tr
                   key={currency.code}
@@ -63,13 +94,15 @@ export default function MultiCurrencyTable({
                     </div>
                   </td>
                   <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-300">
-                    {formatNumber(Math.round(currency.rate))}
+                    <span>{formatNumber(Math.round(displayRate))}원</span>
+                    {currency.displayUnit && (
+                      <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
+                        ({currency.displayUnit}엔)
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-right font-semibold text-blue-600 dark:text-blue-400">
-                    {currency.code === 'JPY'
-                      ? formatNumber(Math.floor(converted))
-                      : converted.toFixed(2)}
-                    {currency.code !== 'JPY' && <span className="text-xs">{currency.code}</span>}
+                    {formatCurrencyAmount(converted, currency)}
                   </td>
                 </tr>
               );

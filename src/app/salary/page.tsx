@@ -6,7 +6,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
-import { CalculatorIcon } from '@/components/icons';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 const TABS = [
   { label: '2,400~4,000만', min: 2400, max: 4000 },
@@ -74,19 +75,10 @@ function SalaryTableContent() {
   const rows = generateRows(tab.min, tab.max);
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <CalculatorIcon size={28} />
-            <span className="text-lg font-bold text-blue-800 dark:text-blue-300">
-              2026 연봉 실수령액 계산기
-            </span>
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen flex flex-col">
+      <Header />
 
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-8 space-y-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50 mb-2">
             2026년 연봉별 실수령액 비교표
@@ -203,9 +195,7 @@ function SalaryTableContent() {
         </div>
       </main>
 
-      <footer className="text-center py-6 text-xs text-gray-400 dark:text-gray-500">
-        <Link href="/" className="hover:underline">salary-calc.kr</Link> · 2026년 세율 기준
-      </footer>
+      <Footer />
     </div>
   );
 }

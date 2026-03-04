@@ -1,6 +1,7 @@
 'use client';
 
-import { formatNumber, parseFormattedNumber } from '@/lib/format';
+import { useRef } from 'react';
+import { formatNumber, parseFormattedNumber, getAdjustedCursorPosition } from '@/lib/format';
 import { trackFormInteraction, trackExchangeRatePreset } from '@/lib/analytics';
 
 interface ExchangeRateFormProps {
@@ -30,6 +31,25 @@ export default function ExchangeRateForm({
   onPastRateChange,
   onPresetChange,
 }: ExchangeRateFormProps) {
+  const pastSalaryRef = useRef<HTMLInputElement>(null);
+  const pastRateRef = useRef<HTMLInputElement>(null);
+  const currentSalaryRef = useRef<HTMLInputElement>(null);
+  const currentRateRef = useRef<HTMLInputElement>(null);
+
+  const restoreCursor = (
+    ref: React.RefObject<HTMLInputElement | null>,
+    oldValue: string,
+    newFormatted: string,
+    oldCursorPos: number
+  ) => {
+    requestAnimationFrame(() => {
+      if (ref.current) {
+        const newPos = getAdjustedCursorPosition(oldValue, newFormatted, oldCursorPos);
+        ref.current.setSelectionRange(newPos, newPos);
+      }
+    });
+  };
+
   const parseSalary = (value: string): number => {
     const raw = parseFormattedNumber(value);
     if (isNaN(raw) || raw < 0) return 0;
@@ -60,14 +80,18 @@ export default function ExchangeRateForm({
             </label>
             <div className="relative">
               <input
+                ref={pastSalaryRef}
                 id="past-salary"
                 type="text"
                 inputMode="numeric"
                 value={pastAnnualSalary > 0 ? formatNumber(pastAnnualSalary) : ''}
                 onChange={(e) => {
-                  const v = parseSalary(e.target.value);
+                  const oldValue = e.target.value;
+                  const oldCursorPos = e.target.selectionStart ?? oldValue.length;
+                  const v = parseSalary(oldValue);
                   onPastSalaryChange(v);
                   trackFormInteraction({ field: 'pastAnnualSalary', inputMethod: 'direct_input', value: v });
+                  restoreCursor(pastSalaryRef, oldValue, v > 0 ? formatNumber(v) : '', oldCursorPos);
                 }}
                 placeholder="41,000,000"
                 className="w-full px-3 py-2.5 pr-8 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
@@ -106,15 +130,19 @@ export default function ExchangeRateForm({
             </div>
             <div className="relative">
               <input
+                ref={pastRateRef}
                 id="past-rate"
                 type="text"
                 inputMode="numeric"
                 value={pastRate > 0 ? formatNumber(pastRate) : ''}
                 onChange={(e) => {
-                  const v = parseRate(e.target.value);
+                  const oldValue = e.target.value;
+                  const oldCursorPos = e.target.selectionStart ?? oldValue.length;
+                  const v = parseRate(oldValue);
                   onPastRateChange(v);
                   onPresetChange('custom');
                   trackFormInteraction({ field: 'pastRate', inputMethod: 'direct_input', value: v });
+                  restoreCursor(pastRateRef, oldValue, v > 0 ? formatNumber(v) : '', oldCursorPos);
                 }}
                 placeholder="1,380"
                 className="w-full px-3 py-2.5 pr-16 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
@@ -134,14 +162,18 @@ export default function ExchangeRateForm({
             </label>
             <div className="relative">
               <input
+                ref={currentSalaryRef}
                 id="current-salary"
                 type="text"
                 inputMode="numeric"
                 value={annualSalary > 0 ? formatNumber(annualSalary) : ''}
                 onChange={(e) => {
-                  const v = parseSalary(e.target.value);
+                  const oldValue = e.target.value;
+                  const oldCursorPos = e.target.selectionStart ?? oldValue.length;
+                  const v = parseSalary(oldValue);
                   onSalaryChange(v);
                   trackFormInteraction({ field: 'annualSalary', inputMethod: 'direct_input', value: v });
+                  restoreCursor(currentSalaryRef, oldValue, v > 0 ? formatNumber(v) : '', oldCursorPos);
                 }}
                 placeholder="45,000,000"
                 className="w-full px-3 py-2.5 pr-8 text-base font-semibold border border-blue-300 dark:border-blue-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
@@ -156,21 +188,25 @@ export default function ExchangeRateForm({
             </label>
             <div className="relative">
               <input
+                ref={currentRateRef}
                 id="current-rate"
                 type="text"
                 inputMode="numeric"
                 value={currentRate > 0 ? formatNumber(currentRate) : ''}
                 onChange={(e) => {
-                  const v = parseRate(e.target.value);
+                  const oldValue = e.target.value;
+                  const oldCursorPos = e.target.selectionStart ?? oldValue.length;
+                  const v = parseRate(oldValue);
                   onCurrentRateChange(v);
                   trackFormInteraction({ field: 'currentRate', inputMethod: 'direct_input', value: v });
+                  restoreCursor(currentRateRef, oldValue, v > 0 ? formatNumber(v) : '', oldCursorPos);
                 }}
                 placeholder="1,500"
                 className="w-full px-3 py-2.5 pr-16 text-base font-semibold border border-blue-300 dark:border-blue-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">원/USD</span>
             </div>
-            <p className="text-xs text-blue-500 dark:text-blue-400">실시간 자동 반영</p>
+            <p className="text-xs text-blue-500 dark:text-blue-400">최신 환율 자동 반영 · 직접 수정 가능</p>
           </div>
         </div>
       </div>

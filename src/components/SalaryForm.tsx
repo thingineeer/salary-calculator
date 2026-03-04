@@ -1,6 +1,7 @@
 'use client';
 
-import { formatNumber, parseFormattedNumber } from '@/lib/format';
+import { useRef } from 'react';
+import { formatNumber, parseFormattedNumber, getAdjustedCursorPosition } from '@/lib/format';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { trackFormInteraction } from '@/lib/analytics';
 
@@ -24,6 +25,9 @@ export default function SalaryForm({
   nonTaxableAllowance,
   onChange,
 }: SalaryFormProps) {
+  const salaryInputRef = useRef<HTMLInputElement>(null);
+  const nonTaxableInputRef = useRef<HTMLInputElement>(null);
+
   const salaryWarning =
     annualSalary > MAX_SALARY
       ? '최대 10억원까지 입력 가능합니다.'
@@ -32,7 +36,9 @@ export default function SalaryForm({
         : null;
 
   const handleSalaryInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = parseFormattedNumber(e.target.value);
+    const oldValue = e.target.value;
+    const oldCursorPos = e.target.selectionStart ?? oldValue.length;
+    const raw = parseFormattedNumber(oldValue);
     if (isNaN(raw) || raw < MIN_SALARY) {
       onChange('annualSalary', 0);
       return;
@@ -40,6 +46,14 @@ export default function SalaryForm({
     const value = Math.min(raw, MAX_SALARY);
     onChange('annualSalary', value);
     trackFormInteraction({ field: 'annualSalary', inputMethod: 'direct_input', value });
+
+    const newFormatted = value > 0 ? formatNumber(value) : '';
+    requestAnimationFrame(() => {
+      if (salaryInputRef.current) {
+        const newPos = getAdjustedCursorPosition(oldValue, newFormatted, oldCursorPos);
+        salaryInputRef.current.setSelectionRange(newPos, newPos);
+      }
+    });
   };
 
   const handleSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +63,9 @@ export default function SalaryForm({
   };
 
   const handleNonTaxable = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = parseFormattedNumber(e.target.value);
+    const oldValue = e.target.value;
+    const oldCursorPos = e.target.selectionStart ?? oldValue.length;
+    const raw = parseFormattedNumber(oldValue);
     if (isNaN(raw) || raw < 0) {
       onChange('nonTaxableAllowance', 0);
       return;
@@ -57,6 +73,14 @@ export default function SalaryForm({
     const value = Math.min(raw, 1_000_000);
     onChange('nonTaxableAllowance', value);
     trackFormInteraction({ field: 'nonTaxableAllowance', inputMethod: 'direct_input', value });
+
+    const newFormatted = formatNumber(value);
+    requestAnimationFrame(() => {
+      if (nonTaxableInputRef.current) {
+        const newPos = getAdjustedCursorPosition(oldValue, newFormatted, oldCursorPos);
+        nonTaxableInputRef.current.setSelectionRange(newPos, newPos);
+      }
+    });
   };
 
   return (
@@ -78,6 +102,7 @@ export default function SalaryForm({
           연봉 (원)
         </label>
         <input
+          ref={salaryInputRef}
           id="salary-input"
           type="text"
           inputMode="numeric"
@@ -88,8 +113,8 @@ export default function SalaryForm({
           className="w-full px-4 py-3 text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition"
         />
         {salaryWarning ? (
-          <p id="salary-warning" className="text-xs text-amber-500" role="alert">
-            {salaryWarning}
+          <p id="salary-warning" className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-2 rounded-lg" role="alert">
+            ⚠ {salaryWarning}
           </p>
         ) : null}
         <label htmlFor="salary-slider" className="sr-only">
@@ -178,6 +203,7 @@ export default function SalaryForm({
           비과세액 (월, 식대 등)
         </label>
         <input
+          ref={nonTaxableInputRef}
           id="nontaxable-input"
           type="text"
           inputMode="numeric"
