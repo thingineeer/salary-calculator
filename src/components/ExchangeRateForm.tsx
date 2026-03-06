@@ -82,6 +82,8 @@ export default function ExchangeRateForm({
               <input
                 ref={pastSalaryRef}
                 id="past-salary"
+                name="past-salary"
+                autoComplete="off"
                 type="text"
                 inputMode="numeric"
                 value={pastAnnualSalary > 0 ? formatNumber(pastAnnualSalary) : ''}
@@ -132,6 +134,8 @@ export default function ExchangeRateForm({
               <input
                 ref={pastRateRef}
                 id="past-rate"
+                name="past-rate"
+                autoComplete="off"
                 type="text"
                 inputMode="numeric"
                 value={pastRate > 0 ? formatNumber(pastRate) : ''}
@@ -164,6 +168,8 @@ export default function ExchangeRateForm({
               <input
                 ref={currentSalaryRef}
                 id="current-salary"
+                name="current-salary"
+                autoComplete="off"
                 type="text"
                 inputMode="numeric"
                 value={annualSalary > 0 ? formatNumber(annualSalary) : ''}
@@ -190,6 +196,8 @@ export default function ExchangeRateForm({
               <input
                 ref={currentRateRef}
                 id="current-rate"
+                name="current-rate"
+                autoComplete="off"
                 type="text"
                 inputMode="numeric"
                 value={currentRate > 0 ? formatNumber(currentRate) : ''}

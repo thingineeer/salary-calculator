@@ -18,6 +18,11 @@ export const metadata: Metadata = {
     url: 'https://salary-calc.kr/dollar',
     siteName: 'salary-calc.kr',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: '연봉 달러 환산 계산기 - 내 월급 달러로 얼마?',
+    description: '세후 실수령액 기준 USD·EUR·JPY 다중 통화 환산. 과거 환율과 비교해보세요.',
+  },
 };
 
 export default function DollarLayout({
@@ -28,11 +33,13 @@ export default function DollarLayout({
   const webAppJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
+    '@id': 'https://salary-calc.kr/dollar#app',
     name: '연봉 달러 환산 계산기',
     description: '실수령액 기준 달러 환산 및 다중 통화 변환',
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
     url: 'https://salary-calc.kr/dollar',
+    isPartOf: { '@id': 'https://salary-calc.kr/#website' },
     offers: {
       '@type': 'Offer',
       price: '0',

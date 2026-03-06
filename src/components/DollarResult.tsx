@@ -20,10 +20,16 @@ export default function DollarResult({
   currentAnnualSalary,
   pastAnnualSalary,
 }: DollarResultProps) {
-  const currentDollar = currentRate > 0 ? Math.floor(currentSalaryResult.netSalary / currentRate) : 0;
-  const pastDollar = pastRate > 0 ? Math.floor(pastSalaryResult.netSalary / pastRate) : 0;
-  const dollarDiff = currentDollar - pastDollar;
-  const diffPercent = pastDollar > 0 ? ((dollarDiff / pastDollar) * 100).toFixed(1) : '0.0';
+  // 환율이 비현실적이면 계산 불가
+  const MIN_RATE = 100;
+  const isCurrentRateValid = currentRate >= MIN_RATE;
+  const isPastRateValid = pastRate >= MIN_RATE;
+  const canCompare = isCurrentRateValid && isPastRateValid && currentAnnualSalary > 0 && pastAnnualSalary > 0;
+
+  const currentDollar = isCurrentRateValid ? Math.floor(currentSalaryResult.netSalary / currentRate) : 0;
+  const pastDollar = isPastRateValid ? Math.floor(pastSalaryResult.netSalary / pastRate) : 0;
+  const dollarDiff = canCompare ? currentDollar - pastDollar : 0;
+  const diffPercent = canCompare && pastDollar > 0 ? ((dollarDiff / pastDollar) * 100).toFixed(1) : '0.0';
 
   // 원화 실수령 차이
   const krwDiff = currentSalaryResult.netSalary - pastSalaryResult.netSalary;
@@ -46,6 +52,10 @@ export default function DollarResult({
 
   // 핵심 인사이트 문구
   const getInsight = () => {
+    if (!canCompare) {
+      return '연봉과 환율을 모두 입력하면 비교 결과를 확인할 수 있습니다';
+    }
+
     const salaryUp = currentAnnualSalary > pastAnnualSalary;
     const rateUp = currentRate > pastRate;
 
@@ -74,16 +84,24 @@ export default function DollarResult({
       role="region"
     >
       {/* 핵심: 차이 금액 */}
-      <div className={`text-center py-5 rounded-xl ${diffBg}`} aria-live="polite">
+      <div className={`text-center py-5 rounded-xl ${canCompare ? diffBg : 'bg-gray-50 dark:bg-gray-700'}`} aria-live="polite">
         <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
           달러 기준 월 실수령 변화
         </p>
-        <p className={`text-4xl sm:text-5xl font-extrabold tabular-nums ${diffColor}`}>
-          {dollarDiff >= 0 ? '+' : ''}{dollarDiff === 0 ? '' : dollarDiff > 0 ? '' : '-'}${formatNumber(Math.abs(dollarDiff))}
-        </p>
-        <p className={`text-base font-semibold mt-1 tabular-nums ${diffColor}`}>
-          {diffEmoji} {dollarDiff >= 0 ? '+' : ''}{diffPercent}%
-        </p>
+        {canCompare ? (
+          <>
+            <p className={`text-4xl sm:text-5xl font-extrabold tabular-nums ${diffColor}`}>
+              {dollarDiff >= 0 ? '+' : ''}{dollarDiff === 0 ? '' : dollarDiff > 0 ? '' : '-'}${formatNumber(Math.abs(dollarDiff))}
+            </p>
+            <p className={`text-base font-semibold mt-1 tabular-nums ${diffColor}`}>
+              {diffEmoji} {dollarDiff >= 0 ? '+' : ''}{diffPercent}%
+            </p>
+          </>
+        ) : (
+          <p className="text-2xl font-bold text-gray-400 dark:text-gray-500">
+            -
+          </p>
+        )}
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 px-4">
           {getInsight()}
         </p>

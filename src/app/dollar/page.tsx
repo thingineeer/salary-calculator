@@ -142,6 +142,8 @@ export default function DollarPage() {
           <ExchangeRateChart />
         </div>
 
+        <AdBanner format="auto" adPosition="after_chart" className="w-full min-h-[90px]" />
+
         <div className="content-auto">
           <MultiCurrencyTable netSalary={currentResult.netSalary} currentRate={currentRate} />
         </div>
