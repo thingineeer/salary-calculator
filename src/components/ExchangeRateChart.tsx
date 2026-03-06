@@ -42,7 +42,7 @@ interface ApiResponse {
   latest: { rate: number; date: string };
   change: { diff: number; pct: string };
   period: string;
-  source: string;
+  source: 'naver' | 'ecb' | 'ecb-fallback' | 'cache' | 'stale-cache' | string;
 }
 
 // API 응답 → 차트 데이터 변환
@@ -377,7 +377,9 @@ export default function ExchangeRateChart() {
       )}
 
       <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
-        ECB(유럽중앙은행) 기준 환율 · 한국 시장 고시환율과 소폭 차이가 있을 수 있습니다
+        {apiData?.source === 'naver' || apiData?.source === 'cache'
+          ? '하나은행 매매기준율 기준 · 장중 고가/저가와 차이가 있을 수 있습니다'
+          : 'ECB(유럽중앙은행) 기준 환율 · 한국 시장 고시환율과 소폭 차이가 있을 수 있습니다'}
       </p>
     </div>
   );
