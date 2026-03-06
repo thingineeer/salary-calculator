@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: '소개 - 연봉 실수령액 계산기',
+  title: '소개 - 2026 연봉 실수령액 계산기 | 4대보험 소득세 무료 계산',
   description:
     '2026년 최신 세율 기준 연봉 실수령액 계산기를 소개합니다. 4대보험과 소득세 공제 후 월급을 빠르게 확인하세요.',
 };
@@ -33,7 +33,7 @@ export default function AboutPage() {
             </h2>
             <ul className="list-disc list-inside space-y-1">
               <li>
-                <strong>국민연금</strong> — 근로자 부담분 4.5% (상한 월 590만원)
+                <strong>국민연금</strong> — 근로자 부담분 4.5% (상한 월 637만원)
               </li>
               <li>
                 <strong>건강보험</strong> — 근로자 부담분 3.545%

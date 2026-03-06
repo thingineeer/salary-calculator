@@ -87,8 +87,8 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
 
   // === 4대보험 계산 (월 기준) ===
 
-  // 과세 대상 월 소득 (비과세 제외)
-  const taxableMonthly = monthlySalary - nonTaxableAllowance;
+  // 과세 대상 월 소득 (비과세 제외, 최소 0)
+  const taxableMonthly = Math.max(0, monthlySalary - nonTaxableAllowance);
 
   // 국민연금: 상한액 적용
   const pensionBase = Math.min(taxableMonthly, NATIONAL_PENSION_UPPER_LIMIT);
@@ -113,9 +113,9 @@ export function calculateSalary(input: SalaryInput): SalaryResult {
 
   // === 소득세 계산 (연 기준 → 월 환산) ===
 
-  // 1. 비과세 제외한 과세 대상 연소득
+  // 1. 비과세 제외한 과세 대상 연소득 (최소 0)
   const annualNonTaxable = nonTaxableAllowance * 12;
-  const taxableAnnualSalary = annualSalary - annualNonTaxable;
+  const taxableAnnualSalary = Math.max(0, annualSalary - annualNonTaxable);
 
   // 2. 근로소득공제
   const earnedIncomeDeduction = calcEarnedIncomeDeduction(taxableAnnualSalary);

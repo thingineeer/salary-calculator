@@ -3,19 +3,28 @@ import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: '2026 연봉 실수령액 계산기 - 4대보험 소득세 자동 계산',
+  title: {
+    default: '2026 연봉 실수령액 계산기 - 세후 월급 4대보험 소득세 자동 계산',
+    template: '%s | 2026 연봉 실수령액 계산기',
+  },
   description:
-    '2026년 최신 세율 기준 연봉 실수령액을 자동으로 계산합니다. 4대보험료, 소득세, 지방소득세 공제 후 월급 실수령액을 확인하세요.',
+    '2026년 최신 세율 기준 연봉 실수령액 계산기. 연봉 입력만으로 4대보험, 소득세 공제 후 세후 월급을 자동 계산합니다. 세전 세후 비교, 연봉별 실수령액 비교표, 이직 시뮬레이터까지.',
   keywords:
-    '연봉계산기, 실수령액계산기, 월급계산기, 세후연봉, 4대보험계산, 소득세계산, 2026연봉계산기, 연봉실수령액',
+    '연봉계산기, 실수령액계산기, 월급계산기, 세후월급, 세전세후, 4대보험계산, 소득세계산, 2026연봉계산기, 연봉실수령액, 월급실수령액, 연봉세후, 급여계산기',
   metadataBase: new URL('https://salary-calc.kr'),
   openGraph: {
-    title: '2026 연봉 실수령액 계산기',
+    title: '연봉 계산기 | 2026년 세후 월급 실수령액 자동 계산',
     description:
-      '연봉을 입력하면 4대보험과 세금 공제 후 실수령액을 바로 확인! 2026년 최신 세율 기준.',
+      '연봉을 입력하면 4대보험·소득세 공제 후 세후 월급을 바로 확인! 2026년 최신 세율 기준 연봉 실수령액 계산기.',
     type: 'website',
     locale: 'ko_KR',
     url: 'https://salary-calc.kr',
+    siteName: 'salary-calc.kr',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '2026 연봉 실수령액 계산기 - 세후 월급 자동 계산',
+    description: '연봉 입력만으로 4대보험·소득세 공제 후 월급 실수령액을 확인하세요.',
   },
   alternates: {
     canonical: 'https://salary-calc.kr',
@@ -23,6 +32,9 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    'max-snippet': -1,
+    'max-image-preview': 'large' as const,
+    'max-video-preview': -1,
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
@@ -43,8 +55,8 @@ export default function RootLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    name: '2026 연봉 실수령액 계산기',
-    description: '4대보험 및 소득세 공제 후 월 실수령액 자동 계산',
+    name: '2026 연봉 실수령액 계산기 - 세후 월급 자동 계산',
+    description: '2026년 최신 세율 기준, 연봉 입력만으로 4대보험·소득세 공제 후 세후 월급 실수령액을 자동 계산합니다.',
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
     url: 'https://salary-calc.kr',
@@ -104,14 +116,14 @@ export default function RootLayout({
         name: '국민연금에 상한액이 있나요?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: '네, 2026년 기준 국민연금 상한 소득월액은 약 590만원으로, 월 소득이 이를 초과하더라도 590만원 기준으로 보험료가 산정됩니다.',
+          text: '네, 2026년 기준 국민연금 상한 소득월액은 637만원으로, 월 소득이 이를 초과하더라도 637만원 기준으로 보험료가 산정됩니다.',
         },
       },
     ],
   };
 
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <meta name="color-scheme" content="light dark" />
         <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
