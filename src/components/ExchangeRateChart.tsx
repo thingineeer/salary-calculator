@@ -1,208 +1,220 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
+  ReferenceLine,
+  ReferenceDot,
 } from 'recharts';
-import { HISTORICAL_RATES } from '@/lib/exchange-rates';
 
-// 시간프레임 정의
+// 시간프레임 정의 (네이버 금융 스타일)
 const TIMEFRAMES = [
   { key: '1M', label: '1개월' },
-  { key: '6M', label: '6개월' },
+  { key: '3M', label: '3개월' },
   { key: '1Y', label: '1년' },
-  { key: 'ALL', label: '전체' },
+  { key: '3Y', label: '3년' },
+  { key: '5Y', label: '5년' },
 ] as const;
 
 type TimeframeKey = (typeof TIMEFRAMES)[number]['key'];
 
 interface ChartDataPoint {
+  date: string;
   label: string;
   rate: number;
 }
 
-// 전체 월별 데이터를 시간순으로 정렬하여 추출
-function getAllMonthlyPoints(): { year: number; month: number; rate: number }[] {
-  const points: { year: number; month: number; rate: number }[] = [];
-  const years = Object.keys(HISTORICAL_RATES).map(Number).sort();
-
-  for (const year of years) {
-    const months = Object.keys(HISTORICAL_RATES[year.toString()])
-      .map(Number)
-      .sort((a, b) => a - b);
-    for (const month of months) {
-      points.push({
-        year,
-        month,
-        rate: HISTORICAL_RATES[year.toString()][month.toString()],
-      });
-    }
-  }
-
-  return points;
+interface HighLow {
+  rate: number;
+  date: string;
 }
 
-// 1개월: 최근 2개 월 데이터 사이를 30일로 선형 보간
-function build1MData(
-  allPoints: { year: number; month: number; rate: number }[]
+interface ApiResponse {
+  rates: Record<string, number>;
+  high: HighLow;
+  low: HighLow;
+  latest: { rate: number; date: string };
+  change: { diff: number; pct: string };
+  period: string;
+  source: string;
+}
+
+// API 응답 → 차트 데이터 변환
+function apiDataToChart(
+  rates: Record<string, number>,
+  timeframe: TimeframeKey
 ): ChartDataPoint[] {
-  if (allPoints.length < 2) return [];
+  const entries = Object.entries(rates).sort(([a], [b]) => a.localeCompare(b));
+  if (entries.length === 0) return [];
 
-  const last = allPoints[allPoints.length - 1];
-  const prev = allPoints[allPoints.length - 2];
-
-  const startRate = prev.rate;
-  const endRate = last.rate;
-  const totalDays = 30;
-
-  // 시작 날짜 계산 (이전 달의 1일부터 현재 달의 마지막 날짜)
-  const startMonth = prev.month;
-  const startYear = prev.year;
-
-  const result: ChartDataPoint[] = [];
-
-  for (let d = 0; d <= totalDays; d++) {
-    const progress = d / totalDays;
-    // 약간의 자연스러운 곡선을 위해 사인 보간 적용
-    const smoothProgress =
-      progress < 0.5
-        ? 2 * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-    const rate = Math.round(startRate + (endRate - startRate) * smoothProgress);
-
-    // 날짜 라벨 생성
-    const date = new Date(startYear, startMonth - 1, 1);
-    date.setDate(date.getDate() + d);
-    const label = `${date.getMonth() + 1}/${date.getDate()}`;
-
-    // 3일 간격으로 데이터 포인트 생성 (너무 많으면 차트가 복잡)
-    if (d % 3 === 0 || d === totalDays) {
-      result.push({ label, rate });
-    }
-  }
-
-  return result;
-}
-
-// 6개월: 최근 6개 월별 포인트
-function build6MData(
-  allPoints: { year: number; month: number; rate: number }[]
-): ChartDataPoint[] {
-  const sliced = allPoints.slice(-6);
-  return sliced.map((p) => ({
-    label: `${p.year}.${String(p.month).padStart(2, '0')}`,
-    rate: p.rate,
-  }));
-}
-
-// 1년: 최근 12개 월별 포인트
-function build1YData(
-  allPoints: { year: number; month: number; rate: number }[]
-): ChartDataPoint[] {
-  const sliced = allPoints.slice(-12);
-  return sliced.map((p) => ({
-    label: `${p.year}.${String(p.month).padStart(2, '0')}`,
-    rate: p.rate,
-  }));
-}
-
-// 전체: 연 평균으로 집계
-function buildAllData(): ChartDataPoint[] {
-  const years = Object.keys(HISTORICAL_RATES)
-    .map(Number)
-    .sort();
-
-  return years.map((year) => {
-    const yearData = HISTORICAL_RATES[year.toString()];
-    const monthValues = Object.values(yearData) as number[];
-    const avg = Math.round(
-      monthValues.reduce((sum, v) => sum + v, 0) / monthValues.length
-    );
-    return { label: `${year}`, rate: avg };
-  });
-}
-
-// timeframe에 따라 Y축 domain 패딩 결정
-function getYAxisPadding(timeframe: TimeframeKey): number {
+  // 기간별 샘플링 간격 결정
+  let step: number;
   switch (timeframe) {
-    case '1M':
-      return 5;
-    case '6M':
-      return 10;
-    case '1Y':
-      return 20;
-    case 'ALL':
-      return 50;
+    case '1M': step = 1; break;          // 매일
+    case '3M': step = Math.max(1, Math.floor(entries.length / 60)); break;  // ~60 포인트
+    case '1Y': step = Math.max(1, Math.floor(entries.length / 52)); break;  // 주간 ~52 포인트
+    case '3Y': step = Math.max(1, Math.floor(entries.length / 78)); break;  // 2주간 ~78 포인트
+    case '5Y': step = Math.max(1, Math.floor(entries.length / 100)); break; // ~100 포인트
+    default: step = 1;
   }
+
+  const sampled: ChartDataPoint[] = [];
+  for (let i = 0; i < entries.length; i += step) {
+    const [date, rate] = entries[i];
+    sampled.push({
+      date,
+      label: formatDateLabel(date, timeframe),
+      rate,
+    });
+  }
+
+  // 마지막 포인트 항상 포함
+  const lastEntry = entries[entries.length - 1];
+  if (sampled[sampled.length - 1]?.date !== lastEntry[0]) {
+    sampled.push({
+      date: lastEntry[0],
+      label: formatDateLabel(lastEntry[0], timeframe),
+      rate: lastEntry[1],
+    });
+  }
+
+  return sampled;
 }
 
-// 차트 데이터 빌드
-function buildChartData(timeframe: TimeframeKey): ChartDataPoint[] {
-  const allPoints = getAllMonthlyPoints();
+function formatDateLabel(date: string, timeframe: TimeframeKey): string {
+  const parts = date.split('-');
+  const mm = parts[1];
+  const dd = parts[2];
 
   switch (timeframe) {
     case '1M':
-      return build1MData(allPoints);
-    case '6M':
-      return build6MData(allPoints);
+      return `${parseInt(mm)}/${parseInt(dd)}`;
+    case '3M':
+      return `${parseInt(mm)}/${parseInt(dd)}`;
     case '1Y':
-      return build1YData(allPoints);
-    case 'ALL':
-      return buildAllData();
+      return `${parts[0].slice(2)}/${mm}`;
+    case '3Y':
+    case '5Y':
+      return `${parts[0].slice(2)}/${mm}`;
+    default:
+      return `${mm}/${dd}`;
   }
+}
+
+function formatShortDate(date: string): string {
+  const d = new Date(date);
+  return `${d.getMonth() + 1}/${d.getDate()}`;
 }
 
 export default function ExchangeRateChart() {
   const [activeTimeframe, setActiveTimeframe] = useState<TimeframeKey>('1Y');
+  const [apiCache, setApiCache] = useState<Record<string, ApiResponse>>({});
+  const [loading, setLoading] = useState<Record<string, boolean>>({});
 
-  const chartData = useMemo(
-    () => buildChartData(activeTimeframe),
-    [activeTimeframe]
-  );
+  const fetchData = useCallback(async (tf: TimeframeKey) => {
+    if (apiCache[tf]) return;
 
-  const yAxisPadding = getYAxisPadding(activeTimeframe);
+    setLoading((prev) => ({ ...prev, [tf]: true }));
+    try {
+      const res = await fetch(`/api/exchange-rate/history?period=${tf}`);
+      if (!res.ok) throw new Error('API error');
+      const json: ApiResponse = await res.json();
+      setApiCache((prev) => ({ ...prev, [tf]: json }));
+    } catch {
+      // 실패 시 무시 - 로딩 상태만 해제
+    } finally {
+      setLoading((prev) => ({ ...prev, [tf]: false }));
+    }
+  }, [apiCache]);
 
-  // 변동률 계산
-  const rateChange = useMemo(() => {
-    if (chartData.length < 2) return null;
-    const first = chartData[0].rate;
-    const last = chartData[chartData.length - 1].rate;
-    const diff = last - first;
-    const pct = ((diff / first) * 100).toFixed(1);
-    return { diff, pct, isUp: diff > 0 };
-  }, [chartData]);
+  useEffect(() => {
+    fetchData(activeTimeframe);
+  }, [activeTimeframe, fetchData]);
+
+  const apiData = apiCache[activeTimeframe];
+  const isLoading = loading[activeTimeframe] && !apiData;
+
+  const chartData = useMemo(() => {
+    if (!apiData?.rates) return [];
+    return apiDataToChart(apiData.rates, activeTimeframe);
+  }, [apiData, activeTimeframe]);
+
+  // 차트에서 최고/최저 포인트의 label 찾기
+  const highLowLabels = useMemo(() => {
+    if (!apiData) return null;
+    const highPoint = chartData.find((p) => p.date === apiData.high.date);
+    const lowPoint = chartData.find((p) => p.date === apiData.low.date);
+
+    // 정확히 일치하는 포인트가 없으면 가장 가까운 포인트 찾기
+    const findClosest = (targetDate: string) => {
+      let closest = chartData[0];
+      let minDiff = Infinity;
+      for (const p of chartData) {
+        const diff = Math.abs(new Date(p.date).getTime() - new Date(targetDate).getTime());
+        if (diff < minDiff) {
+          minDiff = diff;
+          closest = p;
+        }
+      }
+      return closest;
+    };
+
+    return {
+      high: highPoint || findClosest(apiData.high.date),
+      low: lowPoint || findClosest(apiData.low.date),
+    };
+  }, [chartData, apiData]);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 space-y-4">
+      {/* 헤더: 현재가 + 변동 */}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
-            환율 추이 (KRW/USD)
+            환율 추이 (USD/KRW)
           </h3>
-          {rateChange && (
-            <p className="text-sm mt-0.5">
-              <span className="text-gray-500 dark:text-gray-400">
-                기간 변동{' '}
+          {apiData && (
+            <div className="flex items-baseline gap-2 mt-1">
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-50">
+                {apiData.latest.rate.toLocaleString('ko-KR')}원
               </span>
               <span
-                className={
-                  rateChange.isUp
-                    ? 'text-red-500 dark:text-red-400 font-medium'
-                    : 'text-blue-500 dark:text-blue-400 font-medium'
-                }
+                className={`text-sm font-medium ${
+                  apiData.change.diff > 0
+                    ? 'text-red-500 dark:text-red-400'
+                    : apiData.change.diff < 0
+                      ? 'text-blue-500 dark:text-blue-400'
+                      : 'text-gray-500'
+                }`}
               >
-                {rateChange.isUp ? '+' : ''}
-                {rateChange.diff}원 ({rateChange.isUp ? '+' : ''}
-                {rateChange.pct}%)
+                {apiData.change.diff > 0 ? '+' : ''}
+                {apiData.change.diff}원 ({apiData.change.diff > 0 ? '+' : ''}
+                {apiData.change.pct}%)
               </span>
-            </p>
+            </div>
+          )}
+          {/* 최고/최저 요약 */}
+          {apiData && (
+            <div className="flex gap-4 mt-1.5 text-xs">
+              <span className="text-red-500 dark:text-red-400">
+                최고 {apiData.high.rate.toLocaleString('ko-KR')}원
+                <span className="text-gray-400 dark:text-gray-500 ml-1">
+                  ({formatShortDate(apiData.high.date)})
+                </span>
+              </span>
+              <span className="text-blue-500 dark:text-blue-400">
+                최저 {apiData.low.rate.toLocaleString('ko-KR')}원
+                <span className="text-gray-400 dark:text-gray-500 ml-1">
+                  ({formatShortDate(apiData.low.date)})
+                </span>
+              </span>
+            </div>
           )}
         </div>
 
@@ -210,7 +222,7 @@ export default function ExchangeRateChart() {
         <div
           className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1"
           role="tablist"
-          aria-label="환율 차트 시간프레임 선택"
+          aria-label="환율 차트 기간 선택"
         >
           {TIMEFRAMES.map((tf) => (
             <button
@@ -218,7 +230,7 @@ export default function ExchangeRateChart() {
               role="tab"
               aria-selected={activeTimeframe === tf.key}
               onClick={() => setActiveTimeframe(tf.key)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 ${
                 activeTimeframe === tf.key
                   ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-300 shadow-sm'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
@@ -230,73 +242,142 @@ export default function ExchangeRateChart() {
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={350}>
-        <LineChart
-          data={chartData}
-          margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-        >
-          <CartesianGrid
-            strokeDasharray="3 3"
-            stroke="#e5e7eb"
-            className="dark:opacity-20"
-          />
-          <XAxis
-            dataKey="label"
-            tick={{ fill: '#6b7280', fontSize: 12 }}
-            stroke="#d1d5db"
-            interval={activeTimeframe === '1M' ? 1 : 'preserveStartEnd'}
-            angle={activeTimeframe === 'ALL' ? -45 : 0}
-            textAnchor={activeTimeframe === 'ALL' ? 'end' : 'middle'}
-            height={activeTimeframe === 'ALL' ? 50 : 30}
-          />
-          <YAxis
-            tick={{ fill: '#6b7280', fontSize: 12 }}
-            stroke="#d1d5db"
-            domain={[
-              (dataMin: number) => Math.floor((dataMin - yAxisPadding) / 10) * 10,
-              (dataMax: number) => Math.ceil((dataMax + yAxisPadding) / 10) * 10,
-            ]}
-            tickFormatter={(value: number) =>
-              value.toLocaleString('ko-KR')
-            }
-          />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: '#1f2937',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#fff',
-            }}
-            formatter={(value) => [
-              `${Number(value).toLocaleString('ko-KR')}원`,
-              '환율',
-            ]}
-            labelStyle={{ color: '#9ca3af', marginBottom: '4px' }}
-          />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="rate"
-            stroke="#3b82f6"
-            dot={
-              activeTimeframe === '1M'
-                ? false
-                : { fill: '#3b82f6', r: activeTimeframe === 'ALL' ? 4 : 5 }
-            }
-            activeDot={{ r: 7 }}
-            strokeWidth={2}
-            name="환율 (원/달러)"
-            animationDuration={500}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      {/* 차트 */}
+      {isLoading ? (
+        <div className="h-[350px] flex items-center justify-center">
+          <div className="text-gray-400 dark:text-gray-500 text-sm animate-pulse">
+            환율 데이터를 불러오는 중...
+          </div>
+        </div>
+      ) : chartData.length > 0 && apiData ? (
+        <ResponsiveContainer width="100%" height={350}>
+          <AreaChart
+            data={chartData}
+            margin={{ top: 15, right: 10, left: 0, bottom: 5 }}
+          >
+            <defs>
+              <linearGradient id="rateGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#e5e7eb"
+              className="dark:opacity-20"
+              vertical={false}
+            />
+            <XAxis
+              dataKey="label"
+              tick={{ fill: '#6b7280', fontSize: 11 }}
+              stroke="#d1d5db"
+              tickLine={false}
+              interval="preserveStartEnd"
+            />
+            <YAxis
+              tick={{ fill: '#6b7280', fontSize: 11 }}
+              stroke="#d1d5db"
+              tickLine={false}
+              axisLine={false}
+              domain={[
+                (dataMin: number) => Math.floor((dataMin - 15) / 10) * 10,
+                (dataMax: number) => Math.ceil((dataMax + 15) / 10) * 10,
+              ]}
+              tickFormatter={(v: number) => v.toLocaleString('ko-KR')}
+              width={55}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#1f2937',
+                border: 'none',
+                borderRadius: '8px',
+                color: '#fff',
+                fontSize: '13px',
+              }}
+              formatter={(value) => [
+                `${Number(value).toLocaleString('ko-KR')}원`,
+                'USD/KRW',
+              ]}
+              labelStyle={{ color: '#9ca3af', marginBottom: '4px' }}
+            />
 
-      <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-        {activeTimeframe === '1M'
-          ? '최근 1개월 추정 추이 (월별 데이터 기반 보간)'
-          : activeTimeframe === 'ALL'
-            ? '2015~2026년 연 평균 환율 (과거 데이터 기반)'
-            : '과거 데이터 기반 추이 (실제 환율과 다를 수 있습니다)'}
+            {/* 최고점 수평 점선 */}
+            <ReferenceLine
+              y={apiData.high.rate}
+              stroke="#ef4444"
+              strokeDasharray="4 4"
+              strokeOpacity={0.5}
+            />
+            {/* 최저점 수평 점선 */}
+            <ReferenceLine
+              y={apiData.low.rate}
+              stroke="#3b82f6"
+              strokeDasharray="4 4"
+              strokeOpacity={0.5}
+            />
+
+            <Area
+              type="monotone"
+              dataKey="rate"
+              stroke="#3b82f6"
+              strokeWidth={2}
+              fill="url(#rateGradient)"
+              animationDuration={500}
+              dot={false}
+              activeDot={{ r: 5, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }}
+            />
+
+            {/* 최고점 마커 */}
+            {highLowLabels?.high && (
+              <ReferenceDot
+                x={highLowLabels.high.label}
+                y={apiData.high.rate}
+                r={5}
+                fill="#ef4444"
+                stroke="#fff"
+                strokeWidth={2}
+                label={{
+                  value: `최고 ${apiData.high.rate.toLocaleString('ko-KR')}`,
+                  position: 'top',
+                  fill: '#ef4444',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  offset: 10,
+                }}
+              />
+            )}
+
+            {/* 최저점 마커 */}
+            {highLowLabels?.low && (
+              <ReferenceDot
+                x={highLowLabels.low.label}
+                y={apiData.low.rate}
+                r={5}
+                fill="#3b82f6"
+                stroke="#fff"
+                strokeWidth={2}
+                label={{
+                  value: `최저 ${apiData.low.rate.toLocaleString('ko-KR')}`,
+                  position: 'bottom',
+                  fill: '#3b82f6',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  offset: 10,
+                }}
+              />
+            )}
+          </AreaChart>
+        </ResponsiveContainer>
+      ) : (
+        <div className="h-[350px] flex items-center justify-center">
+          <div className="text-gray-400 dark:text-gray-500 text-sm">
+            데이터를 불러올 수 없습니다
+          </div>
+        </div>
+      )}
+
+      <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
+        ECB(유럽중앙은행) 기준 환율 · 한국 시장 고시환율과 소폭 차이가 있을 수 있습니다
       </p>
     </div>
   );

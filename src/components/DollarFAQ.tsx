@@ -27,7 +27,7 @@ const faqItems: FAQItem[] = [
     id: 'faq-3',
     question: '환율은 어디서 가져온 것인가요?',
     answer:
-      '이 계산기의 환율은 참고용 샘플 데이터입니다. 실제 국제 송금이나 환전이 필요하다면 한국은행, 각 은행, 또는 외환 전문 업체의 최신 환율을 확인하세요.',
+      '현재 환율은 페이지 접속 시 실시간 API(open.er-api.com)에서 자동으로 가져옵니다. 다만 참고용이므로, 실제 국제 송금이나 환전이 필요하다면 한국은행, 각 은행, 또는 외환 전문 업체의 최신 고시환율을 확인하세요.',
   },
   {
     id: 'faq-4',
@@ -80,7 +80,7 @@ export default function DollarFAQ() {
           <div key={item.id} className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
             <button
               onClick={() => toggleQuestion(item.id)}
-              className="w-full px-4 py-3 text-left font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition flex items-center justify-between"
+              className="w-full px-4 py-3 text-left font-medium text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition flex items-center justify-between focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-xl"
               aria-expanded={openIds.has(item.id)}
               aria-controls={`${item.id}-content`}
             >
