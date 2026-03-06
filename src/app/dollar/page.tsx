@@ -132,6 +132,10 @@ export default function DollarPage() {
           pastAnnualSalary={pastSalary}
         />
 
+        <p className="text-xs text-gray-500 dark:text-gray-400 text-center -mt-4">
+          * 세후 금액은 부양가족 1명(본인), 비과세 월 20만원 기준으로 계산됩니다.
+        </p>
+
         <AdBanner format="auto" adPosition="after_result" className="w-full min-h-[90px]" />
 
         <div className="content-auto">

@@ -7,6 +7,7 @@ import { formatNumber } from '@/lib/format';
 import { getSalaryPercentile } from '@/lib/percentile';
 import { getSalaryPageData, SALARY_AMOUNTS } from '@/lib/salary-seo-data';
 import AdBanner from '@/components/AdBanner';
+import Footer from '@/components/Footer';
 import { CalculatorIcon, ChevronDownIcon, ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
 
 interface PageProps {
@@ -31,15 +32,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 
   return {
-    title: `${data.title} - 2026년 세후 월급 ${formatNumber(result.netSalary)}원`,
-    description: data.description,
+    title: `연봉 ${amount}만원 실수령액 - 2026 세후 월급 ${Math.round(result.netSalary / 10000)}만원`,
+    description: `${data.description} 4대보험·소득세 공제 후 월 실수령액 ${formatNumber(result.netSalary)}원, 실효세율 ${result.effectiveTaxRate}%.`,
+    keywords: `연봉 ${formatNumber(amount)}만원, ${formatNumber(amount)}만원 실수령액, 연봉 ${formatNumber(amount)} 세후, 월급 실수령액`,
     alternates: { canonical: `/salary/${amount}` },
     openGraph: {
-      title: `${data.title} | 월 실수령 ${formatNumber(result.netSalary)}원`,
-      description: data.description,
+      title: `연봉 ${formatNumber(amount)}만원 실수령액 | 세후 월급 ${formatNumber(result.netSalary)}원`,
+      description: `2026년 기준 연봉 ${formatNumber(amount)}만원의 세후 월급은 ${formatNumber(result.netSalary)}원입니다. 4대보험·소득세 공제 내역을 확인하세요.`,
       type: 'article',
       locale: 'ko_KR',
       url: `/salary/${amount}`,
+      siteName: 'salary-calc.kr',
     },
   };
 }
@@ -250,9 +253,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
         </section>
       </main>
 
-      <footer className="text-center py-6 text-xs text-gray-400 dark:text-gray-500">
-        <Link href="/" className="hover:underline">salary-calc.kr</Link> · 2026년 세율 기준
-      </footer>
+      <Footer />
 
       <script
         type="application/ld+json"

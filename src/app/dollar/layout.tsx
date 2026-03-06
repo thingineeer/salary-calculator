@@ -1,22 +1,22 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title:
-    '연봉 달러 환산 계산기 - 환율 기준 월급 USD 변환 | salary-calc.kr',
+  title: '연봉 달러 환산 계산기 - 내 월급 달러로 얼마? 2026 USD 환율 변환',
   description:
-    '내 연봉을 달러로 환산하면 얼마? 현재 환율과 과거 환율로 비교하는 연봉 달러 계산기. 세후 실수령액 기준 USD, EUR, JPY 등 다중 통화 변환.',
+    '내 연봉을 달러로 환산하면 얼마? 2026년 세후 실수령액 기준 USD, EUR, JPY, CNY 등 다중 통화 변환. 과거 환율 비교와 해외 연봉 비교까지.',
   keywords:
-    '연봉 달러 환산, 월급 달러 계산, 연봉 USD 변환, 환율 연봉 계산기, 해외 연봉 비교, 달러 월급, 연봉 환산 계산기',
+    '연봉 달러 환산, 월급 달러 계산, 연봉 USD 변환, 환율 연봉 계산기, 해외 연봉 비교, 달러 월급, 연봉 환산 계산기, 월급 환율, 세후 달러',
   alternates: {
     canonical: 'https://salary-calc.kr/dollar',
   },
   openGraph: {
-    title: '연봉 달러 환산 계산기 - USD 환율 기반 연봉 변환',
+    title: '연봉 달러 환산 계산기 | 세후 월급 USD·EUR·JPY 변환',
     description:
-      '연봉을 달러로 환산하면 얼마? 현재 환율 기준 월급 실수령액을 USD로 변환하세요.',
+      '내 연봉을 달러로 환산하면 얼마? 세후 실수령액 기준으로 USD, EUR, JPY 등 다중 통화 변환.',
     type: 'website',
     locale: 'ko_KR',
     url: 'https://salary-calc.kr/dollar',
+    siteName: 'salary-calc.kr',
   },
 };
 
