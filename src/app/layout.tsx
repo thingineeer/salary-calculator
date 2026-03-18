@@ -20,11 +20,20 @@ export const metadata: Metadata = {
     locale: 'ko_KR',
     url: 'https://salary-calc.kr',
     siteName: 'salary-calc.kr',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: '2026 연봉 실수령액 계산기 - salary-calc.kr',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: '2026 연봉 실수령액 계산기 - 세후 월급 자동 계산',
     description: '연봉 입력만으로 4대보험·소득세 공제 후 월급 실수령액을 확인하세요.',
+    images: ['/og-image.png'],
   },
   alternates: {
     canonical: 'https://salary-calc.kr',
