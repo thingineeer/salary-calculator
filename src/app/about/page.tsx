@@ -5,6 +5,18 @@ export const metadata: Metadata = {
   title: '소개 - 2026 연봉 실수령액 계산기 | 4대보험 소득세 무료 계산',
   description:
     '2026년 최신 세율 기준 연봉 실수령액 계산기를 소개합니다. 4대보험과 소득세 공제 후 월급을 빠르게 확인하세요.',
+  alternates: {
+    canonical: '/about',
+  },
+  openGraph: {
+    title: '소개 - 2026 연봉 실수령액 계산기 | 4대보험 소득세 무료 계산',
+    description:
+      '2026년 최신 세율 기준 연봉 실수령액 계산기를 소개합니다. 4대보험과 소득세 공제 후 월급을 빠르게 확인하세요.',
+    type: 'website',
+    locale: 'ko_KR',
+    url: '/about',
+    siteName: '2026 연봉 실수령액 계산기',
+  },
 };
 
 export default function AboutPage() {
@@ -36,10 +48,10 @@ export default function AboutPage() {
                 <strong>국민연금</strong> — 근로자 부담분 4.5% (상한 월 637만원)
               </li>
               <li>
-                <strong>건강보험</strong> — 근로자 부담분 3.545%
+                <strong>건강보험</strong> — 근로자 부담분 3.595%
               </li>
               <li>
-                <strong>장기요양보험</strong> — 건강보험료의 12.95%
+                <strong>장기요양보험</strong> — 건강보험료의 13.14%
               </li>
               <li>
                 <strong>고용보험</strong> — 근로자 부담분 0.9%

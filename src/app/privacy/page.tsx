@@ -4,6 +4,17 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: '개인정보처리방침 - 연봉 실수령액 계산기',
   description: '연봉 실수령액 계산기의 개인정보처리방침입니다.',
+  alternates: {
+    canonical: '/privacy',
+  },
+  openGraph: {
+    title: '개인정보처리방침 - 연봉 실수령액 계산기',
+    description: '연봉 실수령액 계산기의 개인정보처리방침입니다.',
+    type: 'website',
+    locale: 'ko_KR',
+    url: '/privacy',
+    siteName: '2026 연봉 실수령액 계산기',
+  },
 };
 
 export default function PrivacyPage() {
@@ -39,6 +50,11 @@ export default function PrivacyPage() {
             <p className="mt-2">
               이 정보는 Vercel Analytics를 통해 익명으로 수집되며, 개인을 식별할 수
               없습니다.
+            </p>
+            <p className="mt-2">
+              또한 Google Analytics 4(GA4)를 통해 방문자의 사이트 이용 패턴을
+              분석합니다. 수집 데이터는 페이지 조회, 체류 시간, 사용 기기 정보
+              등이며, 개인을 직접 식별할 수 없는 형태로 처리됩니다.
             </p>
           </section>
 
