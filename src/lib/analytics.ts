@@ -1,6 +1,3 @@
-// GA4 Measurement ID
-export const GA_MEASUREMENT_ID = 'G-B7WKMPWCD3';
-
 // GA4 이벤트 전송 헬퍼
 export const sendGAEvent = (
   eventName: string,
@@ -101,16 +98,6 @@ export const trackScrollDepth = (depth: number) => {
 };
 
 /**
- * 외부 링크 클릭 (Footer 등)
- */
-export const trackOutboundClick = (url: string, label: string) => {
-  sendGAEvent('outbound_click', {
-    link_url: url,
-    link_label: label,
-  });
-};
-
-/**
  * 광고 영역 가시성 (향후 AdSense 최적화용)
  */
 export const trackAdImpression = (params: {
@@ -120,16 +107,6 @@ export const trackAdImpression = (params: {
   sendGAEvent('ad_impression', {
     ad_format: params.adFormat,
     ad_position: params.adPosition,
-  });
-};
-
-/**
- * 공유 이벤트 (향후 공유 기능 추가 시)
- */
-export const trackShare = (method: string) => {
-  sendGAEvent('share', {
-    method: method,
-    content_type: 'salary_result',
   });
 };
 
