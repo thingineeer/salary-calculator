@@ -55,6 +55,7 @@ export default function AdBanner({
     return (
       <div
         ref={adRef}
+        aria-hidden="true"
         className={`bg-gray-50 dark:bg-gray-800 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 text-xs pointer-events-none select-none ${className}`}
       >
         광고 영역
