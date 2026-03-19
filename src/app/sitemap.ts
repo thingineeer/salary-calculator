@@ -3,7 +3,7 @@ import { SALARY_AMOUNTS } from '@/lib/salary-seo-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const salaryPages = SALARY_AMOUNTS.map((amount) => ({
-    url: `https://salary-calc.kr/salary/${amount}`,
+    url: `https://www.salary-calc.kr/salary/${amount}`,
     lastModified: new Date('2026-03-18'),
     changeFrequency: 'monthly' as const,
     priority: 0.8,
@@ -11,38 +11,38 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     {
-      url: 'https://salary-calc.kr',
+      url: 'https://www.salary-calc.kr',
       lastModified: new Date('2026-03-18'),
       changeFrequency: 'monthly',
       priority: 1,
     },
     {
-      url: 'https://salary-calc.kr/salary',
+      url: 'https://www.salary-calc.kr/salary',
       lastModified: new Date('2026-03-18'),
       changeFrequency: 'monthly',
       priority: 0.9,
     },
     ...salaryPages,
     {
-      url: 'https://salary-calc.kr/dollar',
+      url: 'https://www.salary-calc.kr/dollar',
       lastModified: new Date('2026-03-18'),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: 'https://salary-calc.kr/about',
+      url: 'https://www.salary-calc.kr/about',
       lastModified: new Date('2026-03-18'),
       changeFrequency: 'yearly',
       priority: 0.5,
     },
     {
-      url: 'https://salary-calc.kr/privacy',
+      url: 'https://www.salary-calc.kr/privacy',
       lastModified: new Date('2026-03-18'),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
-      url: 'https://salary-calc.kr/terms',
+      url: 'https://www.salary-calc.kr/terms',
       lastModified: new Date('2026-03-18'),
       changeFrequency: 'yearly',
       priority: 0.3,

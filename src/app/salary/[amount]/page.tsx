@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'article',
       locale: 'ko_KR',
       url: `/salary/${amount}`,
-      siteName: 'salary-calc.kr',
+      siteName: '2026 연봉 실수령액 계산기',
     },
     twitter: {
       card: 'summary_large_image',

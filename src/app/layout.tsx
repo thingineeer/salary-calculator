@@ -11,15 +11,15 @@ export const metadata: Metadata = {
     '2026년 최신 세율 기준 연봉 실수령액 계산기. 연봉 입력만으로 4대보험, 소득세 공제 후 세후 월급을 자동 계산합니다. 세전 세후 비교, 연봉별 실수령액 비교표, 이직 시뮬레이터까지.',
   keywords:
     '연봉계산기, 실수령액계산기, 월급계산기, 세후월급, 세전세후, 4대보험계산, 소득세계산, 2026연봉계산기, 연봉실수령액, 월급실수령액, 연봉세후, 급여계산기',
-  metadataBase: new URL('https://salary-calc.kr'),
+  metadataBase: new URL('https://www.salary-calc.kr'),
   openGraph: {
     title: '연봉 계산기 | 2026년 세후 월급 실수령액 자동 계산',
     description:
       '연봉을 입력하면 4대보험·소득세 공제 후 세후 월급을 바로 확인! 2026년 최신 세율 기준 연봉 실수령액 계산기.',
     type: 'website',
     locale: 'ko_KR',
-    url: 'https://salary-calc.kr',
-    siteName: 'salary-calc.kr',
+    url: 'https://www.salary-calc.kr',
+    siteName: '2026 연봉 실수령액 계산기',
     images: [
       {
         url: '/og-image.png',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
   },
   alternates: {
-    canonical: 'https://salary-calc.kr',
+    canonical: 'https://www.salary-calc.kr',
   },
   robots: {
     index: true,
@@ -68,7 +68,7 @@ export default function RootLayout({
     description: '2026년 최신 세율 기준, 연봉 입력만으로 4대보험·소득세 공제 후 세후 월급 실수령액을 자동 계산합니다.',
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
-    url: 'https://salary-calc.kr',
+    url: 'https://www.salary-calc.kr',
     offers: {
       '@type': 'Offer',
       price: '0',
