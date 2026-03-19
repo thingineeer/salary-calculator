@@ -79,23 +79,40 @@ function SalaryTableContent() {
         </div>
 
         {/* 구간 탭 */}
-        <div className="flex gap-2 pb-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide touch-action-manipulation" role="tablist" aria-label="연봉 구간 선택">
-          {TABS.map((t, idx) => (
-            <button
-              key={idx}
-              role="tab"
-              aria-selected={activeTab === idx}
-              onClick={() => handleTabChange(idx)}
-              className={`flex-shrink-0 snap-start px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors touch-action-manipulation focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
-                activeTab === idx
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-          <div className="flex-shrink-0 w-1" aria-hidden="true" />
+        <div className="relative">
+          <div className="flex gap-2 pb-3 overflow-x-auto snap-x snap-mandatory touch-action-manipulation" role="tablist" aria-label="연봉 구간 선택" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+            {TABS.map((t, idx) => (
+              <button
+                key={idx}
+                role="tab"
+                aria-selected={activeTab === idx}
+                onClick={() => handleTabChange(idx)}
+                className={`flex-shrink-0 snap-start px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors touch-action-manipulation focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
+                  activeTab === idx
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+            <div className="flex-shrink-0 w-1" aria-hidden="true" />
+          </div>
+          {/* 스크롤 인디케이터 */}
+          <div className="flex justify-center gap-1 mt-1" aria-hidden="true">
+            {TABS.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleTabChange(idx)}
+                className={`h-1.5 rounded-full transition-all ${
+                  activeTab === idx
+                    ? 'w-6 bg-blue-500'
+                    : 'w-1.5 bg-gray-300 dark:bg-gray-600'
+                }`}
+                tabIndex={-1}
+              />
+            ))}
+          </div>
         </div>
 
         {/* 비교 테이블 */}
