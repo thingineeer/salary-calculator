@@ -7,8 +7,9 @@ import { formatNumber } from '@/lib/format';
 import { getSalaryPercentile } from '@/lib/percentile';
 import { getSalaryPageData, SALARY_AMOUNTS } from '@/lib/salary-seo-data';
 import AdBanner from '@/components/AdBanner';
+import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CalculatorIcon, ChevronDownIcon, ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
+import { ChevronDownIcon, ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
 
 interface PageProps {
   params: Promise<{ amount: string }>;
@@ -86,16 +87,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <CalculatorIcon size={28} />
-            <span className="text-lg font-bold text-blue-800 dark:text-blue-300">
-              2026 연봉 실수령액 계산기
-            </span>
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-3xl mx-auto px-4 py-8 space-y-8">
         <article>
