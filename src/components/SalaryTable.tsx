@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { SALARY_COMPARISON_LIST, DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
@@ -10,6 +10,7 @@ import AdBanner from '@/components/AdBanner';
 
 export default function SalaryTable() {
   const tableRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -61,7 +62,21 @@ export default function SalaryTable() {
           {rows.map((row, idx) => (
             <React.Fragment key={row.salary}>
               <tr
-                className="border-b border-gray-100 dark:border-gray-700/50"
+                className="border-b border-gray-100 dark:border-gray-700/50 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                onClick={() => {
+                  trackSalaryDetailClick(row.salary);
+                  router.push(`/salary/${row.salary}`);
+                }}
+                role="link"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    trackSalaryDetailClick(row.salary);
+                    router.push(`/salary/${row.salary}`);
+                  }
+                }}
+                aria-label={`연봉 ${formatNumber(row.salary)}만원 상세 보기`}
               >
                 <td className="py-2.5 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
                   {formatNumber(row.salary)}만원
@@ -78,14 +93,8 @@ export default function SalaryTable() {
                 <td className="py-2.5 px-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
                   {row.effectiveTaxRate}%
                 </td>
-                <td className="py-2.5 pl-2 whitespace-nowrap">
-                  <Link
-                    href={`/salary/${row.salary}`}
-                    onClick={() => trackSalaryDetailClick(row.salary)}
-                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline inline-block py-1 px-2 -my-1 -mx-2 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                  >
-                    자세히
-                  </Link>
+                <td className="py-2.5 pl-2 whitespace-nowrap text-blue-600 dark:text-blue-400 text-xs">
+                  →
                 </td>
               </tr>
               {idx === midIndex - 1 && (

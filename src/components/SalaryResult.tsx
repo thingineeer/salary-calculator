@@ -8,14 +8,20 @@ interface Props {
 }
 
 export default function SalaryResult({ result }: Props) {
-  const items = [
+  const insuranceItems = [
     { label: '국민연금', value: result.nationalPension, color: 'text-blue-600 dark:text-blue-400' },
     { label: '건강보험', value: result.healthInsurance, color: 'text-green-600 dark:text-green-400' },
     { label: '장기요양보험', value: result.longTermCare, color: 'text-teal-600 dark:text-teal-400' },
     { label: '고용보험', value: result.employmentInsurance, color: 'text-purple-600 dark:text-purple-400' },
+  ];
+
+  const taxItems = [
     { label: '소득세', value: result.incomeTax, color: 'text-orange-600 dark:text-orange-400' },
     { label: '지방소득세', value: result.localIncomeTax, color: 'text-red-600 dark:text-red-400' },
   ];
+
+  const insuranceSubtotal = result.nationalPension + result.healthInsurance + result.longTermCare + result.employmentInsurance;
+  const taxSubtotal = result.incomeTax + result.localIncomeTax;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5 card-hover" aria-label="급여 계산 결과" role="region">
@@ -42,18 +48,51 @@ export default function SalaryResult({ result }: Props) {
         <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">
           공제 내역
         </h3>
-        <ul className="space-y-2">
-          {items.map((item) => (
-            <li key={item.label} className="flex justify-between items-center">
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {item.label}
-              </span>
-              <span className={`text-sm font-semibold tabular-nums ${item.color}`}>
-                -{formatNumber(item.value)}{'\u00A0'}원
-              </span>
-            </li>
-          ))}
-        </ul>
+
+        {/* 4대보험 그룹 */}
+        <div className="mb-3">
+          <div className="flex justify-between items-center mb-1.5">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">4대보험</span>
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 tabular-nums">
+              -{formatNumber(insuranceSubtotal)}{'\u00A0'}원
+            </span>
+          </div>
+          <ul className="space-y-1.5 pl-3 border-l-2 border-gray-200 dark:border-gray-600">
+            {insuranceItems.map((item) => (
+              <li key={item.label} className="flex justify-between items-center">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {item.label}
+                </span>
+                <span className={`text-xs tabular-nums ${item.color}`}>
+                  -{formatNumber(item.value)}{'\u00A0'}원
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* 세금 그룹 */}
+        <div className="mb-3">
+          <div className="flex justify-between items-center mb-1.5">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">세금</span>
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 tabular-nums">
+              -{formatNumber(taxSubtotal)}{'\u00A0'}원
+            </span>
+          </div>
+          <ul className="space-y-1.5 pl-3 border-l-2 border-gray-200 dark:border-gray-600">
+            {taxItems.map((item) => (
+              <li key={item.label} className="flex justify-between items-center">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {item.label}
+                </span>
+                <span className={`text-xs tabular-nums ${item.color}`}>
+                  -{formatNumber(item.value)}{'\u00A0'}원
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
           <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
             공제 합계
