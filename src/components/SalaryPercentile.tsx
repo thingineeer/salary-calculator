@@ -35,7 +35,7 @@ export default function SalaryPercentile({ annualSalary }: Props) {
   const barWidth = Math.max(2, Math.min(98, 100 - percentile));
 
   return (
-    <div ref={containerRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5">
+    <div ref={containerRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 card-hover">
       <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">
         나의 연봉 위치
       </h3>

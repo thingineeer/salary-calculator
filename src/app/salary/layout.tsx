@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     type: 'article',
     locale: 'ko_KR',
     url: '/salary',
-    siteName: 'salary-calc.kr',
+    siteName: '2026 연봉 실수령액 계산기',
   },
   twitter: {
     card: 'summary_large_image',

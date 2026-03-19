@@ -1,22 +1,21 @@
 'use client';
 
-import { Suspense, useCallback } from 'react';
+import { Suspense, useRef } from 'react';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-const TABS = [
-  { label: '2,400~4,000만', min: 2400, max: 4000 },
-  { label: '4,100~5,000만', min: 4100, max: 5000 },
-  { label: '5,100~7,000만', min: 5100, max: 7000 },
-  { label: '7,100~9,000만', min: 7100, max: 9000 },
-  { label: '9,100~1억1천', min: 9100, max: 11000 },
-  { label: '1억1천~1억3천', min: 11100, max: 13000 },
-  { label: '1억3천~1억5천', min: 13100, max: 15000 },
+const SECTIONS = [
+  { id: 'sec-2400', label: '2,400~4,000만', min: 2400, max: 4000 },
+  { id: 'sec-4100', label: '4,100~5,000만', min: 4100, max: 5000 },
+  { id: 'sec-5100', label: '5,100~7,000만', min: 5100, max: 7000 },
+  { id: 'sec-7100', label: '7,100~9,000만', min: 7100, max: 9000 },
+  { id: 'sec-9100', label: '9,100~1억1천', min: 9100, max: 11000 },
+  { id: 'sec-11100', label: '1억1천~1억3천', min: 11100, max: 13000 },
+  { id: 'sec-13100', label: '1억3천~1억5천', min: 13100, max: 15000 },
 ];
 
 const REPRESENTATIVE_AMOUNTS = [2400, 3000, 3500, 4000, 4500, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000];
@@ -44,25 +43,11 @@ export default function SalaryTablePage() {
 }
 
 function SalaryTableContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  const tabFromUrl = Number(searchParams.get('tab') ?? 0);
-  const activeTab = tabFromUrl >= 0 && tabFromUrl < TABS.length ? tabFromUrl : 0;
-
-  const handleTabChange = useCallback((idx: number) => {
-    const params = new URLSearchParams(window.location.search);
-    if (idx === 0) {
-      params.delete('tab');
-    } else {
-      params.set('tab', String(idx));
-    }
-    const qs = params.toString();
-    router.replace(qs ? `?${qs}` : '/salary', { scroll: false });
-  }, [router]);
-
-  const tab = TABS[activeTab];
-  const rows = generateRows(tab.min, tab.max);
+  const scrollToSection = (id: string) => {
+    sectionRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -78,84 +63,92 @@ function SalaryTableContent() {
           </p>
         </div>
 
-        {/* 구간 탭 */}
-        <div className="flex gap-2 pb-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide touch-action-manipulation" role="tablist" aria-label="연봉 구간 선택">
-          {TABS.map((t, idx) => (
+        {/* 구간 바로가기 — 전체 보이게 flex-wrap */}
+        <nav className="flex flex-wrap gap-2" aria-label="연봉 구간 바로가기">
+          {SECTIONS.map((sec) => (
             <button
-              key={idx}
-              role="tab"
-              aria-selected={activeTab === idx}
-              onClick={() => handleTabChange(idx)}
-              className={`flex-shrink-0 snap-start px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors touch-action-manipulation focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
-                activeTab === idx
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
+              key={sec.id}
+              onClick={() => scrollToSection(sec.id)}
+              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             >
-              {t.label}
+              {sec.label}
             </button>
           ))}
-          <div className="flex-shrink-0 w-1" aria-hidden="true" />
-        </div>
+        </nav>
 
-        {/* 비교 테이블 */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 overflow-x-auto">
-          <table className="w-full text-sm tabular-nums" aria-label={`연봉 ${tab.label} 구간 실수령액 비교표`}>
-            <thead>
-              <tr className="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
-                <th className="text-left py-2 pr-2 font-medium">연봉</th>
-                <th className="text-right py-2 px-2 font-medium">월급(세전)</th>
-                <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">국민연금</th>
-                <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">건강보험</th>
-                <th className="text-right py-2 px-2 font-medium">공제합계</th>
-                <th className="text-right py-2 px-2 font-medium">실수령액</th>
-                <th className="text-right py-2 px-2 font-medium">실효세율</th>
-                <th className="py-2 pl-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                  <tr
-                    key={row.salary}
-                    className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
-                  >
-                    <td className="py-2 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
-                      {formatNumber(row.salary)}만원
-                    </td>
-                    <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                      {formatNumber(row.monthlySalary)}
-                    </td>
-                    <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap hidden sm:table-cell">
-                      {formatNumber(row.nationalPension)}
-                    </td>
-                    <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap hidden sm:table-cell">
-                      {formatNumber(row.healthInsurance)}
-                    </td>
-                    <td className="py-2 px-2 text-right text-red-500 dark:text-red-400 whitespace-nowrap">
-                      -{formatNumber(row.totalDeduction)}
-                    </td>
-                    <td className="py-2 px-2 text-right font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
-                      {formatNumber(row.netSalary)}
-                    </td>
-                    <td className="py-2 px-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                      {row.effectiveTaxRate}%
-                    </td>
-                    <td className="py-2 pl-2 whitespace-nowrap">
-                      <Link
-                        href={`/salary/${row.salary}`}
-                        className="text-xs text-blue-600 dark:text-blue-400 hover:underline inline-block py-1 px-2 -my-1 -mx-2 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        {/* 모든 구간을 하나의 페이지에 표시 */}
+        {SECTIONS.map((sec) => {
+          const rows = generateRows(sec.min, sec.max);
+          return (
+            <div
+              key={sec.id}
+              ref={(el) => { sectionRefs.current[sec.id] = el; }}
+              id={sec.id}
+              className="scroll-mt-20"
+            >
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 overflow-x-auto card-hover">
+                <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4 sticky left-0">
+                  연봉 {sec.label} 구간
+                </h2>
+                <table className="w-full text-sm tabular-nums" aria-label={`연봉 ${sec.label} 구간 실수령액 비교표`}>
+                  <thead>
+                    <tr className="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
+                      <th className="text-left py-2 pr-2 font-medium">연봉</th>
+                      <th className="text-right py-2 px-2 font-medium">월급(세전)</th>
+                      <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">국민연금</th>
+                      <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">건강보험</th>
+                      <th className="text-right py-2 px-2 font-medium">공제합계</th>
+                      <th className="text-right py-2 px-2 font-medium">실수령액</th>
+                      <th className="text-right py-2 px-2 font-medium">실효세율</th>
+                      <th className="py-2 pl-2"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((row) => (
+                      <tr
+                        key={row.salary}
+                        className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors cursor-pointer"
+                        onClick={() => window.location.href = `/salary/${row.salary}`}
+                        role="link"
+                        tabIndex={0}
+                        aria-label={`연봉 ${formatNumber(row.salary)}만원 상세 보기`}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') window.location.href = `/salary/${row.salary}`; }}
                       >
-                        자세히
-                      </Link>
-                    </td>
-                  </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                        <td className="py-2 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
+                          {formatNumber(row.salary)}만원
+                        </td>
+                        <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                          {formatNumber(row.monthlySalary)}
+                        </td>
+                        <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap hidden sm:table-cell">
+                          {formatNumber(row.nationalPension)}
+                        </td>
+                        <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap hidden sm:table-cell">
+                          {formatNumber(row.healthInsurance)}
+                        </td>
+                        <td className="py-2 px-2 text-right text-red-500 dark:text-red-400 whitespace-nowrap">
+                          -{formatNumber(row.totalDeduction)}
+                        </td>
+                        <td className="py-2 px-2 text-right font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
+                          {formatNumber(row.netSalary)}
+                        </td>
+                        <td className="py-2 px-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                          {row.effectiveTaxRate}%
+                        </td>
+                        <td className="py-2 pl-2 whitespace-nowrap text-gray-400 dark:text-gray-500">
+                          →
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+        })}
 
         {/* 상세 페이지 바로가기 */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">
           <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
             연봉별 상세 분석 페이지
           </h2>

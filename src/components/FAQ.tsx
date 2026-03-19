@@ -42,7 +42,7 @@ export default function FAQ() {
   const [openIndices, setOpenIndices] = useState<Set<number>>(new Set());
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">
       <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
         자주 묻는 질문
       </h2>

@@ -85,3 +85,82 @@ h1, h2, h3 {
   content-visibility: auto;
   contain-intrinsic-size: auto 300px;
 }
+
+/* 선택 색상 커스텀 */
+::selection {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.dark ::selection {
+  background-color: #2563eb;
+  color: #fff;
+}
+
+/* 부드러운 스크롤 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 접근성: 모션 감소 설정 존중 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 인터랙션: 카드 hover 효과 */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (hover: hover) {
+  .card-hover:hover {
+    transform: scale(1.01);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-hover:hover {
+    transform: none;
+  }
+}
+
+/* 탭 전환 애니메이션 */
+.tab-transition {
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* 탭 스크롤 fade gradient */
+.tab-scroll-container {
+  position: relative;
+}
+
+.tab-scroll-fade-right {
+  mask-image: linear-gradient(to right, black calc(100% - 40px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 40px), transparent 100%);
+}
+
+.tab-scroll-fade-right.at-end {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+/* 숫자 값 부드러운 전환 */
+.value-transition {
+  transition: color 0.2s ease;
+}
+
+/* Touch 최적화 */
+button, a, input, select, [role="tab"] {
+  -webkit-tap-highlight-color: transparent;
+}

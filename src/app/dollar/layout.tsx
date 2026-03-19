@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   keywords:
     '연봉 달러 환산, 월급 달러 계산, 연봉 USD 변환, 환율 연봉 계산기, 해외 연봉 비교, 달러 월급, 연봉 환산 계산기, 월급 환율, 세후 달러',
   alternates: {
-    canonical: 'https://salary-calc.kr/dollar',
+    canonical: 'https://www.salary-calc.kr/dollar',
   },
   openGraph: {
     title: '연봉 달러 환산 계산기 | 세후 월급 USD·EUR·JPY 변환',
@@ -15,8 +15,8 @@ export const metadata: Metadata = {
       '내 연봉을 달러로 환산하면 얼마? 세후 실수령액 기준으로 USD, EUR, JPY 등 다중 통화 변환.',
     type: 'website',
     locale: 'ko_KR',
-    url: 'https://salary-calc.kr/dollar',
-    siteName: 'salary-calc.kr',
+    url: 'https://www.salary-calc.kr/dollar',
+    siteName: 'www.salary-calc.kr',
   },
   twitter: {
     card: 'summary_large_image',
@@ -33,13 +33,13 @@ export default function DollarLayout({
   const webAppJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    '@id': 'https://salary-calc.kr/dollar#app',
+    '@id': 'https://www.salary-calc.kr/dollar#app',
     name: '연봉 달러 환산 계산기',
     description: '실수령액 기준 달러 환산 및 다중 통화 변환',
     applicationCategory: 'FinanceApplication',
     operatingSystem: 'Web',
-    url: 'https://salary-calc.kr/dollar',
-    isPartOf: { '@id': 'https://salary-calc.kr/#website' },
+    url: 'https://www.salary-calc.kr/dollar',
+    isPartOf: { '@id': 'https://www.salary-calc.kr/#website' },
     offers: {
       '@type': 'Offer',
       price: '0',

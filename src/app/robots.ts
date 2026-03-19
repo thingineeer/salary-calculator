@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/api/',
     },
-    sitemap: 'https://salary-calc.kr/sitemap.xml',
+    sitemap: 'https://www.salary-calc.kr/sitemap.xml',
   };
 }

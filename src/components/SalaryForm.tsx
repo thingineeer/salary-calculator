@@ -85,7 +85,7 @@ export default function SalaryForm({
 
   return (
     <div
-      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5"
+      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5 card-hover"
       role="form"
       aria-label="급여 정보 입력 폼"
     >
@@ -108,9 +108,11 @@ export default function SalaryForm({
           inputMode="numeric"
           value={annualSalary > 0 ? formatNumber(annualSalary) : ''}
           onChange={handleSalaryInput}
-          placeholder="예: 50,000,000…"
+          spellCheck={false}
+          autoComplete="off"
+          placeholder="예: 50,000,000\u2026"
           aria-describedby="salary-hint salary-warning"
-          className="w-full px-4 py-3 text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition"
+          className="w-full px-4 py-3 text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors"
         />
         {salaryWarning ? (
           <p id="salary-warning" className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-2 rounded-lg" role="alert">
@@ -133,7 +135,7 @@ export default function SalaryForm({
             value={Math.max(SLIDER_MIN, Math.min(annualSalary || SLIDER_MIN, SLIDER_MAX))}
             onChange={handleSlider}
             aria-label="연봉 범위 슬라이더"
-            className="w-full accent-blue-600 touch-action-manipulation"
+            className="w-full accent-blue-600 touch-manipulation"
           />
           <div id="salary-hint" className="flex justify-between text-xs text-gray-400">
             <span>2,000만</span>
@@ -161,7 +163,7 @@ export default function SalaryForm({
             onChange('dependents', value);
             trackFormInteraction({ field: 'dependents', inputMethod: 'stepper', value });
           }}
-          className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white dark:[color-scheme:dark] outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white dark:[color-scheme:dark] focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
             <option key={n} value={n}>
@@ -187,7 +189,7 @@ export default function SalaryForm({
             onChange('childrenUnder20', value);
             trackFormInteraction({ field: 'childrenUnder20', inputMethod: 'stepper', value });
           }}
-          className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white dark:[color-scheme:dark] outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white dark:[color-scheme:dark] focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
           {[0, 1, 2, 3, 4, 5].map((n) => (
             <option key={n} value={n}>
@@ -213,7 +215,7 @@ export default function SalaryForm({
           value={formatNumber(nonTaxableAllowance)}
           onChange={handleNonTaxable}
           aria-describedby="nontaxable-hint"
-          className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-700 dark:text-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         />
         <p id="nontaxable-hint" className="text-xs text-gray-400">
           기본값: {formatNumber(DEFAULT_NON_TAXABLE_ALLOWANCE)}원 (식대)

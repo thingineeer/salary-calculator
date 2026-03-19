@@ -125,9 +125,9 @@ export default function Home() {
         {/* 달러 환산 유도 배너 */}
         <div className="bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 rounded-2xl p-4 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-300">
-            💵 내 연봉, 달러로는 얼마일까?
+            내 연봉, 달러로는 얼마일까?
           </p>
-          <Link href="/dollar" className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+          <Link href={`/dollar?salary=${formData.annualSalary}`} className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
             onClick={() => trackNavigation('dollar_calculator_banner')}>
             연봉 달러 환산 →
           </Link>

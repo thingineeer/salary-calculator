@@ -7,8 +7,9 @@ import { formatNumber } from '@/lib/format';
 import { getSalaryPercentile } from '@/lib/percentile';
 import { getSalaryPageData, SALARY_AMOUNTS } from '@/lib/salary-seo-data';
 import AdBanner from '@/components/AdBanner';
+import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CalculatorIcon, ChevronDownIcon, ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
+import { ChevronDownIcon, ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
 
 interface PageProps {
   params: Promise<{ amount: string }>;
@@ -42,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'article',
       locale: 'ko_KR',
       url: `/salary/${amount}`,
-      siteName: 'salary-calc.kr',
+      siteName: '2026 연봉 실수령액 계산기',
     },
     twitter: {
       card: 'summary_large_image',
@@ -86,16 +87,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <CalculatorIcon size={28} />
-            <span className="text-lg font-bold text-blue-800 dark:text-blue-300">
-              2026 연봉 실수령액 계산기
-            </span>
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-3xl mx-auto px-4 py-8 space-y-8">
         <article>
@@ -107,7 +99,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           </p>
 
           {/* 핵심 결과 카드 */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6 card-hover">
             <div className="text-center mb-6">
               <p className="text-sm text-gray-500 dark:text-gray-400">월 실수령액</p>
               <p className="text-4xl font-bold text-blue-600 dark:text-blue-400 mt-1">
@@ -160,7 +152,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           <AdBanner format="auto" className="w-full min-h-[90px] mb-6" />
 
           {/* 대표 직종 */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6 card-hover">
             <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-3">
               연봉 {formatNumber(amount)}만원은 어떤 수준인가요?
             </h2>
@@ -173,7 +165,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           </section>
 
           {/* 절세 팁 */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6 card-hover">
             <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-3">
               연봉 {formatNumber(amount)}만원 절세 방법
             </h2>
@@ -186,7 +178,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           <AdBanner format="auto" className="w-full min-h-[90px] mb-6" />
 
           {/* FAQ */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6 card-hover">
             <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
               자주 묻는 질문
             </h2>
@@ -220,18 +212,21 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           </nav>
 
           {/* 메인 계산기 CTA */}
-          <div className="mt-8 text-center">
+          <div className="mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-center shadow-lg">
+            <p className="text-white/90 text-sm mb-2">
+              나만의 조건으로 정확하게 계산해보세요
+            </p>
             <Link
               href="/"
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+              className="inline-block bg-white text-blue-700 font-bold px-8 py-3.5 rounded-xl text-base hover:bg-blue-50 transition-colors shadow-md"
             >
-              내 연봉으로 직접 계산하기
+              내 연봉으로 직접 계산하기 →
             </Link>
           </div>
         </article>
 
         {/* 주요 연봉 구간 바로가기 */}
-        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">
           <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
             연봉별 실수령액 바로가기
           </h2>
