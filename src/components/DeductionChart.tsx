@@ -52,7 +52,7 @@ export default function DeductionChart({ result }: Props) {
   if (data.length === 0) return null;
 
   return (
-    <div ref={chartRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 [&_svg]:outline-none [&_svg]:focus:outline-none" role="figure" aria-label="공제 항목 비율 도넛 차트">
+    <div ref={chartRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover [&_svg]:outline-none [&_svg]:focus:outline-none" role="figure" aria-label="공제 항목 비율 도넛 차트">
       <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-4 text-center">
         공제 항목 비율
       </h3>

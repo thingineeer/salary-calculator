@@ -107,7 +107,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           </p>
 
           {/* 핵심 결과 카드 */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6 card-hover">
             <div className="text-center mb-6">
               <p className="text-sm text-gray-500 dark:text-gray-400">월 실수령액</p>
               <p className="text-4xl font-bold text-blue-600 dark:text-blue-400 mt-1">
@@ -160,7 +160,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           <AdBanner format="auto" className="w-full min-h-[90px] mb-6" />
 
           {/* 대표 직종 */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6 card-hover">
             <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-3">
               연봉 {formatNumber(amount)}만원은 어떤 수준인가요?
             </h2>
@@ -173,7 +173,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           </section>
 
           {/* 절세 팁 */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6 card-hover">
             <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-3">
               연봉 {formatNumber(amount)}만원 절세 방법
             </h2>
@@ -186,7 +186,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           <AdBanner format="auto" className="w-full min-h-[90px] mb-6" />
 
           {/* FAQ */}
-          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6">
+          <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6 card-hover">
             <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
               자주 묻는 질문
             </h2>
@@ -231,7 +231,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
         </article>
 
         {/* 주요 연봉 구간 바로가기 */}
-        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">
           <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
             연봉별 실수령액 바로가기
           </h2>

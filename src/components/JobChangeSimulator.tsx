@@ -76,7 +76,7 @@ export default function JobChangeSimulator({
   }, [targetSalary, currentSalary, increaseRate, netDiff]);
 
   return (
-    <div ref={containerRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+    <div ref={containerRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">
       <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
         이직 연봉 시뮬레이터
       </h2>
@@ -97,7 +97,7 @@ export default function JobChangeSimulator({
             step={1_000_000}
             value={targetSalary}
             onChange={(e) => setTargetSalary(Number(e.target.value))}
-            className="w-full accent-green-600"
+            className="w-full accent-green-600 touch-manipulation"
           />
           <div className="text-center text-sm font-semibold text-green-600 dark:text-green-400">
             {formatNumber(targetSalary)}원

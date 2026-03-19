@@ -18,13 +18,13 @@ export default function SalaryResult({ result }: Props) {
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5" aria-label="급여 계산 결과" role="region">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5 card-hover" aria-label="급여 계산 결과" role="region">
       {/* 실수령액 */}
       <div className="text-center py-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl" aria-live="polite">
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
           월 실수령액
         </p>
-        <p className="text-3xl sm:text-4xl font-extrabold text-blue-700 dark:text-blue-300 tabular-nums">
+        <p className="text-3xl sm:text-4xl font-extrabold text-blue-700 dark:text-blue-300 tabular-nums value-transition">
           {formatNumber(result.netSalary)}
           <span className="text-lg font-normal ml-1">{'\u00A0'}원</span>
         </p>

@@ -127,7 +127,7 @@ export default function Home() {
           <p className="text-sm text-gray-600 dark:text-gray-300">
             💵 내 연봉, 달러로는 얼마일까?
           </p>
-          <Link href="/dollar" className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+          <Link href="/dollar" className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
             onClick={() => trackNavigation('dollar_calculator_banner')}>
             연봉 달러 환산 →
           </Link>

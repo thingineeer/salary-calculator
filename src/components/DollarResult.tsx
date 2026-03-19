@@ -79,7 +79,7 @@ export default function DollarResult({
 
   return (
     <div
-      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 sm:p-6 space-y-5"
+      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 sm:p-6 space-y-5 card-hover"
       aria-label="달러 환산 비교 결과"
       role="region"
     >

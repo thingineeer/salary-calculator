@@ -172,7 +172,7 @@ export default function ExchangeRateChart() {
   }, [chartData, apiData]);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 space-y-4">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 card-hover">
       {/* 헤더: 현재가 + 변동 */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
@@ -230,7 +230,7 @@ export default function ExchangeRateChart() {
               role="tab"
               aria-selected={activeTimeframe === tf.key}
               onClick={() => setActiveTimeframe(tf.key)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 ${
+              className={`px-3 py-1.5 text-sm font-medium rounded-md tab-transition focus-visible:ring-2 focus-visible:ring-blue-500 ${
                 activeTimeframe === tf.key
                   ? 'bg-white dark:bg-gray-600 text-blue-600 dark:text-blue-300 shadow-sm'
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
