@@ -50,15 +50,15 @@ export default function MultiCurrencyTable({
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-4">
-      <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-4 card-hover">
+      <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">
         다중 통화 변환
-      </h3>
+      </h2>
       <p className="text-sm text-gray-600 dark:text-gray-400">
         월 실수령액을 다양한 통화로 환산한 금액입니다.
       </p>
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm tabular-nums" aria-label="다중 통화 변환 비교표">
           <thead>
             <tr className="border-b border-gray-200 dark:border-gray-700">
               <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
@@ -83,7 +83,7 @@ export default function MultiCurrencyTable({
               return (
                 <tr
                   key={currency.code}
-                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition"
+                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                 >
                   <td className="px-4 py-3">
                     <div className="font-semibold text-gray-800 dark:text-gray-200">

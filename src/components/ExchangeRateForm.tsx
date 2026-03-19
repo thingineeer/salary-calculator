@@ -64,7 +64,7 @@ export default function ExchangeRateForm({
 
   return (
     <div
-      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 sm:p-6 space-y-4"
+      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 sm:p-6 space-y-4 card-hover"
       role="form"
       aria-label="환율 비교 입력"
     >
@@ -86,6 +86,7 @@ export default function ExchangeRateForm({
                 autoComplete="off"
                 type="text"
                 inputMode="numeric"
+                spellCheck={false}
                 value={pastAnnualSalary > 0 ? formatNumber(pastAnnualSalary) : ''}
                 onChange={(e) => {
                   const oldValue = e.target.value;
@@ -96,7 +97,7 @@ export default function ExchangeRateForm({
                   restoreCursor(pastSalaryRef, oldValue, v > 0 ? formatNumber(v) : '', oldCursorPos);
                 }}
                 placeholder="41,000,000"
-                className="w-full px-3 py-2.5 pr-8 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
+                className="w-full px-3 py-2.5 pr-8 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors tabular-nums"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">원</span>
             </div>
@@ -120,7 +121,7 @@ export default function ExchangeRateForm({
                     onPresetChange(key);
                     trackExchangeRatePreset(key);
                   }}
-                  className={`text-xs px-2.5 py-1.5 rounded-lg border transition ${
+                  className={`text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
                     selectedPreset === key
                       ? 'border-blue-500 bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-400 font-semibold'
                       : 'border-gray-200 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
@@ -138,6 +139,7 @@ export default function ExchangeRateForm({
                 autoComplete="off"
                 type="text"
                 inputMode="numeric"
+                spellCheck={false}
                 value={pastRate > 0 ? formatNumber(pastRate) : ''}
                 onChange={(e) => {
                   const oldValue = e.target.value;
@@ -149,7 +151,7 @@ export default function ExchangeRateForm({
                   restoreCursor(pastRateRef, oldValue, v > 0 ? formatNumber(v) : '', oldCursorPos);
                 }}
                 placeholder="1,380"
-                className="w-full px-3 py-2.5 pr-16 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
+                className="w-full px-3 py-2.5 pr-16 text-base font-semibold border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors tabular-nums"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">원/USD</span>
             </div>
@@ -172,6 +174,7 @@ export default function ExchangeRateForm({
                 autoComplete="off"
                 type="text"
                 inputMode="numeric"
+                spellCheck={false}
                 value={annualSalary > 0 ? formatNumber(annualSalary) : ''}
                 onChange={(e) => {
                   const oldValue = e.target.value;
@@ -182,7 +185,7 @@ export default function ExchangeRateForm({
                   restoreCursor(currentSalaryRef, oldValue, v > 0 ? formatNumber(v) : '', oldCursorPos);
                 }}
                 placeholder="45,000,000"
-                className="w-full px-3 py-2.5 pr-8 text-base font-semibold border border-blue-300 dark:border-blue-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
+                className="w-full px-3 py-2.5 pr-8 text-base font-semibold border border-blue-300 dark:border-blue-600 rounded-lg dark:bg-gray-700 dark:text-white focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors tabular-nums"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">원</span>
             </div>
@@ -200,6 +203,7 @@ export default function ExchangeRateForm({
                 autoComplete="off"
                 type="text"
                 inputMode="numeric"
+                spellCheck={false}
                 value={currentRate > 0 ? formatNumber(currentRate) : ''}
                 onChange={(e) => {
                   const oldValue = e.target.value;
@@ -210,7 +214,7 @@ export default function ExchangeRateForm({
                   restoreCursor(currentRateRef, oldValue, v > 0 ? formatNumber(v) : '', oldCursorPos);
                 }}
                 placeholder="1,500"
-                className="w-full px-3 py-2.5 pr-16 text-base font-semibold border border-blue-300 dark:border-blue-600 rounded-lg dark:bg-gray-700 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition tabular-nums"
+                className="w-full px-3 py-2.5 pr-16 text-base font-semibold border border-blue-300 dark:border-blue-600 rounded-lg dark:bg-gray-700 dark:text-white focus-visible:ring-2 focus-visible:ring-blue-500 transition-colors tabular-nums"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">원/USD</span>
             </div>
