@@ -1,22 +1,21 @@
 'use client';
 
-import { Suspense, useCallback, useRef, useEffect, useState } from 'react';
+import { Suspense, useRef } from 'react';
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-const TABS = [
-  { label: '2,400~4,000만', min: 2400, max: 4000 },
-  { label: '4,100~5,000만', min: 4100, max: 5000 },
-  { label: '5,100~7,000만', min: 5100, max: 7000 },
-  { label: '7,100~9,000만', min: 7100, max: 9000 },
-  { label: '9,100~1억1천', min: 9100, max: 11000 },
-  { label: '1억1천~1억3천', min: 11100, max: 13000 },
-  { label: '1억3천~1억5천', min: 13100, max: 15000 },
+const SECTIONS = [
+  { id: 'sec-2400', label: '2,400~4,000만', min: 2400, max: 4000 },
+  { id: 'sec-4100', label: '4,100~5,000만', min: 4100, max: 5000 },
+  { id: 'sec-5100', label: '5,100~7,000만', min: 5100, max: 7000 },
+  { id: 'sec-7100', label: '7,100~9,000만', min: 7100, max: 9000 },
+  { id: 'sec-9100', label: '9,100~1억1천', min: 9100, max: 11000 },
+  { id: 'sec-11100', label: '1억1천~1억3천', min: 11100, max: 13000 },
+  { id: 'sec-13100', label: '1억3천~1억5천', min: 13100, max: 15000 },
 ];
 
 const REPRESENTATIVE_AMOUNTS = [2400, 3000, 3500, 4000, 4500, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000];
@@ -43,156 +42,12 @@ export default function SalaryTablePage() {
   );
 }
 
-function TabSection({ activeTab, onTabChange }: { activeTab: number; onTabChange: (idx: number) => void }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const [showLeft, setShowLeft] = useState(false);
-  const [showRight, setShowRight] = useState(false);
-  const scrollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // 선택된 탭이 뷰포트 중앙으로 자동 스크롤
-  useEffect(() => {
-    const btn = tabRefs.current[activeTab];
-    if (btn && scrollRef.current) {
-      const container = scrollRef.current;
-      const scrollLeft = btn.offsetLeft - container.offsetWidth / 2 + btn.offsetWidth / 2;
-      container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
-    }
-  }, [activeTab]);
-
-  // 스크롤 위치 감지 → 좌/우 화살표 표시 여부
-  const updateArrows = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setShowLeft(el.scrollLeft > 8);
-    setShowRight(el.scrollLeft + el.offsetWidth < el.scrollWidth - 8);
-  }, []);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    updateArrows();
-    el.addEventListener('scroll', updateArrows, { passive: true });
-    window.addEventListener('resize', updateArrows);
-    return () => {
-      el.removeEventListener('scroll', updateArrows);
-      window.removeEventListener('resize', updateArrows);
-    };
-  }, [updateArrows]);
-
-  // 호버 시 자동 스크롤 (Apple 스타일)
-  const startAutoScroll = useCallback((direction: 'left' | 'right') => {
-    stopAutoScroll();
-    const speed = 3;
-    scrollIntervalRef.current = setInterval(() => {
-      const el = scrollRef.current;
-      if (!el) return;
-      el.scrollLeft += direction === 'right' ? speed : -speed;
-    }, 8);
-  }, []);
-
-  const stopAutoScroll = useCallback(() => {
-    if (scrollIntervalRef.current) {
-      clearInterval(scrollIntervalRef.current);
-      scrollIntervalRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => () => stopAutoScroll(), [stopAutoScroll]);
-
-  return (
-    <div className="relative group">
-      {/* 왼쪽 스크롤 영역 + 화살표 */}
-      {showLeft && (
-        <div
-          className="absolute left-0 top-0 bottom-6 w-12 z-10 flex items-center justify-start cursor-pointer"
-          style={{ background: 'linear-gradient(to right, var(--background) 30%, transparent)' }}
-          onMouseEnter={() => startAutoScroll('left')}
-          onMouseLeave={stopAutoScroll}
-          aria-hidden="true"
-        >
-          <span className="text-gray-400 dark:text-gray-500 text-lg ml-1 select-none">‹</span>
-        </div>
-      )}
-
-      {/* 오른쪽 스크롤 영역 + 화살표 */}
-      {showRight && (
-        <div
-          className="absolute right-0 top-0 bottom-6 w-12 z-10 flex items-center justify-end cursor-pointer"
-          style={{ background: 'linear-gradient(to left, var(--background) 30%, transparent)' }}
-          onMouseEnter={() => startAutoScroll('right')}
-          onMouseLeave={stopAutoScroll}
-          aria-hidden="true"
-        >
-          <span className="text-gray-400 dark:text-gray-500 text-lg mr-1 select-none">›</span>
-        </div>
-      )}
-
-      <div
-        ref={scrollRef}
-        className="flex gap-2 pb-3 overflow-x-auto snap-x snap-mandatory touch-manipulation scrollbar-hide"
-        role="tablist"
-        aria-label="연봉 구간 선택"
-      >
-        {TABS.map((t, idx) => (
-          <button
-            key={idx}
-            ref={(el) => { tabRefs.current[idx] = el; }}
-            role="tab"
-            aria-selected={activeTab === idx}
-            onClick={() => onTabChange(idx)}
-            className={`flex-shrink-0 snap-start px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap tab-transition touch-manipulation focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
-              activeTab === idx
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-        <div className="flex-shrink-0 w-1" aria-hidden="true" />
-      </div>
-
-      {/* dot 인디케이터 */}
-      <div className="flex justify-center gap-1 mt-1" aria-hidden="true">
-        {TABS.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => onTabChange(idx)}
-            className={`h-1.5 rounded-full transition-[width,background-color] duration-200 ${
-              activeTab === idx
-                ? 'w-6 bg-blue-500'
-                : 'w-1.5 bg-gray-300 dark:bg-gray-600'
-            }`}
-            tabIndex={-1}
-            aria-hidden="true"
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function SalaryTableContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  const tabFromUrl = Number(searchParams.get('tab') ?? 0);
-  const activeTab = tabFromUrl >= 0 && tabFromUrl < TABS.length ? tabFromUrl : 0;
-
-  const handleTabChange = useCallback((idx: number) => {
-    const params = new URLSearchParams(window.location.search);
-    if (idx === 0) {
-      params.delete('tab');
-    } else {
-      params.set('tab', String(idx));
-    }
-    const qs = params.toString();
-    router.replace(qs ? `?${qs}` : '/salary', { scroll: false });
-  }, [router]);
-
-  const tab = TABS[activeTab];
-  const rows = generateRows(tab.min, tab.max);
+  const scrollToSection = (id: string) => {
+    sectionRefs.current[id]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -208,64 +63,89 @@ function SalaryTableContent() {
           </p>
         </div>
 
-        {/* 구간 탭 */}
-        <TabSection activeTab={activeTab} onTabChange={handleTabChange} />
+        {/* 구간 바로가기 — 전체 보이게 flex-wrap */}
+        <nav className="flex flex-wrap gap-2" aria-label="연봉 구간 바로가기">
+          {SECTIONS.map((sec) => (
+            <button
+              key={sec.id}
+              onClick={() => scrollToSection(sec.id)}
+              className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              {sec.label}
+            </button>
+          ))}
+        </nav>
 
-        {/* 비교 테이블 */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 overflow-x-auto card-hover">
-          <table className="w-full text-sm tabular-nums" aria-label={`연봉 ${tab.label} 구간 실수령액 비교표`}>
-            <thead>
-              <tr className="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
-                <th className="text-left py-2 pr-2 font-medium">연봉</th>
-                <th className="text-right py-2 px-2 font-medium">월급(세전)</th>
-                <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">국민연금</th>
-                <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">건강보험</th>
-                <th className="text-right py-2 px-2 font-medium">공제합계</th>
-                <th className="text-right py-2 px-2 font-medium">실수령액</th>
-                <th className="text-right py-2 px-2 font-medium">실효세율</th>
-                <th className="py-2 pl-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                  <tr
-                    key={row.salary}
-                    className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors"
-                  >
-                    <td className="py-2 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
-                      {formatNumber(row.salary)}만원
-                    </td>
-                    <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                      {formatNumber(row.monthlySalary)}
-                    </td>
-                    <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap hidden sm:table-cell">
-                      {formatNumber(row.nationalPension)}
-                    </td>
-                    <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap hidden sm:table-cell">
-                      {formatNumber(row.healthInsurance)}
-                    </td>
-                    <td className="py-2 px-2 text-right text-red-500 dark:text-red-400 whitespace-nowrap">
-                      -{formatNumber(row.totalDeduction)}
-                    </td>
-                    <td className="py-2 px-2 text-right font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
-                      {formatNumber(row.netSalary)}
-                    </td>
-                    <td className="py-2 px-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                      {row.effectiveTaxRate}%
-                    </td>
-                    <td className="py-2 pl-2 whitespace-nowrap">
-                      <Link
-                        href={`/salary/${row.salary}`}
-                        className="text-xs text-blue-600 dark:text-blue-400 hover:underline inline-block py-1 px-2 -my-1 -mx-2 rounded focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        {/* 모든 구간을 하나의 페이지에 표시 */}
+        {SECTIONS.map((sec) => {
+          const rows = generateRows(sec.min, sec.max);
+          return (
+            <div
+              key={sec.id}
+              ref={(el) => { sectionRefs.current[sec.id] = el; }}
+              id={sec.id}
+              className="scroll-mt-20"
+            >
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 overflow-x-auto card-hover">
+                <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4 sticky left-0">
+                  연봉 {sec.label} 구간
+                </h2>
+                <table className="w-full text-sm tabular-nums" aria-label={`연봉 ${sec.label} 구간 실수령액 비교표`}>
+                  <thead>
+                    <tr className="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
+                      <th className="text-left py-2 pr-2 font-medium">연봉</th>
+                      <th className="text-right py-2 px-2 font-medium">월급(세전)</th>
+                      <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">국민연금</th>
+                      <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">건강보험</th>
+                      <th className="text-right py-2 px-2 font-medium">공제합계</th>
+                      <th className="text-right py-2 px-2 font-medium">실수령액</th>
+                      <th className="text-right py-2 px-2 font-medium">실효세율</th>
+                      <th className="py-2 pl-2"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((row) => (
+                      <tr
+                        key={row.salary}
+                        className="border-b border-gray-100 dark:border-gray-700/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors cursor-pointer"
+                        onClick={() => window.location.href = `/salary/${row.salary}`}
+                        role="link"
+                        tabIndex={0}
+                        aria-label={`연봉 ${formatNumber(row.salary)}만원 상세 보기`}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') window.location.href = `/salary/${row.salary}`; }}
                       >
-                        자세히
-                      </Link>
-                    </td>
-                  </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                        <td className="py-2 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
+                          {formatNumber(row.salary)}만원
+                        </td>
+                        <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                          {formatNumber(row.monthlySalary)}
+                        </td>
+                        <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap hidden sm:table-cell">
+                          {formatNumber(row.nationalPension)}
+                        </td>
+                        <td className="py-2 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap hidden sm:table-cell">
+                          {formatNumber(row.healthInsurance)}
+                        </td>
+                        <td className="py-2 px-2 text-right text-red-500 dark:text-red-400 whitespace-nowrap">
+                          -{formatNumber(row.totalDeduction)}
+                        </td>
+                        <td className="py-2 px-2 text-right font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
+                          {formatNumber(row.netSalary)}
+                        </td>
+                        <td className="py-2 px-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                          {row.effectiveTaxRate}%
+                        </td>
+                        <td className="py-2 pl-2 whitespace-nowrap text-gray-400 dark:text-gray-500">
+                          →
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+        })}
 
         {/* 상세 페이지 바로가기 */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">
