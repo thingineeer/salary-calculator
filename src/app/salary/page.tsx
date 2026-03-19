@@ -46,7 +46,9 @@ export default function SalaryTablePage() {
 function TabSection({ activeTab, onTabChange }: { activeTab: number; onTabChange: (idx: number) => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const [atEnd, setAtEnd] = useState(false);
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(false);
+  const scrollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // 선택된 탭이 뷰포트 중앙으로 자동 스크롤
   useEffect(() => {
@@ -58,24 +60,77 @@ function TabSection({ activeTab, onTabChange }: { activeTab: number; onTabChange
     }
   }, [activeTab]);
 
-  // 스크롤 끝 감지 (fade gradient 제거용)
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-    const checkEnd = () => {
-      const isAtEnd = container.scrollLeft + container.offsetWidth >= container.scrollWidth - 8;
-      setAtEnd(isAtEnd);
-    };
-    checkEnd();
-    container.addEventListener('scroll', checkEnd, { passive: true });
-    return () => container.removeEventListener('scroll', checkEnd);
+  // 스크롤 위치 감지 → 좌/우 화살표 표시 여부
+  const updateArrows = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setShowLeft(el.scrollLeft > 8);
+    setShowRight(el.scrollLeft + el.offsetWidth < el.scrollWidth - 8);
   }, []);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    updateArrows();
+    el.addEventListener('scroll', updateArrows, { passive: true });
+    window.addEventListener('resize', updateArrows);
+    return () => {
+      el.removeEventListener('scroll', updateArrows);
+      window.removeEventListener('resize', updateArrows);
+    };
+  }, [updateArrows]);
+
+  // 호버 시 자동 스크롤 (Apple 스타일)
+  const startAutoScroll = useCallback((direction: 'left' | 'right') => {
+    stopAutoScroll();
+    const speed = 3;
+    scrollIntervalRef.current = setInterval(() => {
+      const el = scrollRef.current;
+      if (!el) return;
+      el.scrollLeft += direction === 'right' ? speed : -speed;
+    }, 8);
+  }, []);
+
+  const stopAutoScroll = useCallback(() => {
+    if (scrollIntervalRef.current) {
+      clearInterval(scrollIntervalRef.current);
+      scrollIntervalRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => () => stopAutoScroll(), [stopAutoScroll]);
+
   return (
-    <div className="relative tab-scroll-container">
+    <div className="relative group">
+      {/* 왼쪽 스크롤 영역 + 화살표 */}
+      {showLeft && (
+        <div
+          className="absolute left-0 top-0 bottom-6 w-12 z-10 flex items-center justify-start cursor-pointer"
+          style={{ background: 'linear-gradient(to right, var(--background) 30%, transparent)' }}
+          onMouseEnter={() => startAutoScroll('left')}
+          onMouseLeave={stopAutoScroll}
+          aria-hidden="true"
+        >
+          <span className="text-gray-400 dark:text-gray-500 text-lg ml-1 select-none">‹</span>
+        </div>
+      )}
+
+      {/* 오른쪽 스크롤 영역 + 화살표 */}
+      {showRight && (
+        <div
+          className="absolute right-0 top-0 bottom-6 w-12 z-10 flex items-center justify-end cursor-pointer"
+          style={{ background: 'linear-gradient(to left, var(--background) 30%, transparent)' }}
+          onMouseEnter={() => startAutoScroll('right')}
+          onMouseLeave={stopAutoScroll}
+          aria-hidden="true"
+        >
+          <span className="text-gray-400 dark:text-gray-500 text-lg mr-1 select-none">›</span>
+        </div>
+      )}
+
       <div
         ref={scrollRef}
-        className={`flex gap-2 pb-3 overflow-x-auto snap-x snap-mandatory touch-manipulation scrollbar-hide ${atEnd ? '' : 'tab-scroll-fade-right'}`}
+        className="flex gap-2 pb-3 overflow-x-auto snap-x snap-mandatory touch-manipulation scrollbar-hide"
         role="tablist"
         aria-label="연봉 구간 선택"
       >
@@ -97,7 +152,8 @@ function TabSection({ activeTab, onTabChange }: { activeTab: number; onTabChange
         ))}
         <div className="flex-shrink-0 w-1" aria-hidden="true" />
       </div>
-      {/* 스크롤 인디케이터 */}
+
+      {/* dot 인디케이터 */}
       <div className="flex justify-center gap-1 mt-1" aria-hidden="true">
         {TABS.map((_, idx) => (
           <button
