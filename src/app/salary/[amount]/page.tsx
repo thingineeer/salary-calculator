@@ -212,12 +212,15 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           </nav>
 
           {/* 메인 계산기 CTA */}
-          <div className="mt-8 text-center">
+          <div className="mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-center shadow-lg">
+            <p className="text-white/90 text-sm mb-2">
+              나만의 조건으로 정확하게 계산해보세요
+            </p>
             <Link
               href="/"
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+              className="inline-block bg-white text-blue-700 font-bold px-8 py-3.5 rounded-xl text-base hover:bg-blue-50 transition-colors shadow-md"
             >
-              내 연봉으로 직접 계산하기
+              내 연봉으로 직접 계산하기 →
             </Link>
           </div>
         </article>

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { calculateSalary, SalaryResult as SalaryResultType } from '@/lib/salary-calculator';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
@@ -26,8 +27,19 @@ const DollarFAQ = dynamic(() => import('@/components/DollarFAQ'), {
   loading: () => <div className="h-48 bg-white dark:bg-gray-800 rounded-2xl shadow-lg animate-pulse" />,
 });
 
-export default function DollarPage() {
-  const [currentSalary, setCurrentSalary] = useState(45_000_000);
+function DollarPageContent() {
+  const searchParams = useSearchParams();
+
+  const getInitialSalary = () => {
+    const salaryParam = searchParams.get('salary');
+    if (salaryParam) {
+      const parsed = Number(salaryParam);
+      if (!isNaN(parsed) && parsed > 0) return parsed;
+    }
+    return 45_000_000;
+  };
+
+  const [currentSalary, setCurrentSalary] = useState(getInitialSalary);
   const [pastSalary, setPastSalary] = useState(41_000_000);
   const [currentRate, setCurrentRate] = useState(1500);
   const [pastRate, setPastRate] = useState(1380);
@@ -158,5 +170,13 @@ export default function DollarPage() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+export default function DollarPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div>}>
+      <DollarPageContent />
+    </Suspense>
   );
 }
