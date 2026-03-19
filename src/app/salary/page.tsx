@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useCallback } from 'react';
+import { Suspense, useCallback, useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { calculateSalary } from '@/lib/salary-calculator';
@@ -43,6 +43,80 @@ export default function SalaryTablePage() {
   );
 }
 
+function TabSection({ activeTab, onTabChange }: { activeTab: number; onTabChange: (idx: number) => void }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [atEnd, setAtEnd] = useState(false);
+
+  // 선택된 탭이 뷰포트 중앙으로 자동 스크롤
+  useEffect(() => {
+    const btn = tabRefs.current[activeTab];
+    if (btn && scrollRef.current) {
+      const container = scrollRef.current;
+      const scrollLeft = btn.offsetLeft - container.offsetWidth / 2 + btn.offsetWidth / 2;
+      container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+    }
+  }, [activeTab]);
+
+  // 스크롤 끝 감지 (fade gradient 제거용)
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const checkEnd = () => {
+      const isAtEnd = container.scrollLeft + container.offsetWidth >= container.scrollWidth - 8;
+      setAtEnd(isAtEnd);
+    };
+    checkEnd();
+    container.addEventListener('scroll', checkEnd, { passive: true });
+    return () => container.removeEventListener('scroll', checkEnd);
+  }, []);
+
+  return (
+    <div className="relative tab-scroll-container">
+      <div
+        ref={scrollRef}
+        className={`flex gap-2 pb-3 overflow-x-auto snap-x snap-mandatory touch-manipulation scrollbar-hide ${atEnd ? '' : 'tab-scroll-fade-right'}`}
+        role="tablist"
+        aria-label="연봉 구간 선택"
+      >
+        {TABS.map((t, idx) => (
+          <button
+            key={idx}
+            ref={(el) => { tabRefs.current[idx] = el; }}
+            role="tab"
+            aria-selected={activeTab === idx}
+            onClick={() => onTabChange(idx)}
+            className={`flex-shrink-0 snap-start px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap tab-transition touch-manipulation focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
+              activeTab === idx
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+        <div className="flex-shrink-0 w-1" aria-hidden="true" />
+      </div>
+      {/* 스크롤 인디케이터 */}
+      <div className="flex justify-center gap-1 mt-1" aria-hidden="true">
+        {TABS.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => onTabChange(idx)}
+            className={`h-1.5 rounded-full transition-[width,background-color] duration-200 ${
+              activeTab === idx
+                ? 'w-6 bg-blue-500'
+                : 'w-1.5 bg-gray-300 dark:bg-gray-600'
+            }`}
+            tabIndex={-1}
+            aria-hidden="true"
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function SalaryTableContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -79,44 +153,10 @@ function SalaryTableContent() {
         </div>
 
         {/* 구간 탭 */}
-        <div className="relative">
-          <div className="flex gap-2 pb-3 overflow-x-auto snap-x snap-mandatory touch-action-manipulation" role="tablist" aria-label="연봉 구간 선택" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
-            {TABS.map((t, idx) => (
-              <button
-                key={idx}
-                role="tab"
-                aria-selected={activeTab === idx}
-                onClick={() => handleTabChange(idx)}
-                className={`flex-shrink-0 snap-start px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-colors touch-action-manipulation focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
-                  activeTab === idx
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-            <div className="flex-shrink-0 w-1" aria-hidden="true" />
-          </div>
-          {/* 스크롤 인디케이터 */}
-          <div className="flex justify-center gap-1 mt-1" aria-hidden="true">
-            {TABS.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleTabChange(idx)}
-                className={`h-1.5 rounded-full transition-all ${
-                  activeTab === idx
-                    ? 'w-6 bg-blue-500'
-                    : 'w-1.5 bg-gray-300 dark:bg-gray-600'
-                }`}
-                tabIndex={-1}
-              />
-            ))}
-          </div>
-        </div>
+        <TabSection activeTab={activeTab} onTabChange={handleTabChange} />
 
         {/* 비교 테이블 */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 overflow-x-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 overflow-x-auto card-hover">
           <table className="w-full text-sm tabular-nums" aria-label={`연봉 ${tab.label} 구간 실수령액 비교표`}>
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
@@ -172,7 +212,7 @@ function SalaryTableContent() {
         </div>
 
         {/* 상세 페이지 바로가기 */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">
           <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
             연봉별 상세 분석 페이지
           </h2>
