@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore, useCallback } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { trackThemeToggle, trackNavigation } from '@/lib/analytics';
 import { CalculatorIcon, SunIcon, MoonIcon } from '@/components/icons';
 
@@ -25,6 +26,9 @@ function subscribeToTheme(callback: () => void) {
 
 export default function Header() {
   const dark = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, getServerSnapshot);
+  const pathname = usePathname();
+  const isSalaryActive = pathname === '/salary' || pathname.startsWith('/salary/');
+  const isDollarActive = pathname === '/dollar' || pathname.startsWith('/dollar/');
 
   const toggleTheme = useCallback(() => {
     const next = !document.documentElement.classList.contains('dark');
@@ -52,14 +56,16 @@ export default function Header() {
           <Link
             href="/salary"
             onClick={() => trackNavigation('salary_comparison')}
-            className="text-sm font-medium px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800/40 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors"
+            aria-current={isSalaryActive ? 'page' : undefined}
+            className={`text-sm font-medium px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800/40 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors ${isSalaryActive ? 'ring-2 ring-blue-500 font-bold' : ''}`}
           >
             연봉 비교표
           </Link>
           <Link
             href="/dollar"
             onClick={() => trackNavigation('dollar_calculator')}
-            className="text-sm font-medium px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-800/40 focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors"
+            aria-current={isDollarActive ? 'page' : undefined}
+            className={`text-sm font-medium px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-800/40 focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors ${isDollarActive ? 'ring-2 ring-green-500 font-bold' : ''}`}
           >
             달러 환산
           </Link>

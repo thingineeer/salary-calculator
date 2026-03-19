@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { calculateSalary } from '@/lib/salary-calculator';
 import { SALARY_COMPARISON_LIST, DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
@@ -59,9 +59,8 @@ export default function SalaryTable() {
         </thead>
         <tbody>
           {rows.map((row, idx) => (
-            <>
+            <React.Fragment key={row.salary}>
               <tr
-                key={row.salary}
                 className="border-b border-gray-100 dark:border-gray-700/50"
               >
                 <td className="py-2.5 pr-2 font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">
@@ -96,7 +95,7 @@ export default function SalaryTable() {
                   </td>
                 </tr>
               )}
-            </>
+            </React.Fragment>
           ))}
         </tbody>
       </table>

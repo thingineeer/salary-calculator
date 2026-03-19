@@ -28,6 +28,9 @@ export default function SalaryResult({ result }: Props) {
           {formatNumber(result.netSalary)}
           <span className="text-lg font-normal ml-1">{'\u00A0'}원</span>
         </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          연간 약 {formatNumber(Math.round(result.netSalary * 12 / 10000))}만원
+        </p>
         <p className="text-xs text-gray-400 mt-2">
           세전 월급 {formatNumber(result.monthlySalary)}{'\u00A0'}원 · 실효세율{' '}
           {result.effectiveTaxRate}%

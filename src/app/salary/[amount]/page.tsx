@@ -44,6 +44,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: `/salary/${amount}`,
       siteName: 'salary-calc.kr',
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: `연봉 ${formatNumber(amount)}만원 실수령액 - 2026 세후 월급 ${Math.round(result.netSalary / 10000)}만원`,
+      description: `2026년 기준 연봉 ${formatNumber(amount)}만원의 세후 월급은 ${formatNumber(result.netSalary)}원입니다. 4대보험·소득세 공제 내역을 확인하세요.`,
+    },
   };
 }
 

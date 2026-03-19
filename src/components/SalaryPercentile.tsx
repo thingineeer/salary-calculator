@@ -49,6 +49,11 @@ export default function SalaryPercentile({ annualSalary }: Props) {
       </div>
       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
         <div
+          role="progressbar"
+          aria-valuenow={percentile}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="연봉 백분위"
           className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500"
           style={{ width: `${barWidth}%` }}
         />

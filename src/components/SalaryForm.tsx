@@ -150,6 +150,9 @@ export default function SalaryForm({
         >
           부양가족 수 (본인 포함)
         </label>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          배우자, 20세 이하 자녀 등을 포함한 수입니다
+        </p>
         <select
           id="dependents-select"
           value={dependents}

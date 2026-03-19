@@ -4,6 +4,17 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: '이용약관 - 연봉 실수령액 계산기',
   description: '연봉 실수령액 계산기의 이용약관입니다.',
+  alternates: {
+    canonical: '/terms',
+  },
+  openGraph: {
+    title: '이용약관 - 연봉 실수령액 계산기',
+    description: '연봉 실수령액 계산기의 이용약관입니다.',
+    type: 'website',
+    locale: 'ko_KR',
+    url: '/terms',
+    siteName: '2026 연봉 실수령액 계산기',
+  },
 };
 
 export default function TermsPage() {
