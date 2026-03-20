@@ -216,7 +216,7 @@ export default async function SalaryDetailPage({ params }: PageProps) {
           </nav>
 
           {/* 메인 계산기 CTA */}
-          <div className="mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6 text-center shadow-lg">
+          <div className="mt-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-4 sm:p-6 text-center shadow-lg">
             <p className="text-white/90 text-sm mb-2">
               나만의 조건으로 정확하게 계산해보세요
             </p>

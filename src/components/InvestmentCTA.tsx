@@ -43,7 +43,7 @@ export default function InvestmentCTA({ amount, netSalary }: InvestmentCTAProps)
     tier === 'high' ? 'FIRE 시뮬레이터 체험하기' : '배당금 시뮬레이터로 확인하기';
 
   return (
-    <div className="bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-700 dark:to-teal-700 rounded-2xl p-6 shadow-lg">
+    <div className="bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-700 dark:to-teal-700 rounded-2xl p-4 sm:p-6 shadow-lg">
       <p className="text-white/80 text-xs font-medium tracking-wide mb-1">
         실수령액 활용 TIP
       </p>
