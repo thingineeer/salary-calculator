@@ -39,6 +39,7 @@ public/google*.html
 # agent skills & worktrees
 .agents/
 .claude/
+!.claude/commands/
 skills-lock.json
 TODO_GA_REFACTOR.md
 
