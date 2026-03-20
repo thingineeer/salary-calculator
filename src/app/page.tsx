@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { calculateSalary, SalaryResult as SalaryResultType } from '@/lib/salary-calculator';
 import { DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
-import { trackSalaryCalculation, trackScrollDepth, trackNavigation } from '@/lib/analytics';
+import { trackSalaryCalculation, trackScrollDepth, trackNavigation, sendGAEvent } from '@/lib/analytics';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SalaryForm from '@/components/SalaryForm';
@@ -35,9 +35,61 @@ export default function Home() {
     nonTaxableAllowance: DEFAULT_NON_TAXABLE_ALLOWANCE,
   });
 
+  const [showToast, setShowToast] = useState(false);
+
+  // URL 파라미터에서 초기값 복원
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const s = params.get('s');
+    const d = params.get('d');
+    const c = params.get('c');
+    const n = params.get('n');
+
+    if (s || d || c || n) {
+      setFormData({
+        annualSalary: s ? Number(s) || 50_000_000 : 50_000_000,
+        dependents: d ? Math.max(1, Math.min(10, Number(d) || 1)) : 1,
+        childrenUnder20: c ? Math.max(0, Math.min(5, Number(c) || 0)) : 0,
+        nonTaxableAllowance: n ? Number(n) || DEFAULT_NON_TAXABLE_ALLOWANCE : DEFAULT_NON_TAXABLE_ALLOWANCE,
+      });
+    }
+  }, []);
+
   const handleChange = (field: string, value: number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+  // 공유 URL 생성 및 클립보드 복사
+  const handleShare = useCallback(() => {
+    const params = new URLSearchParams({
+      s: String(formData.annualSalary),
+      d: String(formData.dependents),
+      c: String(formData.childrenUnder20),
+      n: String(formData.nonTaxableAllowance),
+    });
+    const url = `${window.location.origin}?${params.toString()}`;
+
+    navigator.clipboard.writeText(url).then(() => {
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+      sendGAEvent('share_result', {
+        annual_salary: formData.annualSalary,
+        method: 'clipboard',
+      });
+    }).catch(() => {
+      // fallback: 구형 브라우저
+      const textarea = document.createElement('textarea');
+      textarea.value = url;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2000);
+    });
+  }, [formData]);
 
   const effectiveFormData = formData.annualSalary > 0
     ? formData
@@ -103,7 +155,7 @@ export default function Home() {
         {/* 결과 + 차트 + 백분위 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-6">
-            <SalaryResultCard result={result} />
+            <SalaryResultCard result={result} onShare={handleShare} />
             <SalaryPercentile annualSalary={formData.annualSalary} />
           </div>
           <div>
@@ -163,6 +215,15 @@ export default function Home() {
       </main>
 
       <Footer />
+
+      {/* 토스트 메시지 */}
+      {showToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
+          <div className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 px-5 py-2.5 rounded-full text-sm font-medium shadow-lg">
+            링크가 복사되었습니다 ✓
+          </div>
+        </div>
+      )}
     </div>
   );
 }

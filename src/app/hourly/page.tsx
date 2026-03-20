@@ -12,7 +12,7 @@ import AdBanner from '@/components/AdBanner';
 
 // 상수
 const MONTHLY_WORK_HOURS = 209; // 주 40시간 + 주휴 8시간 = 48시간 x 4.345주
-const MINIMUM_HOURLY_WAGE_2026 = 10_030; // 2026년 최저시급
+const MINIMUM_HOURLY_WAGE_2026 = 10_320; // 2026년 최저시급 (고용노동부 확정)
 const DAYS_IN_YEAR = 365;
 
 type CalcMode = 'salary-to-hourly' | 'hourly-to-salary';
@@ -235,7 +235,7 @@ export default function HourlyPage() {
                   </div>
                   {/* 빠른 선택 */}
                   <div className="flex flex-wrap gap-2">
-                    {[10030, 12000, 15000, 20000, 30000, 50000].map((v) => (
+                    {[10320, 12000, 15000, 20000, 30000, 50000].map((v) => (
                       <button
                         key={v}
                         onClick={() => setHourlyWage(v)}
@@ -245,7 +245,7 @@ export default function HourlyPage() {
                             : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-amber-100 dark:hover:bg-amber-900/30'
                         }`}
                       >
-                        {v === 10030 ? '최저시급' : `${formatNumber(v)}원`}
+                        {v === 10320 ? '최저시급' : `${formatNumber(v)}원`}
                       </button>
                     ))}
                   </div>
@@ -316,6 +316,15 @@ export default function HourlyPage() {
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-3 text-center">
             * 주 40시간, 주휴수당 포함 기준. 실제 급여는 근무 조건에 따라 달라질 수 있습니다.
           </p>
+          <div className="mt-3 text-center">
+            <Link
+              href="/minimum-wage"
+              onClick={() => trackNavigation('minimum_wage_from_hourly')}
+              className="text-sm text-amber-600 dark:text-amber-400 hover:underline font-medium"
+            >
+              최저임금 상세 정보 &rarr;
+            </Link>
+          </div>
         </div>
 
         {/* 연봉 계산기 유도 배너 */}
@@ -564,7 +573,7 @@ function HourlyFAQ() {
     },
     {
       q: '2026년 최저시급은 얼마인가요?',
-      a: '2026년 최저시급은 10,030원입니다. 월 소정근로시간(209시간) 기준 월 최저임금은 약 2,096,270원이며, 연봉으로 환산하면 약 25,155,240원입니다.',
+      a: '2026년 최저시급은 10,320원입니다. 월 소정근로시간(209시간) 기준 월 최저임금은 약 2,156,880원이며, 연봉으로 환산하면 약 25,882,560원입니다.',
     },
     {
       q: '주휴수당이 포함된 건가요?',

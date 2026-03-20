@@ -5,9 +5,10 @@ import { formatNumber } from '@/lib/format';
 
 interface Props {
   result: SalaryResultType;
+  onShare?: () => void;
 }
 
-export default function SalaryResult({ result }: Props) {
+export default function SalaryResult({ result, onShare }: Props) {
   const insuranceItems = [
     { label: '국민연금', value: result.nationalPension, color: 'text-blue-600 dark:text-blue-400' },
     { label: '건강보험', value: result.healthInsurance, color: 'text-green-600 dark:text-green-400' },
@@ -26,7 +27,23 @@ export default function SalaryResult({ result }: Props) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-5 card-hover" aria-label="급여 계산 결과" role="region">
       {/* 실수령액 */}
-      <div className="text-center py-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl" aria-live="polite">
+      <div className="relative text-center py-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl" aria-live="polite">
+        {onShare && (
+          <button
+            onClick={onShare}
+            aria-label="결과 공유하기"
+            title="결과 링크 복사"
+            className="absolute top-3 right-3 p-2 rounded-lg text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+          </button>
+        )}
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
           월 실수령액
         </p>
