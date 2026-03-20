@@ -7,7 +7,7 @@ export const TAX_YEAR = 2026;
 
 // 2026년 기준 4대보험 요율 (근로자 부담분)
 export const INSURANCE_RATES = {
-  nationalPension: 0.045, // 국민연금 4.5%
+  nationalPension: 0.0475, // 국민연금 4.75% (2026년 연금개혁, 9.5%/2)
   healthInsurance: 0.03595, // 건강보험 3.595% (2026년 7.19% / 2)
   longTermCare: 0.1314, // 장기요양보험 = 건강보험료의 13.14% (2026년)
   employmentInsurance: 0.009, // 고용보험 0.9%

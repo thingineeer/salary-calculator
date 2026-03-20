@@ -7,6 +7,7 @@ import { formatNumber } from '@/lib/format';
 import { getSalaryPercentile } from '@/lib/percentile';
 import { getSalaryPageData, SALARY_AMOUNTS } from '@/lib/salary-seo-data';
 import AdBanner from '@/components/AdBanner';
+import InvestmentCTA from '@/components/InvestmentCTA';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { ChevronDownIcon, ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
@@ -173,6 +174,9 @@ export default async function SalaryDetailPage({ params }: PageProps) {
               {data.taxTip}
             </p>
           </section>
+
+          {/* 배당 투자 크로스 프로모션 */}
+          <InvestmentCTA amount={amount} netSalary={result.netSalary} />
 
           {/* 광고 - 절세 팁 아래 */}
           <AdBanner format="auto" className="w-full min-h-[90px] mb-6" />
