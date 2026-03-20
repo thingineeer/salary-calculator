@@ -693,7 +693,7 @@ function WorkConditionDisclosure({
             <select
               value={dailyHours}
               onChange={(e) => onDailyHoursChange(Number(e.target.value))}
-              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500"
+              className="px-2 py-1.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500"
             >
               {[4, 5, 6, 7, 8, 9, 10, 12].map((h) => (
                 <option key={h} value={h}>{h}시간</option>
@@ -705,7 +705,7 @@ function WorkConditionDisclosure({
             <select
               value={weeklyDays}
               onChange={(e) => onWeeklyDaysChange(Number(e.target.value))}
-              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500"
+              className="px-2 py-1.5 text-base border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500"
             >
               {[1, 2, 3, 4, 5, 6].map((d) => (
                 <option key={d} value={d}>{d}일</option>
@@ -717,7 +717,7 @@ function WorkConditionDisclosure({
               type="checkbox"
               checked={includeWeeklyHoliday}
               onChange={(e) => onWeeklyHolidayChange(e.target.checked)}
-              className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-amber-500 focus:ring-amber-500"
+              className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-amber-500 focus:ring-amber-500"
             />
             <span className="text-xs text-gray-700 dark:text-gray-300">주휴수당 포함</span>
           </label>
