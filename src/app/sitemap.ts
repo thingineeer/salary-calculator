@@ -30,6 +30,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: 'https://www.salary-calc.kr/hourly',
+      lastModified: new Date('2026-03-20'),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: 'https://www.salary-calc.kr/about',
       lastModified: new Date('2026-03-18'),
       changeFrequency: 'yearly',
