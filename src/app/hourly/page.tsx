@@ -11,9 +11,15 @@ import Footer from '@/components/Footer';
 import AdBanner from '@/components/AdBanner';
 
 // 상수
-const MONTHLY_WORK_HOURS = 209; // 주 40시간 + 주휴 8시간 = 48시간 x 4.345주
 const MINIMUM_HOURLY_WAGE_2026 = 10_320; // 2026년 최저시급 (고용노동부 확정)
 const DAYS_IN_YEAR = 365;
+const WEEKS_PER_MONTH = 365 / 12 / 7; // 4.345주
+
+function calcMonthlyHours(dailyHours: number, weeklyDays: number, includeWeeklyHoliday: boolean) {
+  const weeklyHours = dailyHours * weeklyDays;
+  const holidayHours = includeWeeklyHoliday ? dailyHours : 0; // 주휴 = 1일치
+  return Math.round((weeklyHours + holidayHours) * WEEKS_PER_MONTH);
+}
 
 type CalcMode = 'salary-to-hourly' | 'hourly-to-salary';
 
@@ -21,6 +27,13 @@ export default function HourlyPage() {
   const [mode, setMode] = useState<CalcMode>('salary-to-hourly');
   const [annualSalary, setAnnualSalary] = useState(50_000_000);
   const [hourlyWage, setHourlyWage] = useState(0);
+
+  // 근무 조건
+  const [dailyHours, setDailyHours] = useState(8);
+  const [weeklyDays, setWeeklyDays] = useState(5);
+  const [includeWeeklyHoliday, setIncludeWeeklyHoliday] = useState(true);
+
+  const monthlyWorkHours = calcMonthlyHours(dailyHours, weeklyDays, includeWeeklyHoliday);
 
   // 연봉 → 시급 계산
   const salaryResult: SalaryResultType = calculateSalary({
@@ -30,8 +43,8 @@ export default function HourlyPage() {
     nonTaxableAllowance: DEFAULT_NON_TAXABLE_ALLOWANCE,
   });
 
-  const preTaxHourly = Math.floor(annualSalary / 12 / MONTHLY_WORK_HOURS);
-  const postTaxHourly = Math.floor(salaryResult.netSalary / MONTHLY_WORK_HOURS);
+  const preTaxHourly = monthlyWorkHours > 0 ? Math.floor(annualSalary / 12 / monthlyWorkHours) : 0;
+  const postTaxHourly = monthlyWorkHours > 0 ? Math.floor(salaryResult.netSalary / monthlyWorkHours) : 0;
   const preTaxDaily = Math.floor(annualSalary / DAYS_IN_YEAR);
   const postTaxDaily = Math.floor((salaryResult.netSalary * 12) / DAYS_IN_YEAR);
   const minimumWageRatio = preTaxHourly > 0
@@ -39,7 +52,7 @@ export default function HourlyPage() {
     : 0;
 
   // 시급 → 연봉 역산
-  const reversedAnnualSalary = hourlyWage * MONTHLY_WORK_HOURS * 12;
+  const reversedAnnualSalary = hourlyWage * monthlyWorkHours * 12;
   const reversedResult: SalaryResultType = calculateSalary({
     annualSalary: reversedAnnualSalary,
     dependents: 1,
@@ -48,7 +61,7 @@ export default function HourlyPage() {
   });
 
   const reversedPreTaxDaily = Math.floor(reversedAnnualSalary / DAYS_IN_YEAR);
-  const reversedPostTaxHourly = Math.floor(reversedResult.netSalary / MONTHLY_WORK_HOURS);
+  const reversedPostTaxHourly = monthlyWorkHours > 0 ? Math.floor(reversedResult.netSalary / monthlyWorkHours) : 0;
   const reversedPostTaxDaily = Math.floor((reversedResult.netSalary * 12) / DAYS_IN_YEAR);
   const reversedMinimumWageRatio = hourlyWage > 0
     ? Math.round((hourlyWage / MINIMUM_HOURLY_WAGE_2026) * 100) / 100
@@ -252,9 +265,16 @@ export default function HourlyPage() {
                 </div>
               )}
 
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-4">
-                * 월 소정근로시간 209시간 (주 40시간 + 주휴 8시간) 기준, 부양가족 1명(본인), 비과세 월 20만원 적용
-              </p>
+              {/* 근무 조건 — HIG disclosure 패턴 */}
+              <WorkConditionDisclosure
+                dailyHours={dailyHours}
+                weeklyDays={weeklyDays}
+                includeWeeklyHoliday={includeWeeklyHoliday}
+                monthlyWorkHours={monthlyWorkHours}
+                onDailyHoursChange={setDailyHours}
+                onWeeklyDaysChange={setWeeklyDays}
+                onWeeklyHolidayChange={setIncludeWeeklyHoliday}
+              />
             </div>
           </div>
           <div className="hidden lg:flex lg:flex-col lg:items-center">
@@ -301,20 +321,20 @@ export default function HourlyPage() {
               </p>
             </div>
             <div className="text-center p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">월 환산액 (209시간)</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">월 환산액 ({monthlyWorkHours}시간)</p>
               <p className="text-xl font-bold text-amber-600 dark:text-amber-400 tabular-nums">
-                {formatNumber(MINIMUM_HOURLY_WAGE_2026 * MONTHLY_WORK_HOURS)}원
+                {formatNumber(MINIMUM_HOURLY_WAGE_2026 * monthlyWorkHours)}원
               </p>
             </div>
             <div className="text-center p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">연 환산액</p>
               <p className="text-xl font-bold text-amber-600 dark:text-amber-400 tabular-nums">
-                {formatNumber(MINIMUM_HOURLY_WAGE_2026 * MONTHLY_WORK_HOURS * 12)}원
+                {formatNumber(MINIMUM_HOURLY_WAGE_2026 * monthlyWorkHours * 12)}원
               </p>
             </div>
           </div>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-3 text-center">
-            * 주 40시간, 주휴수당 포함 기준. 실제 급여는 근무 조건에 따라 달라질 수 있습니다.
+            * 위 근무 조건 설정에 따라 월 환산액이 달라집니다.
           </p>
           <div className="mt-3 text-center">
             <Link
@@ -615,6 +635,103 @@ function HourlyFAQ() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+/* =============================================
+   근무 조건 Disclosure (HIG 스타일)
+   - 기본: 요약 한 줄 표시
+   - 탭/클릭: 옵션 펼쳐짐
+============================================= */
+function WorkConditionDisclosure({
+  dailyHours,
+  weeklyDays,
+  includeWeeklyHoliday,
+  monthlyWorkHours,
+  onDailyHoursChange,
+  onWeeklyDaysChange,
+  onWeeklyHolidayChange,
+}: {
+  dailyHours: number;
+  weeklyDays: number;
+  includeWeeklyHoliday: boolean;
+  monthlyWorkHours: number;
+  onDailyHoursChange: (v: number) => void;
+  onWeeklyDaysChange: (v: number) => void;
+  onWeeklyHolidayChange: (v: boolean) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const isDefault = dailyHours === 8 && weeklyDays === 5 && includeWeeklyHoliday;
+
+  return (
+    <div className="mt-5 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between text-left group"
+        aria-expanded={open}
+      >
+        <span className="text-xs text-gray-500 dark:text-gray-400">
+          {isDefault ? (
+            <>주 {dailyHours * weeklyDays}시간 · 주휴수당 포함 · 월 {monthlyWorkHours}시간 기준</>
+          ) : (
+            <span className="text-amber-600 dark:text-amber-400 font-medium">
+              일 {dailyHours}시간 · 주 {weeklyDays}일 · 주휴{includeWeeklyHoliday ? '포함' : '미포함'} · 월 {monthlyWorkHours}시간
+            </span>
+          )}
+        </span>
+        <span className={`text-gray-400 text-xs transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
+          &#9662;
+        </span>
+      </button>
+
+      {open && (
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
+          <label className="flex items-center gap-1.5">
+            <span className="text-xs text-gray-500 dark:text-gray-400">일</span>
+            <select
+              value={dailyHours}
+              onChange={(e) => onDailyHoursChange(Number(e.target.value))}
+              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500"
+            >
+              {[4, 5, 6, 7, 8, 9, 10, 12].map((h) => (
+                <option key={h} value={h}>{h}시간</option>
+              ))}
+            </select>
+          </label>
+          <label className="flex items-center gap-1.5">
+            <span className="text-xs text-gray-500 dark:text-gray-400">주</span>
+            <select
+              value={weeklyDays}
+              onChange={(e) => onWeeklyDaysChange(Number(e.target.value))}
+              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500"
+            >
+              {[1, 2, 3, 4, 5, 6].map((d) => (
+                <option key={d} value={d}>{d}일</option>
+              ))}
+            </select>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={includeWeeklyHoliday}
+              onChange={(e) => onWeeklyHolidayChange(e.target.checked)}
+              className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-amber-500 focus:ring-amber-500"
+            />
+            <span className="text-xs text-gray-700 dark:text-gray-300">주휴수당 포함</span>
+          </label>
+          {!isDefault && (
+            <button
+              type="button"
+              onClick={() => { onDailyHoursChange(8); onWeeklyDaysChange(5); onWeeklyHolidayChange(true); }}
+              className="text-xs text-amber-600 dark:text-amber-400 hover:underline"
+            >
+              기본값으로 초기화
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
