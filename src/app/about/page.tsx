@@ -45,7 +45,7 @@ export default function AboutPage() {
             </h2>
             <ul className="list-disc list-inside space-y-1">
               <li>
-                <strong>국민연금</strong> — 근로자 부담분 4.5% (상한 월 637만원)
+                <strong>국민연금</strong> — 근로자 부담분 4.75% (상한 월 637만원)
               </li>
               <li>
                 <strong>건강보험</strong> — 근로자 부담분 3.595%
