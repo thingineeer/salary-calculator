@@ -52,9 +52,9 @@ export default function SalaryTable() {
           <tr className="border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400">
             <th className="text-left py-2 pr-2 font-medium">연봉</th>
             <th className="text-right py-2 px-2 font-medium">월 급여</th>
-            <th className="text-right py-2 px-2 font-medium">공제 합계</th>
+            <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">공제 합계</th>
             <th className="text-right py-2 px-2 font-medium">실수령액</th>
-            <th className="text-right py-2 px-2 font-medium">실효세율</th>
+            <th className="text-right py-2 px-2 font-medium hidden sm:table-cell">실효세율</th>
             <th className="py-2 pl-2"></th>
           </tr>
         </thead>
@@ -84,13 +84,13 @@ export default function SalaryTable() {
                 <td className="py-2.5 px-2 text-right text-gray-600 dark:text-gray-400 whitespace-nowrap">
                   {formatNumber(row.monthlySalary)}
                 </td>
-                <td className="py-2.5 px-2 text-right text-red-500 dark:text-red-400 whitespace-nowrap">
+                <td className="py-2.5 px-2 text-right text-red-500 dark:text-red-400 whitespace-nowrap hidden sm:table-cell">
                   -{formatNumber(row.totalDeduction)}
                 </td>
                 <td className="py-2.5 px-2 text-right font-semibold text-blue-700 dark:text-blue-300 whitespace-nowrap">
                   {formatNumber(row.netSalary)}
                 </td>
-                <td className="py-2.5 px-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                <td className="py-2.5 px-2 text-right text-gray-500 dark:text-gray-400 whitespace-nowrap hidden sm:table-cell">
                   {row.effectiveTaxRate}%
                 </td>
                 <td className="py-2.5 pl-2 whitespace-nowrap text-blue-600 dark:text-blue-400 text-xs">

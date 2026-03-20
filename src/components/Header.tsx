@@ -46,27 +46,36 @@ export default function Header() {
       >
         본문으로 건너뛰기
       </a>
-      <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <CalculatorIcon size={28} />
-          <span className="text-lg sm:text-xl font-bold text-blue-800 dark:text-blue-300">
-            2026 연봉 실수령액 계산기
-          </span>
-        </Link>
-        <div className="flex items-center gap-3">
+      <div className="max-w-5xl mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 min-w-0">
+            <CalculatorIcon size={24} />
+            <span className="text-base sm:text-xl font-bold text-blue-800 dark:text-blue-300 truncate">
+              연봉 실수령액 계산기
+            </span>
+          </Link>
+          <button
+            onClick={toggleTheme}
+            aria-label={dark ? '라이트 모드로 전환' : '다크 모드로 전환'}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors flex-shrink-0 ml-2"
+          >
+            {dark ? <SunIcon size={20} /> : <MoonIcon size={20} />}
+          </button>
+        </div>
+        <nav className="flex items-center gap-2 mt-2 overflow-x-auto scrollbar-hide" aria-label="메인 네비게이션">
           <Link
             href="/salary"
             onClick={() => trackNavigation('salary_comparison')}
             aria-current={isSalaryActive ? 'page' : undefined}
-            className={`text-sm font-medium px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800/40 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors ${isSalaryActive ? 'ring-2 ring-blue-500 font-bold' : ''}`}
+            className={`flex-shrink-0 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800/40 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors ${isSalaryActive ? 'ring-2 ring-blue-500 font-bold' : ''}`}
           >
-            연봉 비교표
+            비교표
           </Link>
           <Link
             href="/dollar"
             onClick={() => trackNavigation('dollar_calculator')}
             aria-current={isDollarActive ? 'page' : undefined}
-            className={`text-sm font-medium px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-800/40 focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors ${isDollarActive ? 'ring-2 ring-green-500 font-bold' : ''}`}
+            className={`flex-shrink-0 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-800/40 focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 transition-colors ${isDollarActive ? 'ring-2 ring-green-500 font-bold' : ''}`}
           >
             달러 환산
           </Link>
@@ -74,18 +83,18 @@ export default function Header() {
             href="/hourly"
             onClick={() => trackNavigation('hourly_calculator')}
             aria-current={isHourlyActive ? 'page' : undefined}
-            className={`text-sm font-medium px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-800/40 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 transition-colors ${isHourlyActive ? 'ring-2 ring-amber-500 font-bold' : ''}`}
+            className={`flex-shrink-0 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-800/40 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 transition-colors ${isHourlyActive ? 'ring-2 ring-amber-500 font-bold' : ''}`}
           >
             시급 계산
           </Link>
-          <button
-            onClick={toggleTheme}
-            aria-label={dark ? '라이트 모드로 전환' : '다크 모드로 전환'}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition-colors text-lg"
+          <Link
+            href="/minimum-wage"
+            onClick={() => trackNavigation('minimum_wage')}
+            className="flex-shrink-0 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 transition-colors"
           >
-            {dark ? <SunIcon size={20} /> : <MoonIcon size={20} />}
-          </button>
-        </div>
+            최저임금
+          </Link>
+        </nav>
       </div>
     </header>
   );

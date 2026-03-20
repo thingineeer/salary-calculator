@@ -107,7 +107,7 @@ export default function JobChangeSimulator({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
           <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">현재 실수령</p>
             <p className="text-lg font-bold text-gray-700 dark:text-gray-200">
