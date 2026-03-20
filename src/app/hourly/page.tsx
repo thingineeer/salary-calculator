@@ -669,7 +669,7 @@ function WorkConditionDisclosure({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between text-left group"
+        className="w-full flex items-center justify-between text-left group py-2 min-h-[44px]"
         aria-expanded={open}
       >
         <span className="text-xs text-gray-500 dark:text-gray-400">
