@@ -106,7 +106,19 @@ export default function Home() {
             <SalaryResultCard result={result} />
             <SalaryPercentile annualSalary={formData.annualSalary} />
           </div>
-          <DeductionChart result={result} />
+          <div>
+            <DeductionChart result={result} />
+            {formData.annualSalary > 0 && (
+              <a
+                href={`https://mysnowball.kr/simulator?stock=SCHD&monthly=${Math.round(result.netSalary * 0.15 / 10000) * 10000}&years=20&drip=1&utm_source=salary-calc&utm_medium=cross-promo&utm_campaign=main`}
+                target="_blank"
+                rel="noopener"
+                className="block mt-3 text-sm text-emerald-600 dark:text-emerald-400 hover:underline text-center"
+              >
+                실수령액으로 투자하면? 배당금 시뮬레이터 &rarr;
+              </a>
+            )}
+          </div>
         </div>
 
         {/* 결과 아래 광고 - 모든 디바이스 반응형 (CTR 황금 구간) */}

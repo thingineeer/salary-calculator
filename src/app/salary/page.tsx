@@ -168,6 +168,21 @@ function SalaryTableContent() {
           </div>
         </div>
 
+        {/* 배당 투자 크로스 프로모션 배너 */}
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-4 text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            실수령액으로 배당 투자하면 20년 후에는?
+          </p>
+          <a
+            href="https://mysnowball.kr/simulator?stock=SCHD&monthly=500000&years=20&drip=1&utm_source=salary-calc&utm_medium=cross-promo&utm_campaign=salary-hub"
+            target="_blank"
+            rel="noopener"
+            className="inline-block mt-2 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors"
+          >
+            배당금 시뮬레이터 &rarr;
+          </a>
+        </div>
+
         {/* 메인 계산기 CTA */}
         <div className="text-center">
           <Link
