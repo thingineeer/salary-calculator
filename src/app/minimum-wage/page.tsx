@@ -115,11 +115,10 @@ export default function MinimumWagePage() {
                 <tr className="border-b border-gray-200 dark:border-gray-700">
                   <th className="text-left py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium">연도</th>
                   <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium">시급</th>
-                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium">인상률</th>
+                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium hidden sm:table-cell">인상률</th>
                   <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium">월급</th>
-                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium">
-                    <span className="hidden sm:inline">USD 환산</span>
-                    <span className="sm:hidden">USD</span>
+                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium hidden sm:table-cell">
+                    USD 환산
                   </th>
                 </tr>
               </thead>
@@ -141,13 +140,13 @@ export default function MinimumWagePage() {
                       <td className={`text-right py-2.5 px-2 tabular-nums ${isCurrent ? 'font-bold text-emerald-700 dark:text-emerald-400' : 'text-gray-800 dark:text-gray-200'}`}>
                         {formatNumber(row.wage)}원
                       </td>
-                      <td className="text-right py-2.5 px-2 tabular-nums text-gray-600 dark:text-gray-400">
+                      <td className="text-right py-2.5 px-2 tabular-nums text-gray-600 dark:text-gray-400 hidden sm:table-cell">
                         +{row.rate}%
                       </td>
                       <td className="text-right py-2.5 px-2 tabular-nums text-gray-700 dark:text-gray-300">
                         {formatNumber(Math.round(monthly / 10_000))}만원
                       </td>
-                      <td className="text-right py-2.5 px-2 tabular-nums text-gray-600 dark:text-gray-400">
+                      <td className="text-right py-2.5 px-2 tabular-nums text-gray-600 dark:text-gray-400 hidden sm:table-cell">
                         ${formatNumber(usd)}
                       </td>
                     </tr>
@@ -213,7 +212,7 @@ export default function MinimumWagePage() {
               <Link
                 href="/"
                 onClick={() => trackNavigation('main_calculator_from_minimum_wage')}
-                className="inline-block px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
               >
                 내 연봉 상세 계산하기 &rarr;
               </Link>
