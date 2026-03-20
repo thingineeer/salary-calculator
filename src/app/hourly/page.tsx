@@ -265,48 +265,16 @@ export default function HourlyPage() {
                 </div>
               )}
 
-              {/* 근무 조건 */}
-              <div className="mt-5 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">근무 조건</p>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-                  <label className="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">일</span>
-                    <select
-                      value={dailyHours}
-                      onChange={(e) => setDailyHours(Number(e.target.value))}
-                      className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500"
-                    >
-                      {[4, 5, 6, 7, 8, 9, 10, 12].map((h) => (
-                        <option key={h} value={h}>{h}시간</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">주</span>
-                    <select
-                      value={weeklyDays}
-                      onChange={(e) => setWeeklyDays(Number(e.target.value))}
-                      className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500"
-                    >
-                      {[1, 2, 3, 4, 5, 6].map((d) => (
-                        <option key={d} value={d}>{d}일</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={includeWeeklyHoliday}
-                      onChange={(e) => setIncludeWeeklyHoliday(e.target.checked)}
-                      className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-amber-500 focus:ring-amber-500"
-                    />
-                    <span className="text-xs">주휴수당 포함</span>
-                  </label>
-                </div>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-                  월 소정근로시간: <span className="font-medium tabular-nums">{monthlyWorkHours}시간</span> · 부양가족 1명(본인) · 비과세 월 20만원
-                </p>
-              </div>
+              {/* 근무 조건 — HIG disclosure 패턴 */}
+              <WorkConditionDisclosure
+                dailyHours={dailyHours}
+                weeklyDays={weeklyDays}
+                includeWeeklyHoliday={includeWeeklyHoliday}
+                monthlyWorkHours={monthlyWorkHours}
+                onDailyHoursChange={setDailyHours}
+                onWeeklyDaysChange={setWeeklyDays}
+                onWeeklyHolidayChange={setIncludeWeeklyHoliday}
+              />
             </div>
           </div>
           <div className="hidden lg:flex lg:flex-col lg:items-center">
@@ -667,6 +635,103 @@ function HourlyFAQ() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+/* =============================================
+   근무 조건 Disclosure (HIG 스타일)
+   - 기본: 요약 한 줄 표시
+   - 탭/클릭: 옵션 펼쳐짐
+============================================= */
+function WorkConditionDisclosure({
+  dailyHours,
+  weeklyDays,
+  includeWeeklyHoliday,
+  monthlyWorkHours,
+  onDailyHoursChange,
+  onWeeklyDaysChange,
+  onWeeklyHolidayChange,
+}: {
+  dailyHours: number;
+  weeklyDays: number;
+  includeWeeklyHoliday: boolean;
+  monthlyWorkHours: number;
+  onDailyHoursChange: (v: number) => void;
+  onWeeklyDaysChange: (v: number) => void;
+  onWeeklyHolidayChange: (v: boolean) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const isDefault = dailyHours === 8 && weeklyDays === 5 && includeWeeklyHoliday;
+
+  return (
+    <div className="mt-5 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between text-left group"
+        aria-expanded={open}
+      >
+        <span className="text-xs text-gray-500 dark:text-gray-400">
+          {isDefault ? (
+            <>주 {dailyHours * weeklyDays}시간 · 주휴수당 포함 · 월 {monthlyWorkHours}시간 기준</>
+          ) : (
+            <span className="text-amber-600 dark:text-amber-400 font-medium">
+              일 {dailyHours}시간 · 주 {weeklyDays}일 · 주휴{includeWeeklyHoliday ? '포함' : '미포함'} · 월 {monthlyWorkHours}시간
+            </span>
+          )}
+        </span>
+        <span className={`text-gray-400 text-xs transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
+          &#9662;
+        </span>
+      </button>
+
+      {open && (
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-3">
+          <label className="flex items-center gap-1.5">
+            <span className="text-xs text-gray-500 dark:text-gray-400">일</span>
+            <select
+              value={dailyHours}
+              onChange={(e) => onDailyHoursChange(Number(e.target.value))}
+              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500"
+            >
+              {[4, 5, 6, 7, 8, 9, 10, 12].map((h) => (
+                <option key={h} value={h}>{h}시간</option>
+              ))}
+            </select>
+          </label>
+          <label className="flex items-center gap-1.5">
+            <span className="text-xs text-gray-500 dark:text-gray-400">주</span>
+            <select
+              value={weeklyDays}
+              onChange={(e) => onWeeklyDaysChange(Number(e.target.value))}
+              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500"
+            >
+              {[1, 2, 3, 4, 5, 6].map((d) => (
+                <option key={d} value={d}>{d}일</option>
+              ))}
+            </select>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={includeWeeklyHoliday}
+              onChange={(e) => onWeeklyHolidayChange(e.target.checked)}
+              className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-amber-500 focus:ring-amber-500"
+            />
+            <span className="text-xs text-gray-700 dark:text-gray-300">주휴수당 포함</span>
+          </label>
+          {!isDefault && (
+            <button
+              type="button"
+              onClick={() => { onDailyHoursChange(8); onWeeklyDaysChange(5); onWeeklyHolidayChange(true); }}
+              className="text-xs text-amber-600 dark:text-amber-400 hover:underline"
+            >
+              기본값으로 초기화
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
