@@ -65,23 +65,23 @@ export default function MinimumWagePage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="text-center p-5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">시급</p>
-                  <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums">
+                  <p className="text-xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums whitespace-nowrap">
                     {formatNumber(MINIMUM_WAGE_2026)}
-                    <span className="text-sm font-normal ml-1">원</span>
+                    <span className="text-xs sm:text-sm font-normal ml-0.5">원</span>
                   </p>
                 </div>
                 <div className="text-center p-5 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">월급</p>
-                  <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 tabular-nums">
+                  <p className="text-xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 tabular-nums whitespace-nowrap">
                     {formatNumber(MONTHLY_WAGE)}
-                    <span className="text-sm font-normal ml-1">원</span>
+                    <span className="text-xs sm:text-sm font-normal ml-0.5">원</span>
                   </p>
                 </div>
                 <div className="text-center p-5 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
                   <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">연봉</p>
-                  <p className="text-2xl sm:text-3xl font-extrabold text-purple-600 dark:text-purple-400 tabular-nums">
+                  <p className="text-xl sm:text-3xl font-extrabold text-purple-600 dark:text-purple-400 tabular-nums whitespace-nowrap">
                     {formatNumber(ANNUAL_WAGE)}
-                    <span className="text-sm font-normal ml-1">원</span>
+                    <span className="text-xs sm:text-sm font-normal ml-0.5">원</span>
                   </p>
                 </div>
               </div>
