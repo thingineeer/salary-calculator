@@ -49,3 +49,4 @@ TODO_GA_REFACTOR.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.env*.local

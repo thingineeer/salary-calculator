@@ -2,12 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: '급여·세금 가이드 - 2026 연봉 실수령액 계산기',
+  title: '급여·세금 가이드',
   description:
     '직장인을 위한 급여, 4대보험, 소득세, 절세 전략, 연봉 협상, 퇴직금까지. 2026년 최신 기준으로 정리한 실용 가이드 모음입니다.',
   alternates: { canonical: '/guide' },
   openGraph: {
-    title: '급여·세금 가이드 - 2026 연봉 실수령액 계산기',
+    title: '급여·세금 가이드',
     description:
       '직장인을 위한 급여, 4대보험, 소득세, 절세 전략, 연봉 협상, 퇴직금까지. 2026년 최신 기준으로 정리한 실용 가이드 모음입니다.',
     type: 'website',

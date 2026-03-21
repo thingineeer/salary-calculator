@@ -1,15 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: '소개 - 2026 연봉 실수령액 계산기 | 4대보험 소득세 무료 계산',
+  title: '소개 | 4대보험 소득세 무료 계산',
   description:
     '2026년 최신 세율 기준 연봉 실수령액 계산기를 소개합니다. 4대보험과 소득세 공제 후 월급을 빠르게 확인하세요.',
   alternates: {
     canonical: '/about',
   },
   openGraph: {
-    title: '소개 - 2026 연봉 실수령액 계산기 | 4대보험 소득세 무료 계산',
+    title: '소개 | 4대보험 소득세 무료 계산',
     description:
       '2026년 최신 세율 기준 연봉 실수령액 계산기를 소개합니다. 4대보험과 소득세 공제 후 월급을 빠르게 확인하세요.',
     type: 'website',
@@ -21,8 +23,9 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-3xl mx-auto px-4 py-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+      <Header />
+      <div className="flex-1 max-w-3xl mx-auto w-full px-4 py-12">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-8">
           연봉 실수령액 계산기 소개
         </h1>
@@ -275,6 +278,7 @@ export default function AboutPage() {
           </Link>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
