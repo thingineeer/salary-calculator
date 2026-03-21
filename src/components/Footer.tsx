@@ -19,6 +19,14 @@ export default function Footer() {
           <span>© {new Date().getFullYear()} 연봉 실수령액 계산기</span>
           <span>·</span>
           <Link
+            href="/guide"
+            onClick={() => trackNavigation('guide')}
+            className="hover:underline hover:text-gray-600 dark:hover:text-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded"
+          >
+            가이드
+          </Link>
+          <span>·</span>
+          <Link
             href="/about"
             onClick={() => trackNavigation('about')}
             className="hover:underline hover:text-gray-600 dark:hover:text-gray-300 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded"
