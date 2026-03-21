@@ -63,7 +63,7 @@ export default function Header() {
             {dark ? <SunIcon size={20} /> : <MoonIcon size={20} />}
           </button>
         </div>
-        <nav className="flex items-center gap-2 mt-2 overflow-x-auto scrollbar-hide" aria-label="메인 네비게이션">
+        <nav className="flex items-center gap-2 mt-2 overflow-x-auto scrollbar-hide p-0.5 -m-0.5" aria-label="메인 네비게이션">
           <Link
             href="/salary"
             onClick={() => trackNavigation('salary_comparison')}
