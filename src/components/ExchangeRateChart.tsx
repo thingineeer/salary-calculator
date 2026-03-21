@@ -65,23 +65,31 @@ function apiDataToChart(
   }
 
   const sampled: ChartDataPoint[] = [];
+  const usedLabels = new Set<string>();
+
   for (let i = 0; i < entries.length; i += step) {
     const [date, rate] = entries[i];
-    sampled.push({
-      date,
-      label: formatDateLabel(date, timeframe),
-      rate,
-    });
+    let label = formatDateLabel(date, timeframe);
+
+    // 1Y/3Y/5Y에서 같은 라벨이 중복되면 일자 추가로 구분
+    if ((timeframe === '1Y' || timeframe === '3Y' || timeframe === '5Y') && usedLabels.has(label)) {
+      const parts = date.split('-');
+      label = `${parts[0].slice(2)}.${parts[1]}.${parseInt(parts[2])}`;
+    }
+    usedLabels.add(label);
+
+    sampled.push({ date, label, rate });
   }
 
   // 마지막 포인트 항상 포함
   const lastEntry = entries[entries.length - 1];
   if (sampled[sampled.length - 1]?.date !== lastEntry[0]) {
-    sampled.push({
-      date: lastEntry[0],
-      label: formatDateLabel(lastEntry[0], timeframe),
-      rate: lastEntry[1],
-    });
+    let label = formatDateLabel(lastEntry[0], timeframe);
+    if (usedLabels.has(label)) {
+      const parts = lastEntry[0].split('-');
+      label = `${parts[0].slice(2)}.${parts[1]}.${parseInt(parts[2])}`;
+    }
+    sampled.push({ date: lastEntry[0], label, rate: lastEntry[1] });
   }
 
   return sampled;
@@ -89,19 +97,20 @@ function apiDataToChart(
 
 function formatDateLabel(date: string, timeframe: TimeframeKey): string {
   const parts = date.split('-');
+  const yy = parts[0].slice(2);
   const mm = parts[1];
-  const dd = parts[2];
+  const dd = String(parseInt(parts[2]));
 
   switch (timeframe) {
     case '1M':
-      return `${parseInt(mm)}/${parseInt(dd)}`;
+      return `${parseInt(mm)}/${dd}`;
     case '3M':
-      return `${parseInt(mm)}/${parseInt(dd)}`;
+      return `${parseInt(mm)}/${dd}`;
     case '1Y':
-      return `${parts[0].slice(2)}/${mm}`;
+      return `${yy}.${mm}`;
     case '3Y':
     case '5Y':
-      return `${parts[0].slice(2)}/${mm}`;
+      return `${yy}.${mm}`;
     default:
       return `${mm}/${dd}`;
   }
@@ -272,7 +281,8 @@ export default function ExchangeRateChart() {
               tick={{ fill: '#6b7280', fontSize: 11 }}
               stroke="#d1d5db"
               tickLine={false}
-              interval="preserveStartEnd"
+              interval={Math.max(0, Math.floor(chartData.length / 10) - 1)}
+              tickMargin={4}
             />
             <YAxis
               tick={{ fill: '#6b7280', fontSize: 11 }}
