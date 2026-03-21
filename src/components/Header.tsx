@@ -30,6 +30,7 @@ export default function Header() {
   const isSalaryActive = pathname === '/salary' || pathname.startsWith('/salary/');
   const isDollarActive = pathname === '/dollar' || pathname.startsWith('/dollar/');
   const isHourlyActive = pathname === '/hourly' || pathname.startsWith('/hourly/');
+  const isGuideActive = pathname === '/guide' || pathname.startsWith('/guide/');
 
   const toggleTheme = useCallback(() => {
     const next = !document.documentElement.classList.contains('dark');
@@ -93,6 +94,14 @@ export default function Header() {
             className="flex-shrink-0 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 transition-colors"
           >
             최저임금
+          </Link>
+          <Link
+            href="/guide"
+            onClick={() => trackNavigation('guide')}
+            aria-current={isGuideActive ? 'page' : undefined}
+            className={`flex-shrink-0 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-800/40 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 transition-colors ${isGuideActive ? 'ring-2 ring-indigo-500 font-bold' : ''}`}
+          >
+            가이드
           </Link>
         </nav>
       </div>
