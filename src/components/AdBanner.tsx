@@ -50,17 +50,9 @@ export default function AdBanner({
     return () => observer.disconnect();
   }, [format, adPosition]);
 
-  // AdSense 승인 전: 플레이스홀더 (클릭 불가, 포인터 이벤트 없음)
+  // AdSense 승인 전: 빈 영역 (보이지 않음)
   if (!slot) {
-    return (
-      <div
-        ref={adRef}
-        aria-hidden="true"
-        className={`bg-gray-50 dark:bg-gray-800 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 text-xs pointer-events-none select-none ${className}`}
-      >
-        광고 영역
-      </div>
-    );
+    return null;
   }
 
   // AdSense 승인 후: 실제 광고 렌더링

@@ -6,7 +6,6 @@ import { calculateSalary } from '@/lib/salary-calculator';
 import { SALARY_COMPARISON_LIST, DEFAULT_NON_TAXABLE_ALLOWANCE } from '@/lib/constants';
 import { formatNumber } from '@/lib/format';
 import { trackTableView, trackSalaryDetailClick } from '@/lib/analytics';
-import AdBanner from '@/components/AdBanner';
 
 export default function SalaryTable() {
   const tableRef = useRef<HTMLDivElement>(null);
@@ -37,8 +36,6 @@ export default function SalaryTable() {
     return { salary: salaryMan, ...result };
   });
 
-  const midIndex = Math.floor(rows.length / 2);
-
   return (
     <div ref={tableRef} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 overflow-x-auto touch-manipulation card-hover">
       <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
@@ -59,7 +56,7 @@ export default function SalaryTable() {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, idx) => (
+          {rows.map((row) => (
             <React.Fragment key={row.salary}>
               <tr
                 className="border-b border-gray-100 dark:border-gray-700/50 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
@@ -97,13 +94,6 @@ export default function SalaryTable() {
                   →
                 </td>
               </tr>
-              {idx === midIndex - 1 && (
-                <tr key="table-ad">
-                  <td colSpan={6} className="py-2">
-                    <AdBanner format="auto" adPosition="table_mid" className="w-full min-h-[90px]" />
-                  </td>
-                </tr>
-              )}
             </React.Fragment>
           ))}
         </tbody>
