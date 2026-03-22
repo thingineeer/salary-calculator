@@ -23,19 +23,35 @@ const minWageResult = calculateSalary({
   nonTaxableAllowance: 200_000,
 });
 
-// 연도별 최저임금 데이터
+// 연도별 최저임금 데이터 (환율: 각 연도 1월 첫 영업일 KRW/USD)
 const WAGE_HISTORY = [
-  { year: 2026, wage: 10_320, rate: 2.9, exchangeRate: 1_507 },
-  { year: 2025, wage: 10_030, rate: 1.7, exchangeRate: 1_439 },
-  { year: 2024, wage: 9_860, rate: 2.5, exchangeRate: 1_472 },
-  { year: 2023, wage: 9_620, rate: 5.0, exchangeRate: 1_288 },
-  { year: 2022, wage: 9_160, rate: 5.1, exchangeRate: 1_264 },
-  { year: 2021, wage: 8_720, rate: 1.5, exchangeRate: 1_185 },
-  { year: 2020, wage: 8_590, rate: 2.9, exchangeRate: 1_088 },
-  { year: 2019, wage: 8_350, rate: 10.9, exchangeRate: 1_158 },
-  { year: 2018, wage: 7_530, rate: 16.4, exchangeRate: 1_116 },
-  { year: 2017, wage: 6_470, rate: 7.3, exchangeRate: 1_071 },
-  { year: 2016, wage: 6_030, rate: 8.1, exchangeRate: 1_209 },
+  { year: 2026, wage: 10_320, rate: 2.9, exchangeRate: 1_471 },
+  { year: 2025, wage: 10_030, rate: 1.7, exchangeRate: 1_472 },
+  { year: 2024, wage: 9_860, rate: 2.5, exchangeRate: 1_305 },
+  { year: 2023, wage: 9_620, rate: 5.0, exchangeRate: 1_267 },
+  { year: 2022, wage: 9_160, rate: 5.1, exchangeRate: 1_189 },
+  { year: 2021, wage: 8_720, rate: 1.5, exchangeRate: 1_088 },
+  { year: 2020, wage: 8_590, rate: 2.9, exchangeRate: 1_158 },
+  { year: 2019, wage: 8_350, rate: 10.9, exchangeRate: 1_116 },
+  { year: 2018, wage: 7_530, rate: 16.4, exchangeRate: 1_071 },
+  { year: 2017, wage: 6_470, rate: 7.3, exchangeRate: 1_209 },
+  { year: 2016, wage: 6_030, rate: 8.1, exchangeRate: 1_172 },
+  { year: 2015, wage: 5_580, rate: 7.1, exchangeRate: 1_099 },
+  { year: 2014, wage: 5_210, rate: 7.2, exchangeRate: 1_050 },
+  { year: 2013, wage: 4_860, rate: 6.1, exchangeRate: 1_064 },
+  { year: 2012, wage: 4_580, rate: 6.0, exchangeRate: 1_153 },
+  { year: 2011, wage: 4_320, rate: 5.1, exchangeRate: 1_117 },
+  { year: 2010, wage: 4_110, rate: 2.8, exchangeRate: 1_168 },
+  { year: 2009, wage: 4_000, rate: 6.1, exchangeRate: 1_262 },
+  { year: 2008, wage: 3_770, rate: 8.3, exchangeRate: 938 },
+  { year: 2007, wage: 3_480, rate: 12.3, exchangeRate: 930 },
+  { year: 2006, wage: 3_100, rate: 9.2, exchangeRate: 1_013 },
+  { year: 2005, wage: 2_840, rate: 13.1, exchangeRate: 1_043 },
+  { year: 2004, wage: 2_510, rate: 10.3, exchangeRate: 1_192 },
+  { year: 2003, wage: 2_275, rate: 8.3, exchangeRate: 1_200 },
+  { year: 2002, wage: 2_100, rate: 12.6, exchangeRate: 1_314 },
+  { year: 2001, wage: 1_865, rate: 16.6, exchangeRate: 1_271 },
+  { year: 2000, wage: 1_600, rate: 4.9, exchangeRate: 1_145 },
 ];
 
 export default function MinimumWagePage() {
@@ -100,26 +116,29 @@ export default function MinimumWagePage() {
 
         {/* 섹션 2: 연도별 최저임금 추이 */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-50 mb-4">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-50 mb-1">
             연도별 최저임금 추이
           </h2>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
+            2000년~2026년, 달러 환산은 각 연도 1월 첫 영업일 환율 기준
+          </p>
           <div className="overflow-x-auto -mx-2">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th className="text-left py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium">연도</th>
-                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium">시급</th>
-                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium hidden sm:table-cell">인상률</th>
-                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium">월급</th>
-                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium hidden sm:table-cell">
-                    USD 환산
-                  </th>
+                <tr className="border-b-2 border-gray-200 dark:border-gray-700">
+                  <th className="text-left py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium text-xs">연도</th>
+                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium text-xs">시급</th>
+                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium text-xs hidden sm:table-cell">인상률</th>
+                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium text-xs">시급 USD</th>
+                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium text-xs hidden sm:table-cell">월급</th>
+                  <th className="text-right py-2.5 px-2 text-gray-500 dark:text-gray-400 font-medium text-xs hidden sm:table-cell">월급 USD</th>
                 </tr>
               </thead>
               <tbody>
                 {WAGE_HISTORY.map((row) => {
                   const monthly = row.wage * MONTHLY_WORK_HOURS;
-                  const usd = Math.round(monthly / row.exchangeRate);
+                  const hourlyUsd = (row.wage / row.exchangeRate).toFixed(2);
+                  const monthlyUsd = Math.round(monthly / row.exchangeRate);
                   const isCurrent = row.year === 2026;
                   return (
                     <tr
@@ -137,11 +156,14 @@ export default function MinimumWagePage() {
                       <td className="text-right py-2.5 px-2 tabular-nums text-gray-600 dark:text-gray-400 hidden sm:table-cell">
                         +{row.rate}%
                       </td>
-                      <td className="text-right py-2.5 px-2 tabular-nums text-gray-700 dark:text-gray-300">
+                      <td className={`text-right py-2.5 px-2 tabular-nums ${isCurrent ? 'font-semibold text-emerald-700 dark:text-emerald-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                        ${hourlyUsd}
+                      </td>
+                      <td className="text-right py-2.5 px-2 tabular-nums text-gray-700 dark:text-gray-300 hidden sm:table-cell">
                         {formatNumber(Math.round(monthly / 10_000))}만원
                       </td>
                       <td className="text-right py-2.5 px-2 tabular-nums text-gray-600 dark:text-gray-400 hidden sm:table-cell">
-                        ${formatNumber(usd)}
+                        ${formatNumber(monthlyUsd)}
                       </td>
                     </tr>
                   );
@@ -150,7 +172,7 @@ export default function MinimumWagePage() {
             </table>
           </div>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
-            * 월급 = 시급 x 209시간 기준. USD 환산은 각 연도 12월 31일 종가 기준 (2026년은 3월 현재 환율).
+            * 월급 = 시급 × 209시간(주 40시간 + 주휴수당) 기준
           </p>
         </div>
 
