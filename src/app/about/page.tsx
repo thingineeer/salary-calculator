@@ -636,7 +636,7 @@ export default function AboutPage() {
                     운영
                   </span>
                   <span className="font-medium text-gray-900 dark:text-gray-100">
-                    연봉계산기 연구팀
+                    운영자
                   </span>
                 </div>
                 <div className="flex items-center gap-3">

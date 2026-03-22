@@ -10,19 +10,15 @@ import SalaryForm from '@/components/SalaryForm';
 import SalaryResultCard from '@/components/SalaryResult';
 import SalaryPercentile from '@/components/SalaryPercentile';
 import AdBanner from '@/components/AdBanner';
+import JobChangeSimulator from '@/components/JobChangeSimulator';
+import SalaryTable from '@/components/SalaryTable';
 
 const DeductionChart = dynamic(() => import('@/components/DeductionChart'), {
   loading: () => <div className="h-[300px] bg-white dark:bg-gray-800 rounded-2xl shadow-lg animate-pulse" />,
   ssr: false,
 });
-const JobChangeSimulator = dynamic(() => import('@/components/JobChangeSimulator'), {
-  loading: () => <div className="h-48 bg-white dark:bg-gray-800 rounded-2xl shadow-lg animate-pulse" />,
-});
-const SalaryTable = dynamic(() => import('@/components/SalaryTable'), {
-  loading: () => <div className="h-64 bg-white dark:bg-gray-800 rounded-2xl shadow-lg animate-pulse" />,
-});
 
-export default function CalculatorSection() {
+export default function CalculatorSection({ children }: { children?: React.ReactNode }) {
   const [formData, setFormData] = useState(() => {
     const defaults = {
       annualSalary: 50_000_000,
@@ -190,6 +186,9 @@ export default function CalculatorSection() {
       <div className="content-auto">
         <SalaryTable />
       </div>
+
+      {/* 서버 렌더링 콘텐츠 (children) — 동적 컴포넌트 뒤에 배치 */}
+      {children}
 
       {/* 토스트 메시지 */}
       {showToast && (
