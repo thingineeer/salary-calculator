@@ -47,62 +47,56 @@ export default function MinimumWagePage() {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main id="main-content" className="flex-1 max-w-5xl mx-auto w-full px-4 py-8 space-y-8">
-        {/* 타이틀 */}
-        <div className="text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-50">
-            2026년 최저임금
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            전년 대비 +2.9% 인상 (290원)
-          </p>
-        </div>
+      <main id="main-content" className="flex-1 max-w-3xl mx-auto w-full px-4 py-8 space-y-8">
+        {/* 히어로 섹션 */}
+        <section className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl shadow-lg p-6 sm:p-8 text-white">
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
+              전년 대비 +2.9% 인상
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              2026년 최저임금
+            </h1>
+          </div>
 
-        {/* 섹션 1: 히어로 카드 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="text-center p-5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">시급</p>
-                  <p className="text-xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums whitespace-nowrap">
-                    {formatNumber(MINIMUM_WAGE_2026)}
-                    <span className="text-xs sm:text-sm font-normal ml-0.5">원</span>
-                  </p>
-                </div>
-                <div className="text-center p-5 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">월급</p>
-                  <p className="text-xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 tabular-nums whitespace-nowrap">
-                    {formatNumber(MONTHLY_WAGE)}
-                    <span className="text-xs sm:text-sm font-normal ml-0.5">원</span>
-                  </p>
-                </div>
-                <div className="text-center p-5 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">연봉</p>
-                  <p className="text-xl sm:text-3xl font-extrabold text-purple-600 dark:text-purple-400 tabular-nums whitespace-nowrap">
-                    {formatNumber(ANNUAL_WAGE)}
-                    <span className="text-xs sm:text-sm font-normal ml-0.5">원</span>
-                  </p>
-                </div>
-              </div>
-              <div className="mt-4 text-center space-y-1">
-                <p className="text-xs text-gray-400 dark:text-gray-500">
-                  주 40시간, 주휴수당 포함 기준 (월 209시간)
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  세후 월 실수령: 약{' '}
-                  <span className="font-semibold text-blue-600 dark:text-blue-400">
-                    {formatNumber(minWageResult.netSalary)}원
-                  </span>
-                  {' '}(부양가족 1인, 비과세 20만원 기준)
-                </p>
-              </div>
+          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+            <div className="text-center p-3 sm:p-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/10">
+              <p className="text-[10px] sm:text-xs text-emerald-200 mb-1 sm:mb-2 font-medium">시급</p>
+              <p className="text-lg sm:text-3xl font-extrabold tabular-nums whitespace-nowrap">
+                {formatNumber(MINIMUM_WAGE_2026)}
+                <span className="text-[10px] sm:text-sm font-normal ml-0.5 text-emerald-200">원</span>
+              </p>
+            </div>
+            <div className="text-center p-3 sm:p-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/10">
+              <p className="text-[10px] sm:text-xs text-emerald-200 mb-1 sm:mb-2 font-medium">월급</p>
+              <p className="text-lg sm:text-3xl font-extrabold tabular-nums whitespace-nowrap">
+                {formatNumber(MONTHLY_WAGE)}
+                <span className="text-[10px] sm:text-sm font-normal ml-0.5 text-emerald-200">원</span>
+              </p>
+            </div>
+            <div className="text-center p-3 sm:p-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/10">
+              <p className="text-[10px] sm:text-xs text-emerald-200 mb-1 sm:mb-2 font-medium">연봉</p>
+              <p className="text-lg sm:text-3xl font-extrabold tabular-nums whitespace-nowrap">
+                {formatNumber(ANNUAL_WAGE)}
+                <span className="text-[10px] sm:text-sm font-normal ml-0.5 text-emerald-200">원</span>
+              </p>
             </div>
           </div>
-          <div className="hidden lg:flex lg:flex-col lg:items-center">
-            <AdBanner format="rectangle" adPosition="sidebar_top" className="w-[300px] min-h-[250px] sticky top-8" />
+
+          <div className="mt-4 text-center space-y-1">
+            <p className="text-[11px] text-emerald-200/70">
+              주 40시간, 주휴수당 포함 기준 (월 209시간)
+            </p>
+            <p className="text-xs text-emerald-100">
+              세후 월 실수령 약{' '}
+              <span className="font-bold text-white">
+                {formatNumber(minWageResult.netSalary)}원
+              </span>
+              {' '}(부양가족 1인, 비과세 20만원 기준)
+            </p>
           </div>
-        </div>
+        </section>
 
         {/* 섹션 2: 연도별 최저임금 추이 */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">
@@ -159,9 +153,6 @@ export default function MinimumWagePage() {
             * 월급 = 시급 x 209시간 기준. USD 환산은 각 연도 12월 31일 종가 기준 (2026년은 3월 현재 환율).
           </p>
         </div>
-
-        {/* 광고 */}
-        <AdBanner format="auto" adPosition="after_result" className="w-full min-h-[90px]" />
 
         {/* 섹션 3: 내 연봉은 최저임금의 몇 배? */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 card-hover">

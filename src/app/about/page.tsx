@@ -5,16 +5,16 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: '소개 — 운영팀·데이터 신뢰성·전문가 검증 | 연봉 실수령액 계산기',
+  title: '소개 — 서비스 안내·데이터 출처·검증 방법 | 연봉 실수령액 계산기',
   description:
-    '연봉계산기 연구팀 소개, 국세청·4대보험 공단 공식 데이터 기반 계산 로직, 세무 전문가 검증 절차, 업데이트 이력을 안내합니다.',
+    '연봉 실수령액 계산기 소개, 국세청·4대보험 공단 공식 데이터 기반 계산 로직, 데이터 검증 방법, 업데이트 이력을 안내합니다.',
   alternates: {
     canonical: '/about',
   },
   openGraph: {
-    title: '소개 — 운영팀·데이터 신뢰성·전문가 검증 | 연봉 실수령액 계산기',
+    title: '소개 — 서비스 안내·데이터 출처·검증 방법 | 연봉 실수령액 계산기',
     description:
-      '연봉계산기 연구팀 소개, 국세청·4대보험 공단 공식 데이터 기반 계산 로직, 세무 전문가 검증 절차, 업데이트 이력을 안내합니다.',
+      '연봉 실수령액 계산기 소개, 국세청·4대보험 공단 공식 데이터 기반 계산 로직, 데이터 검증 방법, 업데이트 이력을 안내합니다.',
     type: 'website',
     locale: 'ko_KR',
     url: '/about',
@@ -44,74 +44,48 @@ export default function AboutPage() {
             연봉 실수령액 계산기 소개
           </h1>
           <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            정확한 데이터, 투명한 로직, 전문가 검증 — 대한민국 직장인이 신뢰할 수 있는
-            급여 계산 서비스를 만들어갑니다.
+            정확한 공식 데이터, 투명한 계산 로직 — 대한민국 직장인을 위한
+            급여 계산 서비스입니다.
           </p>
         </section>
 
-        {/* ---------- 1. 운영자 소개 ---------- */}
+        {/* ---------- 1. 서비스 소개 ---------- */}
         <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/20 text-sm">
-                👤
+                💡
               </span>
-              운영자 소개
+              서비스 소개
             </h2>
           </div>
           <div className="p-6 space-y-5 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-            <div className="flex flex-col sm:flex-row items-start gap-5">
-              <div className="flex-shrink-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/40 dark:to-amber-800/40 flex items-center justify-center">
-                <Image
-                  src="/mascot.svg"
-                  alt="연봉계산기 연구팀"
-                  width={56}
-                  height={56}
-                />
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-                    연봉계산기 연구팀
-                  </h3>
-                  <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mt-0.5">
-                    세무·회계 데이터 분석 및 급여 시스템 분야 5년 이상 경험
-                  </p>
-                </div>
-                <p>
-                  저희 연봉계산기 연구팀은 <strong>세무·회계 데이터 분석</strong>과{' '}
-                  <strong>급여 시스템 개발</strong> 분야에서 5년 이상의 실무 경험을
-                  보유하고 있습니다. 국세청 근로소득 간이세액표와 4대보험 공단의
-                  공식 고시 자료를 기반으로, 근로자 여러분이 연봉 협상이나 이직
-                  결정 시 정확한 실수령액 정보를 얻을 수 있도록 도움을 드리고
-                  있습니다.
-                </p>
-              </div>
-            </div>
+            <p>
+              연봉 실수령액 계산기는 직장인과 취업 준비생이{' '}
+              <strong>연봉 협상이나 이직 결정 시 정확한 실수령액</strong>을
+              빠르게 확인할 수 있도록 만든 무료 웹 서비스입니다.
+            </p>
+            <p>
+              국세청 근로소득 간이세액표와 4대보험 공단의 공식 고시 자료를
+              기반으로 계산하며, 세법이나 보험요율이 변경될 때마다 최신
+              데이터를 반영하여 업데이트하고 있습니다.
+            </p>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-4 space-y-2">
               <h4 className="font-semibold text-blue-800 dark:text-blue-300 text-sm">
-                미션
+                만든 이유
               </h4>
               <p className="text-blue-900 dark:text-blue-200 text-sm">
-                &ldquo;모든 근로자가 자신의 정확한 급여 정보를 쉽고 빠르게 확인할
-                수 있어야 한다&rdquo;는 신념 아래, 복잡한 세법과 보험요율을 누구나
-                이해할 수 있는 직관적인 계산 도구로 제공합니다.
+                이직이나 첫 취업 시 &ldquo;연봉 5,000만원이면 실제로 얼마
+                받지?&rdquo;라는 궁금증을 누구나 쉽고 정확하게 해결할 수
+                있는 도구가 필요하다고 느껴 개발하게 되었습니다.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 text-center">
                 <div className="text-2xl font-extrabold text-blue-600 dark:text-blue-400">
-                  5년+
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  세무·급여 데이터 분석 경험
-                </div>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 text-center">
-                <div className="text-2xl font-extrabold text-blue-600 dark:text-blue-400">
-                  10+
+                  127개
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   연봉 구간별 상세 분석 페이지
@@ -123,6 +97,14 @@ export default function AboutPage() {
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   급여·세금 관련 계산 도구
+                </div>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 text-center">
+                <div className="text-2xl font-extrabold text-blue-600 dark:text-blue-400">
+                  5종
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  급여·세금 가이드 문서
                 </div>
               </div>
             </div>
@@ -241,21 +223,20 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ---------- 3. 전문가 자문 ---------- */}
+        {/* ---------- 3. 데이터 검증 방법 ---------- */}
         <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
           <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-4">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/20 text-sm">
-                🏅
+                🔍
               </span>
-              전문가 자문 및 검증
+              데이터 검증 방법
             </h2>
           </div>
           <div className="p-6 space-y-5 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
             <p>
-              본 계산기는 세무·회계 전문가의 검증을 거쳐 신뢰할 수 있는 결과를
-              제공합니다. 계산 로직의 정확성을 보장하기 위해 다음과 같은 검증
-              절차를 운영하고 있습니다.
+              계산 결과의 정확성을 위해 다음과 같은 방법으로 데이터를
+              검증하고 있습니다.
             </p>
 
             <div className="space-y-4">
@@ -265,12 +246,11 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 dark:text-gray-100">
-                    공식 세액표 대조 검증
+                    공식 세액표 대조
                   </h4>
                   <p className="text-gray-600 dark:text-gray-400 mt-1">
-                    국세청 근로소득 간이세액표의 모든 과세표준 구간과 세율을
-                    계산기 내부 로직과 1:1 대조하여 오차가 없는지 정기적으로
-                    검증합니다.
+                    국세청 근로소득 간이세액표의 과세표준 구간과 세율을
+                    계산기 내부 로직과 대조하여 일치 여부를 확인합니다.
                   </p>
                 </div>
               </div>
@@ -283,8 +263,8 @@ export default function AboutPage() {
                     4대보험 요율 교차 확인
                   </h4>
                   <p className="text-gray-600 dark:text-gray-400 mt-1">
-                    국민연금공단, 건강보험공단, 고용노동부 각각의 공시 자료를
-                    교차 확인하여 보험요율의 정확성을 보장합니다.
+                    국민연금공단, 건강보험공단, 고용노동부 각 기관의 공시
+                    자료를 교차 확인합니다.
                   </p>
                 </div>
               </div>
@@ -294,11 +274,11 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 dark:text-gray-100">
-                    실제 급여명세서 샘플 비교
+                    세법 변경 시 즉시 반영
                   </h4>
                   <p className="text-gray-600 dark:text-gray-400 mt-1">
-                    익명화된 실제 급여명세서 데이터와 계산 결과를 비교하여, 실무
-                    수준의 정확도를 확인합니다.
+                    매년 새해 세법·보험요율 변경이 고시되면 계산 로직에 즉시
+                    반영합니다.
                   </p>
                 </div>
               </div>
@@ -306,33 +286,32 @@ export default function AboutPage() {
 
             <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
               <p className="text-amber-900 dark:text-amber-200 text-sm">
-                <strong>전문가 권고:</strong> 본 계산기는 높은 정확도를 제공하지만,
+                <strong>안내:</strong> 본 계산기는 참고용 추정치를 제공하며,
                 개인별 특수한 세금 상황(다주택자, 해외소득, 스톡옵션 등)은 반영하지
-                않습니다. 해당 사항이 있으신 분은 반드시{' '}
-                <strong>세무사 또는 공인회계사</strong>와 별도 상담을 받으시기
-                바랍니다.
+                않습니다. 정확한 세금 계산이 필요한 경우{' '}
+                <strong>세무사 또는 공인회계사</strong>와 상담을 권장합니다.
               </p>
             </div>
           </div>
         </section>
 
-        {/* ---------- 4. 신뢰 지표 및 업데이트 이력 ---------- */}
+        {/* ---------- 4. 서비스 현황 ---------- */}
         <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
           <div className="bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/20 text-sm">
                 📈
               </span>
-              신뢰 지표 및 업데이트 이력
+              서비스 현황
             </h2>
           </div>
-          <div className="p-6 space-y-6 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+          <div className="p-6 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { value: '매월', label: '정기 데이터 검증' },
-                { value: '99.5%+', label: '간이세액표 일치율' },
-                { value: '10개', label: '연봉 구간 상세 분석' },
+                { value: '127개', label: '연봉 구간 상세 페이지' },
                 { value: '6종', label: '급여·세금 계산 도구' },
+                { value: '5종', label: '가이드 문서' },
+                { value: '16개', label: '자주 묻는 질문' },
               ].map((stat) => (
                 <div
                   key={stat.label}
@@ -346,54 +325,6 @@ export default function AboutPage() {
                   </div>
                 </div>
               ))}
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-base">
-                업데이트 이력
-              </h3>
-              <div className="relative pl-6 border-l-2 border-violet-200 dark:border-violet-700 space-y-4">
-                {[
-                  {
-                    date: '2026년 3월',
-                    title: 'E-E-A-T 기반 소개 페이지 강화',
-                    desc: '운영팀 소개, 데이터 신뢰성 섹션, 전문가 검증 절차 공개',
-                  },
-                  {
-                    date: '2026년 1월',
-                    title: '2026년 세법·보험요율 반영',
-                    desc: '국민연금 요율 인상(9% → 9.5%), 건강보험·장기요양보험 요율 조정 반영',
-                  },
-                  {
-                    date: '2025년 12월',
-                    title: '환율 계산기·시급 계산기 추가',
-                    desc: '달러 환산 계산기, 시급 변환 계산기, 최저임금 계산기 출시',
-                  },
-                  {
-                    date: '2025년 10월',
-                    title: '연봉별 상세 비교 페이지 10종 출시',
-                    desc: '2,400만~1억 원 구간별 상세 분석 및 백분위 제공',
-                  },
-                  {
-                    date: '2025년 8월',
-                    title: '서비스 정식 오픈',
-                    desc: 'salary-calc.kr 도메인 연결, 연봉 실수령액 계산기 v1.0 출시',
-                  },
-                ].map((item) => (
-                  <div key={item.date} className="relative">
-                    <span className="absolute -left-[1.65rem] top-1.5 w-3 h-3 rounded-full bg-violet-500 border-2 border-white dark:border-gray-800" />
-                    <div className="text-xs font-medium text-violet-600 dark:text-violet-400">
-                      {item.date}
-                    </div>
-                    <div className="font-semibold text-gray-900 dark:text-gray-100 mt-0.5">
-                      {item.title}
-                    </div>
-                    <p className="text-gray-600 dark:text-gray-400 text-xs mt-0.5">
-                      {item.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </section>
