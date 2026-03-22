@@ -681,8 +681,11 @@ function WorkConditionDisclosure({
             </span>
           )}
         </span>
-        <span className={`text-gray-400 text-xs transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
-          &#9662;
+        <span className={`flex items-center gap-1 text-gray-400 dark:text-gray-500 text-xs font-medium px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-700/60 group-hover:bg-gray-200 dark:group-hover:bg-gray-700 transition-colors`}>
+          {open ? '접기' : '설정'}
+          <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
         </span>
       </button>
 
