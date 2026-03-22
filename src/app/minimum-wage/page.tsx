@@ -76,26 +76,26 @@ export default function MinimumWagePage() {
             </h1>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 sm:gap-4">
-            <div className="text-center p-3 sm:p-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/10">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <div className="text-center p-4 sm:p-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/10">
               <p className="text-[10px] sm:text-xs text-emerald-200 mb-1 sm:mb-2 font-medium">시급</p>
-              <p className="text-lg sm:text-3xl font-extrabold tabular-nums whitespace-nowrap">
+              <p className="text-2xl sm:text-3xl font-extrabold tabular-nums">
                 {formatNumber(MINIMUM_WAGE_2026)}
-                <span className="text-[10px] sm:text-sm font-normal ml-0.5 text-emerald-200">원</span>
+                <span className="text-xs sm:text-sm font-normal ml-0.5 text-emerald-200">원</span>
               </p>
             </div>
-            <div className="text-center p-3 sm:p-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/10">
-              <p className="text-[10px] sm:text-xs text-emerald-200 mb-1 sm:mb-2 font-medium">월급</p>
-              <p className="text-lg sm:text-3xl font-extrabold tabular-nums whitespace-nowrap">
+            <div className="text-center p-4 sm:p-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/10">
+              <p className="text-[10px] sm:text-xs text-emerald-200 mb-1 sm:mb-2 font-medium">월급 (209시간)</p>
+              <p className="text-2xl sm:text-3xl font-extrabold tabular-nums">
                 {formatNumber(MONTHLY_WAGE)}
-                <span className="text-[10px] sm:text-sm font-normal ml-0.5 text-emerald-200">원</span>
+                <span className="text-xs sm:text-sm font-normal ml-0.5 text-emerald-200">원</span>
               </p>
             </div>
-            <div className="text-center p-3 sm:p-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/10">
+            <div className="col-span-2 text-center p-4 sm:p-5 bg-white/15 backdrop-blur-sm rounded-xl border border-white/10">
               <p className="text-[10px] sm:text-xs text-emerald-200 mb-1 sm:mb-2 font-medium">연봉</p>
-              <p className="text-lg sm:text-3xl font-extrabold tabular-nums whitespace-nowrap">
+              <p className="text-3xl sm:text-4xl font-extrabold tabular-nums">
                 {formatNumber(ANNUAL_WAGE)}
-                <span className="text-[10px] sm:text-sm font-normal ml-0.5 text-emerald-200">원</span>
+                <span className="text-sm sm:text-base font-normal ml-1 text-emerald-200">원</span>
               </p>
             </div>
           </div>
